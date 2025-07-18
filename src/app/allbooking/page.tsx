@@ -1,6 +1,3 @@
-// File: app/(dashboard)/my-account/page.tsx
-// This version is modified to use a temporary public API for testing purposes.
-
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -9,7 +6,6 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 
-// --- Type Definitions ---
 interface Booking {
     bookingId: number;
     bookingReference: string;
@@ -94,7 +90,7 @@ const UserDashboardPage: React.FC = () => {
             <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <header className="mb-10">
                     <h1 className="text-4xl font-extrabold text-gray-900">Welcome, {user.firstName}!</h1>
-                    <p className="mt-2 text-lg text-gray-600">Here's your personal dashboard.</p>
+                    <p className="mt-2 text-lg text-gray-600">Here&apos;s your personal dashboard.</p>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

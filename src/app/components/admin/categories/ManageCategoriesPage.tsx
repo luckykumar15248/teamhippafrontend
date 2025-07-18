@@ -1,6 +1,3 @@
-// File: app/(dashboard)/admin/categories/page.tsx
-// A complete, standalone page for creating and managing course categories and sub-categories.
-
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback, JSX } from 'react';
@@ -8,7 +5,6 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-// --- Type Definitions ---
 interface Category {
   categoryId: number;
   parentCategoryId: number | null;
@@ -19,10 +15,8 @@ interface Category {
   displayOrder: number;
 }
 
-// CORRECTED: Explicit type for the nested structure to solve the 'never[]' error.
 type HierarchicalCategory = Category & { children: HierarchicalCategory[] };
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-// --- API Helper ---
 const getAuthHeaders = () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (!token) {
@@ -33,7 +27,6 @@ const getAuthHeaders = () => {
 };
 
 // --- SVG Icon Components ---
-const PlusIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
 const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
 const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
 
@@ -99,6 +92,7 @@ const ManageCategoriesPage: React.FC = () => {
             setCategories(response.data);
         } catch (error) {
             toast.error("Failed to load categories.");
+            console.error(error);
         } finally {
             setIsLoading(false);
         }
@@ -153,8 +147,12 @@ const ManageCategoriesPage: React.FC = () => {
                 await axios.delete(`${apiUrl}api/admin/categories/${category.categoryId}`, { headers });
                 toast.success("Category deleted successfully.");
                 fetchData();
-            } catch (error: any) {
-                toast.error(error.response?.data?.message || "Failed to delete category.");
+            } catch (error: unknown) {
+                if (axios.isAxiosError(error)) {
+                    toast.error(error.response?.data?.message || "Failed to delete category.");
+                } else {
+                    toast.error("Failed to delete category.");
+                }
             }
         }
     };
@@ -180,12 +178,13 @@ const ManageCategoriesPage: React.FC = () => {
                 toast.success("Category updated successfully!");
             } else {
                 await axios.post(`${apiUrl}api/admin/categories`, payload, { headers });
-                toast.success("Category created successfully!");
             }
-            resetForm();
-            fetchData();
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to save category.");
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data?.message || "Failed to save category.");
+            } else {
+                toast.error("Failed to save category.");
+            }
         } finally {
             setIsSubmitting(false);
         }

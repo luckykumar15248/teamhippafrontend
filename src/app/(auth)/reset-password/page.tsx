@@ -94,11 +94,13 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         );
         toast.error(response.data.message || "Failed to reset password.");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Reset Password error:", err);
-      const errorMessage =
-        err.response?.data?.message ||
-        "An unexpected error occurred. Please try again.";
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      if (typeof err === "object" && err !== null && "response" in err) {
+        const errorObj = err as { response?: { data?: { message?: string } } };
+        errorMessage = errorObj.response?.data?.message || errorMessage;
+      }
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {

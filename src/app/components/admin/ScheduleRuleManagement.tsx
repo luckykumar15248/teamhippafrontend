@@ -1,12 +1,8 @@
-// File: app/(dashboard)/admin/booking-rules/page.tsx
-// This is the complete UI for managing course schedule booking rules,
-// fully integrated with your backend API.
-
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 
 // --- SVG Icon Components ---
@@ -106,7 +102,6 @@ const CourseBookingRulesPage = () => {
     const [schedules, setSchedules] = useState<CourseSchedule[]>([]);
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentRule, setCurrentRule] = useState<CourseRule | null>(null);
@@ -146,6 +141,7 @@ const CourseBookingRulesPage = () => {
 
     useEffect(() => {
         fetchSchedules();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -185,16 +181,21 @@ const CourseBookingRulesPage = () => {
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
         
-        setIsSubmitting(true);
         try {
             await axios.delete(`${apiUrl}api/admin/booking-rules/${ruleToDelete.rule_id}`, { headers });
             toast.success("Rule deleted successfully.");
             setRules(rules.filter(rule => rule.rule_id !== ruleToDelete.rule_id));
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to delete rule.");
-        } finally {
+        } 
+
+        catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+
+      toast.error(
+        axiosError.response?.data?.message || "Failed to delete schedule."
+      );
+    }
+        finally {
             closeDeleteModal();
-            setIsSubmitting(false);
         }
     };
 
@@ -209,7 +210,6 @@ const CourseBookingRulesPage = () => {
         
         const method = isUpdating ? 'put' : 'post';
         
-        setIsSubmitting(true);
         try {
             console.log("data for submission is:------------", ruleData);
             const response = await axios[method](endpoint, ruleData, { headers });
@@ -221,12 +221,17 @@ const CourseBookingRulesPage = () => {
             } else {
                 toast.error(response.data.message || "Failed to save rule.");
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "An error occurred while saving the rule.");
-        } finally {
+        }
+        catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+
+      toast.error(
+        axiosError.response?.data?.message || "Failed to delete schedule."
+      );
+    }
+         finally {
             setIsModalOpen(false);
             setCurrentRule(null);
-            setIsSubmitting(false);
         }
     };
 
@@ -369,7 +374,7 @@ const RuleModal: React.FC<RuleModalProps> = ({ isOpen, onClose, onSave, rule, sc
             setFormData(getInitialFormData());
         }
         setValidationError(null);
-    }, [rule, isOpen]);
+    }, [rule, isOpen, getInitialFormData]);
 
     useEffect(() => {
         const schedule = schedules.find(s => s.schedule_id === Number(formData.schedule_id));

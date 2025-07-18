@@ -142,7 +142,7 @@ export default function About() {
 
               {/* Right Column: Image */}
               <div className="lg:w-1/2 w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg">
-                <img
+                <Image
                   src="/images/our-story.png"
                   alt="Man playing tennis at an academy"
                   className="rounded-lg shadow-lg w-full h-auto object-cover max-h-96"

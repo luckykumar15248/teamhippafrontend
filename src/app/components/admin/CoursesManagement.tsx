@@ -1,11 +1,8 @@
-// --- Courses Management Component ---
-// File: components/admin/CoursesManagement.tsx
 'use client';
 import { default as NextLink } from 'next/link';
 import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import JoditEditor from 'jodit-react';
 
 interface Sport {
   id: number;
@@ -48,6 +45,13 @@ const CoursesManagement: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const editor = useRef(null);
 
+  const getAuthHeaders = () => {
+    if (typeof window === 'undefined') return null;
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    return { 'Authorization': `Bearer ${token}` };
+};
+
   // --- Data Fetching ---
   useEffect(() => {
     const fetchSports = async () => {
@@ -56,17 +60,21 @@ const CoursesManagement: React.FC = () => {
         setSports(response.data);
       } catch (error) {
         toast.error("Failed to fetch sports categories.");
+        console.error(error)
       }
     };
 
     const fetchCourses = async () => {
+      const headers = getAuthHeaders();
+    if (!headers) return;
       try {
-        const response = await axios.get(`${apiUrl}api/admin/courses`);
+        const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
        //const coursesData = Array.isArray(response.data) ? response.data : [];
         setCourses(response.data.data);
         setFilteredCourses(response.data.data);
       } catch (error) {
         toast.error("Failed to fetch courses.");
+        console.error(error)
       }
     };
     
@@ -148,6 +156,8 @@ const CoursesManagement: React.FC = () => {
   };
 
   const handleCourseSubmit = async (e: React.FormEvent) => {
+       const headers = getAuthHeaders();
+    if (!headers) return;
     e.preventDefault();
     if (sportId === 0) {
       toast.error("Please select a sport category.");
@@ -177,15 +187,15 @@ const CoursesManagement: React.FC = () => {
 
       // Save course data
       if (courseId) {
-        await axios.put(`${apiUrl}api/admin/courses/${courseId}`, courseData);
+        await axios.put(`${apiUrl}api/admin/courses/${courseId}`, courseData, { headers});
         toast.success(`Course "${courseName}" updated successfully!`);
       } else {
-        await axios.post(`${apiUrl}api/admin/courses`, courseData);
+        await axios.post(`${apiUrl}api/admin/courses`, courseData, { headers });
         toast.success(`Course "${courseName}" created successfully!`);
       }
 
       // Refresh course list
-      const response = await axios.get(`${apiUrl}api/admin/courses`);
+      const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
       //const coursesData = Array.isArray(response.data) ? response.data : [];
       setCourses(response.data.data);
       
@@ -218,13 +228,16 @@ const CoursesManagement: React.FC = () => {
   };
 
   const handleDeleteCourse = async (courseId: number) => {
+       const headers = getAuthHeaders();
+    if (!headers) return;
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
-        await axios.delete(`${apiUrl}api/admin/courses/${courseId}`);
+        await axios.delete(`${apiUrl}api/admin/courses/${courseId}`, { headers });
         setCourses(prev => prev.filter(c => c.id !== courseId));
         toast.success("Course deleted successfully.");
       } catch (error) {
         toast.error("Failed to delete course.");
+        console.error(error)
       }
     }
   };

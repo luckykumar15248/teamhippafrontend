@@ -4,13 +4,31 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+
 const discountTypes = ['PERCENTAGE', 'FIXED_AMOUNT'];
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+interface Sport {
+  id: number;
+  name: string;
+}
+
+interface Course {
+  id: number;
+  name: string;
+  sportId: number;
+}
+
+interface Package {
+  id: number;
+  name: string;
+  courseId: number;
+}
+
 export default function CreateCoupon() {
   const [couponCode, setCouponCode] = useState('');
   const [autoGenerate, setAutoGenerate] = useState(false);
   const [prefix, setPrefix] = useState('');
-  const [existingCodes, setExistingCodes] = useState<string[]>([]);
+  const [existingCodes] = useState<string[]>([]);
 
   const [description, setDescription] = useState('');
   const [discountType, setDiscountType] = useState('PERCENTAGE');
@@ -22,21 +40,30 @@ export default function CreateCoupon() {
   const [minPurchaseAmount, setMinPurchaseAmount] = useState(0);
   const [isActive, setIsActive] = useState(true);
 
-  const [sports, setSports] = useState<any[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [packages, setPackages] = useState<any[]>([]);
+  const [sports, setSports] = useState<Sport[]>([]);
+const [courses, setCourses] = useState<Course[]>([]);
+const [packages, setPackages] = useState<Package[]>([]);
 
   const [selectedSports, setSelectedSports] = useState<number[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
   const [selectedPackages, setSelectedPackages] = useState<number[]>([]);
 
+
+  const getAuthHeaders = () => {
+    if (typeof window === 'undefined') return null;
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    return { 'Authorization': `Bearer ${token}` };
+};
   useEffect(() => {
     const fetchData = async () => {
+          const headers = getAuthHeaders();
+    if (!headers) return;
        try {
         const [sportsRes, coursesRes, packagesRes] = await Promise.all([
                 axios.get(`${apiUrl}api/public_api/sports`),
-                axios.get(`${apiUrl}api/admin/courses`),
-                axios.get(`${apiUrl}api/admin/packages`)
+                axios.get(`${apiUrl}api/admin/courses`, {headers}),
+                axios.get(`${apiUrl}api/admin/packages`, {headers})
         ]);
 
         const sportsData = sportsRes.data;
@@ -48,16 +75,17 @@ export default function CreateCoupon() {
         setPackages(packagesData);
       } catch (err) {
         toast.error('Failed to fetch data');
+        console.error(err)
       }
     };
 
     fetchData();
-
+/*
     const response=fetch(`${apiUrl}api/coupons/codes/check`)
       .then(res => res.json())
       .then(data => setExistingCodes(data))
       .catch(() => toast.error('Failed to load existing codes'));
-      
+      */
   }, []);
 
 
@@ -134,13 +162,14 @@ applicablePackageIds: selectedPackages
     };
 
     try {
-
-      const res = await axios.post(`${apiUrl}api/admin/coupons`, payload);
+    const headers = getAuthHeaders();
+    if (!headers) return;
+      const res = await axios.post(`${apiUrl}api/admin/coupons`, payload, { headers });
       console.log("response is", res);
          toast.success('Coupon created successfully!');
       
     } catch {
-      toast.error('Failed to create coupon');
+      toast.error('Failed to create coupon or coupen code my exist');
     }
   };
 

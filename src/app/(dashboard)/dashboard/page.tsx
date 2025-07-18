@@ -1,5 +1,3 @@
-// File: app/(dashboard)/dashboard/page.tsx
-
 "use client";
 
 import Link from "next/link";
@@ -102,6 +100,7 @@ const DashboardHomePage: React.FC = () => {
         toast.error(
           "Could not load your dashboard. Please log in again."
         );
+        console.error(error);
         localStorage.removeItem("authToken");
         router.push("/login");
       } finally {
@@ -173,10 +172,10 @@ const DashboardHomePage: React.FC = () => {
         </h3>
         <ul>
           <li className="border-b py-2 text-sm text-gray-700">
-            You booked "Advanced Swimming" for June 10th.
+            You booked &quot;Advanced Swimming&quot; for June 10th.
           </li>
           <li className="border-b py-2 text-sm text-gray-700">
-            Your "Beginner Yoga" pass was redeemed.
+            Your &quot;Beginner Yoga&quot; pass was redeemed.
           </li>
           <li className="py-2 text-sm text-gray-700">
             Account successfully verified. Welcome!

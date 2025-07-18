@@ -1,6 +1,3 @@
-// File: app/(dashboard)/my-account/page.tsx
-// A protected dashboard page for logged-in users with filtering, pagination, and booking type display.
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -38,15 +35,6 @@ interface UserProfile {
     roleName: 'USER' | 'ADMIN' | 'VISITOR_REGISTERED';
 }
 
-interface Page<T> {
-    content: T[];
-    totalPages: number;
-    totalElements: number;
-    number: number;
-    size: number;
-    first: boolean;
-    last: boolean;
-}
 
 // --- API Helper & SVG Icons ---
 const getAuthHeaders = () => {
@@ -56,7 +44,6 @@ const getAuthHeaders = () => {
     return { 'Authorization': `Bearer ${token}` };
 };
 const CalendarIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
-const UserCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
 const LogoutIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>;
 const ChevronDownIcon = ({ className = "h-5 w-5" }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" /></svg>;
 
@@ -172,6 +159,7 @@ const UserDashboardPage: React.FC = () => {
         try {
             if (!user) {
                 const profileRes = await axios.get(`${apiUrl}api/auth/me`, { headers });
+                console.log("auth response is ---------------->",profileRes.data )
                 setUser(profileRes.data);
             }
             
@@ -185,6 +173,7 @@ const UserDashboardPage: React.FC = () => {
 
         } catch (error) {
             toast.error("Could not load your dashboard.");
+            console.error(error);
         } finally {
             setIsLoading(false);
         }
@@ -240,9 +229,8 @@ const UserDashboardPage: React.FC = () => {
             <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <header className="mb-10">
                     <h1 className="text-4xl font-extrabold text-gray-900">Welcome, {user.firstName}!</h1>
-                    <p className="mt-2 text-lg text-gray-600">Here's your personal dashboard.</p>
+                    <p className="mt-2 text-lg text-gray-600">Here&apos;s your personal dashboard.</p>
                 </header>
-
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     <aside className="lg:col-span-1">
                         <div className="bg-white rounded-lg shadow p-4 space-y-2 sticky top-24">

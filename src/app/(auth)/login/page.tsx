@@ -12,13 +12,6 @@ import Image from "next/image";
 import { CloseIcon } from "@/app/components/Icons/CloseIcon";
 import RegisterPage from "../register/page";
 
-interface AuthUser {
-  id: number | string;
-  username: string;
-  email: string;
-  roleName: string;
-}
-
 interface LoginProps {
   onClick?: () => void;
   isOpen?: boolean;
@@ -43,8 +36,12 @@ const Login: React.FC<LoginProps> = ({ onClick, isOpen = true }) => {
     setIsVisible(isOpen);
   }, [isOpen]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target as HTMLInputElement;
+    const checked = (e.target as HTMLInputElement).checked;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -78,16 +75,14 @@ const Login: React.FC<LoginProps> = ({ onClick, isOpen = true }) => {
 
         const responseData = response.data.data;
         const token = responseData?.token;
-        const user = responseData?.user || responseData; // Handle different response structures
+        const user = responseData?.user || responseData;
 
         if (token && user) {
           localStorage.setItem("authToken", token);
           localStorage.setItem("userData", JSON.stringify(user));
 
-          // Close the modal before navigation
           handleClose();
 
-          // Redirect based on role
           switch (user.roleName) {
             case "ADMIN":
               router.push("/dashboard");
@@ -108,21 +103,25 @@ const Login: React.FC<LoginProps> = ({ onClick, isOpen = true }) => {
       } else {
         throw new Error(response.data?.message || "Login failed. Please check your credentials.");
       }
-    } catch (err: any) {
+    }
+
+        catch (err: unknown) { 
       console.error("Login error:", err);
       let errorMessage = "Invalid credentials or server error.";
-      
+
       if (axios.isAxiosError(err) && err.response) {
         errorMessage = err.response.data?.message || 
                       err.response.data?.error || 
                       `Server error: ${err.response.status}`;
-      } else if (err.message) {
+      } else if (err instanceof Error) {
         errorMessage = err.message;
       }
-      
+
       setError(errorMessage);
       toast.error(errorMessage);
-    } finally {
+    }
+
+     finally {
       setIsLoading(false);
     }
   };
@@ -140,7 +139,6 @@ const Login: React.FC<LoginProps> = ({ onClick, isOpen = true }) => {
           className="absolute right-5 top-4 cursor-pointer"
         />
 
-        {/* Left Banner */}
         <div className="hidden w-1/2 md:flex flex-col p-6 justify-between items-center mb-0 bg-[url('/images/login-banner.png')] bg-cover bg-center rounded-l-xl">
           <div className="w-full flex justify-baseline">
             <Link href="/">
@@ -213,7 +211,7 @@ const Login: React.FC<LoginProps> = ({ onClick, isOpen = true }) => {
                   type="checkbox"
                   checked={formData.agreed}
                   onChange={handleChange}
-                  className="accent-[#b0db72]"
+                  ClassName="accent-[#b0db72]"
                 />
               </div>
               <div className="text-sm">
@@ -267,7 +265,7 @@ const Login: React.FC<LoginProps> = ({ onClick, isOpen = true }) => {
               </Button>
 
               <p className="mt-2 text-center text-base font-normal text-gray-600">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <button
                   onClick={() => setShowRegister(true)}
                   className="text-[#b0db72] hover:text-[#64a506] cursor-pointer font-medium"

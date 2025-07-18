@@ -1,30 +1,20 @@
-// File: app/(dashboard)/admin/add-sport/page.tsx
-// This is a dedicated page for adding a new sport.
-// The URL would be /admin/add-sport.
-
 'use client';
 
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
 
-// --- Type Definition ---
 interface NewSportData {
   name: string;
   description: string;
   isActive: boolean;
 }
 
-// --- Main Page Component ---
 const AddNewSportPage: React.FC = () => {
-  // --- State Management ---
   const [sportName, setSportName] = useState('');
   const [description, setDescription] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
-  // --- Handler for form submission ---
   const handleSportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sportName.trim()) {
@@ -39,16 +29,10 @@ const AddNewSportPage: React.FC = () => {
       isActive,
     };
 
-    // TODO: Replace this with your actual API call to save the new sport
     console.log("Submitting new sport data:", newSportData);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     toast.success(`Sport "${sportName}" created successfully!`);
-    
-    // Optionally redirect back to the main management page
-    // router.push('/admin/manage-courses'); 
-    
-    // Or just reset the form to allow adding another one
     setSportName('');
     setDescription('');
     setIsActive(true);
@@ -68,7 +52,6 @@ const AddNewSportPage: React.FC = () => {
         <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
           <form onSubmit={handleSportSubmit}>
             <div className="space-y-6">
-              {/* Sport Name */}
               <div>
                 <label htmlFor="sportName" className="block text-sm font-medium text-gray-700">Sport Name</label>
                 <input
@@ -82,7 +65,6 @@ const AddNewSportPage: React.FC = () => {
                 />
               </div>
 
-              {/* Sport Description */}
               <div>
                 <label htmlFor="sportDescription" className="block text-sm font-medium text-gray-700">Description</label>
                 <textarea
@@ -95,7 +77,6 @@ const AddNewSportPage: React.FC = () => {
                 />
               </div>
 
-              {/* Active Status */}
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -110,7 +91,6 @@ const AddNewSportPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="mt-8 pt-5 border-t border-gray-200 flex justify-end">
               <button
                 type="submit"

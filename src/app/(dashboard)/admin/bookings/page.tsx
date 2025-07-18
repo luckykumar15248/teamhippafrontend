@@ -1,7 +1,3 @@
-// File: app/(dashboard)/admin/bookings/page.tsx
-// A complete admin dashboard with a unified display for courses and packages,
-// full filtering, and working action buttons.
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -10,7 +6,6 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 
-// --- Type Definitions (Updated & Unified) ---
 interface AdminParticipantDetails {
     participantId: number;
     firstName: string;
@@ -46,9 +41,9 @@ interface AdminBookingDetails {
     
     // Unified Fields
     bookingType: 'COURSE' | 'PACKAGE';
-    itemName: string; // A single field for Course Name or Package Name
-    bookedDates?: string[]; // Optional: for COURSE type
-    includedCourses?: string[]; // Optional: for PACKAGE type
+    itemName: string;
+    bookedDates?: string[];
+    includedCourses?: string[];
 }
 
 interface Course {
@@ -236,10 +231,11 @@ const AdminAllBookingsPage: React.FC = () => {
             setBookings(sortedBookings);
         } catch (error) {
             toast.error("Could not load bookings");
+            console.log(error)
         } finally {
             setIsLoading(false);
         }
-    }, [router, apiUrl]);
+    }, [router]);
 
     const fetchCourses = useCallback(async () => {
         const headers = getAuthHeaders();
@@ -249,8 +245,9 @@ const AdminAllBookingsPage: React.FC = () => {
             setAllCourses(response.data || []);
         } catch (error) {
             toast.error("Could not load courses");
+            console.log(error);
         }
-    }, [apiUrl]);
+    }, []);
 
     useEffect(() => {
         fetchData();
@@ -325,6 +322,7 @@ const AdminAllBookingsPage: React.FC = () => {
             fetchData();
         } catch (error) {
             toast.error('Failed to update booking status');
+            console.log(error);
         }
     };
 
@@ -337,6 +335,7 @@ const AdminAllBookingsPage: React.FC = () => {
             fetchData();
         } catch (error) {
             toast.error('Failed to delete booking');
+               console.log(error);
         }
     };
 

@@ -1,5 +1,3 @@
-// File: app/packages/page.tsx
-// A public-facing page to display all available packages.
 
 "use client";
 
@@ -13,7 +11,6 @@ import SportsHeroSection from "@/app/components/SportsHeroSection";
 import PackageCard from "@/app/components/PackageCard";
 import { Button } from "@/app/components/Button";
 import FAQ from "@/app/components/FAQ";
-import RootLayout from "../pages/layout";
 
 // --- Type Definitions ---
 interface Package {
@@ -42,12 +39,10 @@ const PackagesPage: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Use a public API endpoint for packages
         const response = await axios.get(
           `${apiUrl}api/admin/packages`
         );
 
-        // Filter for active packages on the client-side as a fallback
         setPackages((response.data || []).filter((p: Package) => p.isActive));
       } catch (error) {
         console.error("Failed to fetch packages:", error);
@@ -60,7 +55,6 @@ const PackagesPage: React.FC = () => {
   }, []);
 
   const handleNavigate = (packageId: number) => {
-    // Navigate to a dedicated detail page for the package
     router.push(`/packages/${packageId}`);
   };
 
@@ -193,7 +187,6 @@ const PackagesPage: React.FC = () => {
             World-class experience, real mentorship, and personalized attention.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* CoachCard is a hypothetical component you can build */}
             <div className="bg-gray-100 p-6 rounded-lg shadow">
               <img src="/images/coaching.jpeg" alt="Coach A" className="mb-4" />
               <h4 className="text-xl font-semibold">Coach Ankit</h4>
@@ -201,7 +194,6 @@ const PackagesPage: React.FC = () => {
                 10+ years coaching experience. Former state-level champion.
               </p>
             </div>
-            {/* Add more cards */}
           </div>
         </div>
       </section>

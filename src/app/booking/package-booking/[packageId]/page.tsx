@@ -1,7 +1,6 @@
-// File: app/package-booking/[packageId]/page.tsx
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
@@ -104,7 +103,7 @@ const PackageBookingPage: React.FC = () => {
                 }
             }
         }
-    }, [bookingDataKey, apiUrl]);
+    }, [bookingDataKey]);
 
     useEffect(() => {
         if (!currentUser) {
@@ -131,7 +130,7 @@ const PackageBookingPage: React.FC = () => {
                 })
                 .catch(() => toast.error("Could not load schedules for this package."));
         }
-    }, [params.packageId, apiUrl]);
+    }, [params.packageId]);
     
     // --- Helper Functions ---
     const addParticipant = () => setParticipants([...participants, { id: Date.now(), firstName: '', lastName: '', dateOfBirth: '', gender: 'Prefer not to say', skillLevel: 'Beginner', medicalNotes: '' }]);
@@ -181,6 +180,7 @@ const PackageBookingPage: React.FC = () => {
             }
         } catch (error) {
             toast.error("Invalid coupon code.");
+            console.error(error);
             setDiscount(null);
         } finally {
             setCouponLoading(false);
@@ -258,7 +258,7 @@ const PackageBookingPage: React.FC = () => {
                 guestPhone: contactPhone,
                 packageId: pkg?.id,
                 scheduleId: selectedScheduleId,
-                participants: participants.map(({id, ...p}) => p),
+                participants: participants.map(({...p}) => p),
                 finalAmount: priceDetails.finalPrice,
                 originalAmount: priceDetails.subtotal,
                 discountAmount: priceDetails.discountAmount,
@@ -275,8 +275,12 @@ const PackageBookingPage: React.FC = () => {
             } else {
                  toast.error(response.data.message || "Booking failed. Please try again.");
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "There was an error saving your booking.");
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("There was an error saving your booking.");
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -292,7 +296,6 @@ const PackageBookingPage: React.FC = () => {
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     <div className="lg:col-span-2 bg-white rounded-lg shadow-xl p-8 space-y-10">
-                        {/* Contact Information Section */}
                         <section>
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">1. Your Contact Information</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -324,8 +327,6 @@ const PackageBookingPage: React.FC = () => {
                                 </div>
                             </div>
                         </section>
-
-                        {/* Participants Section */}
                         <section>
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">2. Participant(s) Information</h2>
                             <div className="space-y-6">
@@ -421,8 +422,6 @@ const PackageBookingPage: React.FC = () => {
                             </div>
                         </section>
                     </div>
-
-                    {/* Booking Summary Section */}
                     <div className="lg:col-span-1">
                         <div className="bg-white rounded-lg shadow-xl p-6 sticky top-24">
                             <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4">Booking Summary</h3>

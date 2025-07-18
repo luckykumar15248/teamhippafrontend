@@ -87,6 +87,12 @@ interface DeleteConfirmationModalProps {
     onConfirm: () => void;
     schedule: CourseSchedule | null;
 }
+const getAuthHeaders = () => {
+    if (typeof window === 'undefined') return null;
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    return { 'Authorization': `Bearer ${token}` };
+};
 
 // --- Main Page Component ---
 const CourseSchedulePage = () => {
@@ -101,15 +107,16 @@ const CourseSchedulePage = () => {
     const [scheduleToDelete, setScheduleToDelete] = useState<CourseSchedule | null>(null);
 
     const fetchData = useCallback(async () => {
+        const headers = getAuthHeaders();
+    if (!headers) return;
         setIsLoading(true);
         setApiError(null);
-        
-        try {
+                try {
             // Public endpoints don't require a token
             const [schedulesRes, coursesRes, sportsRes] = await Promise.all([
-                axios.get(`${apiUrl}api/admin/course-schedules`),
+                axios.get(`${apiUrl}api/admin/course-schedules`,{headers}),
                 axios.get(`${apiUrl}api/public_api/courses`),
-                axios.get<Sport[]>(`${apiUrl}api/admin/sports`)
+                axios.get<Sport[]>(`${apiUrl}api/admin/sports`, {headers})
             ]);
 
            // if (!schedulesRes.ok) throw new Error('Failed to fetch schedules.');
@@ -166,7 +173,7 @@ const CourseSchedulePage = () => {
             const response = await fetch(`${apiUrl}api/admin/course-schedules/${scheduleToDelete.schedule_id}`, { 
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
                 }
             });
             
@@ -189,6 +196,7 @@ const CourseSchedulePage = () => {
     }, [scheduleToDelete, closeDeleteModal]);
 
     const handleSaveSchedule = useCallback(async (scheduleData: ScheduleFormData) => {
+    
         const isUpdating = !!scheduleData.schedule_id;
         const url = isUpdating ? `${apiUrl}api/admin/course-schedules/${scheduleData.schedule_id}` : `${apiUrl}api/admin/course-schedules`;
         const method = isUpdating ? 'PUT' : 'POST';
@@ -373,6 +381,7 @@ const ScheduleList = React.memo<ScheduleListProps>(({ schedules, onEdit, onDelet
         </div>
     );
 });
+ScheduleList.displayName = "ScheduleList";
 
 const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, onClose, onSave, schedule, courses, sports }) => {
     const getInitialData = (): ScheduleFormData => ({
@@ -709,7 +718,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ isOpe
                 <div className="p-6">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Schedule</h3>
                     <p className="text-sm text-gray-600">
-                        Are you sure you want to delete the schedule <span className="font-semibold">"{schedule?.scheduleName}"</span>? 
+                        Are you sure you want to delete the schedule <span className="font-semibold">&quot;{schedule?.scheduleName}&quot;</span>? 
                         This action cannot be undone.
                     </p>
                 </div>

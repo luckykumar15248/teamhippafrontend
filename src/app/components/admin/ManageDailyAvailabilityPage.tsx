@@ -1,7 +1,3 @@
-// File: app/(dashboard)/admin/daily-availability/page.tsx
-// A complete page for admins to manage daily availability for course schedules,
-// with corrected timezone handling and delete functionality.
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -9,20 +5,19 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-// --- Type Definitions ---
 interface Course {
   id: number;
   name: string;
 }
 
 interface CourseSchedule {
-  schedule_id: number; // Matches the API response
-  scheduleName: string; // Matches the API response
+  schedule_id: number;
+  scheduleName: string;
 }
 
 interface DailyAvailability {
     availabilityId: number;
-    availableDate: string; // "YYYY-MM-DD"
+    availableDate: string;
     maxSlots: number;
     bookedSlots: number;
     pricePerSlot: number;
@@ -139,7 +134,6 @@ const ManageDailyAvailabilityPage: React.FC = () => {
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
     
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState<{ date: Date; availability: DailyAvailability | null } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -182,7 +176,6 @@ const ManageDailyAvailabilityPage: React.FC = () => {
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
         
-        setIsLoading(true);
         try {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth() + 1;
@@ -193,9 +186,8 @@ const ManageDailyAvailabilityPage: React.FC = () => {
             setAvailability(response.data);
         } catch (error) {
             toast.error("Failed to load availability data.");
-        } finally {
-            setIsLoading(false);
-        }
+            console.error(error);
+        } 
     }, [selectedScheduleId, currentDate, router]);
 
     useEffect(() => {
@@ -244,6 +236,7 @@ const ManageDailyAvailabilityPage: React.FC = () => {
             fetchAvailability();
         } catch (error) {
             toast.error("Failed to save changes.");
+            console.error(error);
         } finally {
             setIsSubmitting(false);
             setIsModalOpen(false);
@@ -262,6 +255,7 @@ const ManageDailyAvailabilityPage: React.FC = () => {
                 fetchAvailability();
             } catch (error) {
                 toast.error("Failed to delete override.");
+                console.error(error);
             } finally {
                 setIsSubmitting(false);
                 setIsModalOpen(false);

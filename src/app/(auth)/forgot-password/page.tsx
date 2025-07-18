@@ -1,27 +1,23 @@
-// File: app/(auth)/forgot-password/page.tsx
-// Make sure to create this folder structure: app/(auth)/forgot-password/page.tsx
-// The (auth) folder is a route group. The URL will be /forgot-password
-
 "use client";
 
 import React, { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { Button } from "@/app/components/Button";
 import { AppleIcon, GoogleIcon } from "@/app/components/Icons";
 import Input from "@/app/components/Input";
 import Image from "next/image";
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null); // For success or error messages
+  const [message, setMessage] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setMessage(null); // Clear previous messages
+    setMessage(null);
     setIsLoading(true);
 
     if (!email) {
@@ -31,11 +27,9 @@ const ForgotPasswordPage: React.FC = () => {
     }
 
     try {
-      // API endpoint to request a password reset
-      // You will need to create this endpoint in your Spring Boot backend
       const response = await axios.post(
         `${apiUrl}api/auth/forgot-password`,
-        { email }, // Send email in the request body
+        { email },
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -50,21 +44,19 @@ const ForgotPasswordPage: React.FC = () => {
           response.data.message ||
             "If an account exists for this email, a password reset link has been sent. Please check your inbox (and spam folder)."
         );
-        setEmail(""); // Clear the input field
+        setEmail("");
       } else {
-        // Even if the email doesn't exist, for security reasons,
-        // you might want to show a generic success message.
-        // However, for now, we'll show the backend's message or a generic error.
+
         const errMsg =
           response.data.message ||
           "Could not process password reset request. Please try again.";
         toast.error(errMsg);
         setMessage(errMsg);
       }
-    } catch (err: any) {
-      console.error("Forgot Password error:", err);
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
       const errorMessage =
-        err.response?.data?.message ||
+        error.response?.data?.message ||
         "An unexpected error occurred. Please try again later.";
       toast.error(errorMessage);
       setMessage(errorMessage);

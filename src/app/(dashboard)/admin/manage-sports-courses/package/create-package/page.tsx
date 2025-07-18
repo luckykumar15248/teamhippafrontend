@@ -1,4 +1,3 @@
-// File: app/(dashboard)/admin/packages/page.tsx
 'use client';
 
 import React, { useState, useEffect, useMemo, ChangeEvent, useRef } from 'react';
@@ -110,7 +109,7 @@ const ManagePackagesPage: React.FC = () => {
       setAllSports(sportsData);
       
       const coursesData = coursesRes.data?.data || [];
-      const coursesWithSportName = coursesData.map((course: any) => ({
+      const coursesWithSportName = coursesData.map((course: Course) => ({
         id: course.id, 
         name: course.name || 'Unnamed Course',
         sportId: course.sportId || 0,
@@ -125,9 +124,14 @@ const ManagePackagesPage: React.FC = () => {
       );
       setAllPackages(sortedPackages);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Fetch error:", error);
-      toast.error(error.response?.data?.message || "Failed to load data.");
+      if (typeof error === 'object' && error !== null && 'response' in error) {
+        const err = error as { response?: { data?: { message?: string } } };
+        toast.error(err.response?.data?.message || "Failed to load data.");
+      } else {
+        toast.error("Failed to load data.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -135,6 +139,7 @@ const ManagePackagesPage: React.FC = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -272,8 +277,13 @@ const ManagePackagesPage: React.FC = () => {
         await axios.delete(`${apiUrl}api/admin/packages/${packageId}`, { headers });
         toast.success("Package deleted successfully.");
         fetchData();
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || "Failed to delete package.");
+      } catch (error: unknown) {
+        if (typeof error === 'object' && error !== null && 'response' in error) {
+          const err = error as { response?: { data?: { message?: string } } };
+          toast.error(err.response?.data?.message || "Failed to delete package.");
+        } else {
+          toast.error("Failed to delete package.");
+        }
       }
     }
   };
@@ -334,14 +344,22 @@ const ManagePackagesPage: React.FC = () => {
       } else {
         toast.error(response.data?.message || "An error occurred.");
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to save package.");
+    } catch (error: unknown) {
+      if (typeof error === 'object' && error !== null && 'response' in error) {
+        const err = error as { response?: { data?: { message?: string } } };
+        toast.error(err.response?.data?.message || "Failed to save package.");
+      } else {
+        toast.error("Failed to save package.");
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleFilterChange = (field: keyof FilterOptions, value: any) => {
+  const handleFilterChange = (
+    field: keyof FilterOptions,
+    value: string | number | null | 'all' | 'active' | 'inactive'
+  ) => {
     setFilters(prev => ({
       ...prev,
       [field]: value
@@ -361,7 +379,6 @@ const ManagePackagesPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Form Section */}
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
         <form onSubmit={handleSubmit}>
           <h2 className="text-2xl font-semibold leading-7 text-gray-900 border-b border-gray-900/10 pb-6 mb-6">
@@ -369,7 +386,6 @@ const ManagePackagesPage: React.FC = () => {
           </h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            {/* Left Column - Form Fields */}
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
                 <label htmlFor="packageName" className="block text-sm font-medium text-gray-700">Package Name</label>
@@ -398,7 +414,6 @@ const ManagePackagesPage: React.FC = () => {
               </div>
             </div>
             
-            {/* Right Column - Summary, Images & Actions */}
             <div className="lg:col-span-1 space-y-6 sticky top-24">
               <div className="bg-gray-50 p-6 rounded-lg border">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Package Summary</h3>
@@ -450,7 +465,6 @@ const ManagePackagesPage: React.FC = () => {
             </div>
           </div>
           
-          {/* Course Selection Section */}
           <div className="mt-8">
             <h3 className="text-xl font-semibold text-gray-800 border-b pb-4 mb-6">Select Courses</h3>
             <input 
@@ -496,7 +510,6 @@ const ManagePackagesPage: React.FC = () => {
             </div>
           </div>
           
-          {/* Form Actions */}
           <div className="mt-8 pt-5 border-t border-gray-200 flex items-center justify-end gap-x-4">
             <button type="button" onClick={resetForm} className="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
             <button
@@ -516,7 +529,6 @@ const ManagePackagesPage: React.FC = () => {
         </form>
       </div>
 
-      {/* Filter Section */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">Filter Packages</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -572,7 +584,7 @@ const ManagePackagesPage: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
               value={filters.status}
-              onChange={(e) => handleFilterChange('status', e.target.value as any)}
+              onChange={(e) => handleFilterChange('status', e.target.value as 'all' | 'active' | 'inactive')}
               className="block w-full rounded-md border-gray-300 shadow-sm"
             >
               <option value="all">All Statuses</option>
@@ -602,7 +614,6 @@ const ManagePackagesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Packages List Section */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="flex justify-between items-center p-6 border-b">
           <h3 className="text-xl font-semibold text-gray-800">Packages ({filteredPackages.length})</h3>

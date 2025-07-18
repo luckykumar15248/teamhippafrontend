@@ -1,5 +1,3 @@
-// File: app/inquiry/page.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -54,6 +52,7 @@ const Inquiry: React.FC = () => {
         setCourses(coursesRes.data);
       } catch (err) {
         toast.error("Failed to load sports or courses");
+        console.error("Error fetching data:", err);
       }
     };
     fetchData();
@@ -119,6 +118,8 @@ const Inquiry: React.FC = () => {
       <div>
         <Input
           label="Full Name *"
+          id="name"
+          name="name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -131,6 +132,8 @@ const Inquiry: React.FC = () => {
       <div>
         <Input
           label="Email *"
+          id="email"
+          name="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -143,6 +146,8 @@ const Inquiry: React.FC = () => {
       <div>
         <Input
           label="Phone Number *"
+          id="phone"
+          name="phone"
           type="text"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
@@ -194,6 +199,8 @@ const Inquiry: React.FC = () => {
       <div>
         <Input
           label="Message"
+          id="message"
+          name="message"
           type="textarea"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -239,10 +246,7 @@ const Inquiry: React.FC = () => {
 
       {/* Submit */}
       <div>
-        <Button
-        className="w-full"
-         type="submit"
-         disabled={isSubmitting}>
+        <Button className="w-full" type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit Inquiry"}
         </Button>
       </div>

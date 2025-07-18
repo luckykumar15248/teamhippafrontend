@@ -63,16 +63,13 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
   useEffect(() => {
     if (!stripe || !clientSecret) return;
 
-    // Check URL for payment_intent_client_secret
     const query = new URLSearchParams(window.location.search);
     const paymentIntentClientSecret = query.get('payment_intent_client_secret');
     
-    // If we have a client secret in URL, check payment status
     if (paymentIntentClientSecret) {
       const checkPaymentStatus = async () => {
         const { paymentIntent } = await stripe.retrievePaymentIntent(paymentIntentClientSecret);
         
-        // Clear the client secret from URL
         if (window.history.replaceState) {
           const newUrl = window.location.pathname + window.location.search
             .replace(/payment_intent_client_secret=[^&]*&?/, '')
@@ -94,14 +91,13 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
             setMessageType('info');
             break;
           case "requires_payment_method":
-            // Only show error if this isn't the initial load
             if (!initialLoad) {
               setMessage("Payment failed. Please try another payment method.");
               setMessageType('error');
             }
             break;
           default:
-            setMessage(null); // Clear any messages for other states
+            setMessage(null);
             break;
         }
         setInitialLoad(false);
@@ -111,7 +107,7 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
     } else {
       setInitialLoad(false);
     }
-  }, [stripe, bookingDetails.bookingId, router, clientSecret]);
+  }, [stripe, bookingDetails.bookingId, router, clientSecret, initialLoad]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -208,18 +204,21 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
             break;
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Payment error:", err);
-     
+
       let errorMessage = "An unexpected error occurred";
-      if (err.code === 'payment_intent_authentication_failure') {
-        errorMessage = "Payment authentication failed. Please try again.";
-      } else if (err.code === 'payment_intent_payment_attempt_failed') {
-        errorMessage = "Payment attempt failed. Please check your card details.";
-      } else if (err.message.includes('required fields')) {
-        errorMessage = err.message;
+      if (typeof err === 'object' && err !== null) {
+        const errorObj = err as { code?: string; message?: string };
+        if (errorObj.code === 'payment_intent_authentication_failure') {
+          errorMessage = "Payment authentication failed. Please try again.";
+        } else if (errorObj.code === 'payment_intent_payment_attempt_failed') {
+          errorMessage = "Payment attempt failed. Please check your card details.";
+        } else if (errorObj.message && errorObj.message.includes('required fields')) {
+          errorMessage = errorObj.message;
+        }
       }
-     
+
       setMessage(errorMessage);
       setMessageType('error');
     } finally {
@@ -479,19 +478,23 @@ const CheckoutPage: React.FC = () => {
         }
 
         setClientSecret(paymentIntentResponse.data.clientSecret);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Checkout error:", err);
-       
+
         let errorMessage = "Payment setup failed";
-        if (err.response?.status === 402) {
-          errorMessage = "Payment configuration error. Please contact support.";
-        } else if (err.message.includes('currency')) {
-          errorMessage = "Only USD payments are accepted";
-        } else if (err.code === 'resource_missing') {
-          errorMessage = "Payment service unavailable. Please try again later.";
+        if (typeof err === 'object' && err !== null) {
+          const errorObj = err as { response?: { status?: number; data?: { message?: string } }; message?: string; code?: string };
+          if (errorObj.response?.status === 402) {
+            errorMessage = "Payment configuration error. Please contact support.";
+          } else if (errorObj.message && errorObj.message.includes('currency')) {
+            errorMessage = "Only USD payments are accepted";
+          } else if (errorObj.code === 'resource_missing') {
+            errorMessage = "Payment service unavailable. Please try again later.";
+          }
+          setError(errorObj.response?.data?.message || errorObj.message || errorMessage);
+        } else {
+          setError(errorMessage);
         }
-       
-        setError(err.response?.data?.message || err.message || errorMessage);
         toast.error("Could not initialize payment. Please try again.");
       } finally {
         setLoading(false);
@@ -508,7 +511,7 @@ const CheckoutPage: React.FC = () => {
         }).catch(console.error);
       }
     };
-  }, [params.bookingId, router]);
+  }, [params.bookingId, router, clientSecret]);
 
   const options: StripeElementsOptions = {
     clientSecret,
@@ -568,7 +571,7 @@ const CheckoutPage: React.FC = () => {
             </svg>
           </div>
           <h2 className="mt-3 text-xl font-medium text-gray-900">Checkout Not Available</h2>
-          <p className="mt-2 text-gray-600">We couldn't set up your payment session.</p>
+          <p className="mt-2 text-gray-600">We couldn&apos;t set up your payment session.</p>
           <button
             onClick={() => router.push('/')}
             className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

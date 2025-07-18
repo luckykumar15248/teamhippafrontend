@@ -1,26 +1,12 @@
-// --- Sport Add/Edit Modal Component ---
-// This could also be in its own file like components/admin/SportModal.tsx
-
 import React, { useState } from 'react';
 import { toast } from 'react-toastify'; 
-// --- Sport Add/Edit Modal Component ---
-// This could also be in its own file like components/admin/SportModal.tsx
+
 interface Sport {
 id: number;
 name: string;
 isActive: boolean;
 courseCount: number;
 }
-
-interface Course {
-id: number;
-name: string;
-sportId: number;
-sportName: string; // Denormalized for easy display
-description: string;
-isActive: boolean;
-}
-
 
 interface SportModalProps {
     isOpen: boolean;
@@ -86,3 +72,5 @@ const SportModal: React.FC<SportModalProps> = ({ isOpen, onClose, onSave, sport 
         </div>
     );
 };
+
+export default SportModal;

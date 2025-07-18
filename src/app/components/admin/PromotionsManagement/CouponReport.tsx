@@ -51,11 +51,20 @@ export default function CouponReport() {
   const [sports, setSports] = useState<Sport[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
-  const [existingCodes, setExistingCodes] = useState<string[]>([]);
 
+
+  // --- API Helper ---
+const getAuthHeaders = () => {
+    if (typeof window === 'undefined') return null;
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    return { 'Authorization': `Bearer ${token}` };
+};
   // Fetch all necessary data
   useEffect(() => {
     const fetchData = async () => {
+         const headers = getAuthHeaders();
+    if (!headers) return;
       try {
         setLoading(true);
         const [
@@ -65,10 +74,10 @@ export default function CouponReport() {
           packagesRes,
           //codesRes
         ] = await Promise.all([
-          axios.get(`${apiUrl}api/admin/coupons`),
+          axios.get(`${apiUrl}api/admin/coupons`, {headers}),
           axios.get(`${apiUrl}api/public_api/sports`),
-          axios.get(`${apiUrl}api/admin/courses`),
-          axios.get(`${apiUrl}api/admin/packages`),
+          axios.get(`${apiUrl}api/admin/courses`, {headers}),
+          axios.get(`${apiUrl}api/admin/packages`, {headers}),
           //axios.get(`${apiUrl}api/admin/coupons/check`)
         ]);
 
@@ -91,34 +100,43 @@ export default function CouponReport() {
 
   const deleteCoupon = async (couponId: number) => {
     if (!confirm('Are you sure you want to delete this coupon?')) return;
+      const headers = getAuthHeaders();
+    if (!headers) return;
     try {
-      await axios.delete(`${apiUrl}api/admin/coupons/${couponId}`);
+      await axios.delete(`${apiUrl}api/admin/coupons/${couponId}`, {headers});
       setCoupons(prev => prev.filter(c => c.id !== couponId));
       toast.success('Coupon deleted successfully');
     } catch (error) {
       toast.error('Failed to delete coupon');
+      console.error('Delete error:', error);
     }
   };
 
   const fetchCouponDetails = async (couponId: number) => {
+      const headers = getAuthHeaders();
+    if (!headers) return;
     try {
-      const res = await axios.get(`${apiUrl}api/admin/coupons/${couponId}`);
+      const res = await axios.get(`${apiUrl}api/admin/coupons/${couponId}`, {headers});
       setSelectedCoupon(res.data[0]);
     } catch (error) {
       toast.error('Failed to fetch coupon details');
+      console.error('Fetch details error:', error);
     }
   };
 
   const handleEdit = async (couponId: number) => {
+      const headers = getAuthHeaders();
+    if (!headers) return;
     try {
-      const res = await axios.get(`${apiUrl}api/admin/coupons/${couponId}`);
+      const res = await axios.get(`${apiUrl}api/admin/coupons/${couponId}`, {headers});
       setEditingCoupon(res.data[0]);
     } catch (error) {
       toast.error('Failed to load coupon for editing');
+      console.error('Edit error:', error);
     }
   };
 
-  const handleEditChange = (field: keyof Coupon, value: any) => {
+  const handleEditChange = (field: keyof Coupon, value: Coupon[keyof Coupon]) => {
     setEditingCoupon(prev => prev ? { ...prev, [field]: value } : null);
   };
 
@@ -169,15 +187,18 @@ export default function CouponReport() {
   };
 
   const handleEditSubmit = async () => {
+      const headers = getAuthHeaders();
+    if (!headers) return;
     if (!editingCoupon) return;
     
     try {
-      await axios.put(`${apiUrl}api/admin/coupons/${editingCoupon.id}`, editingCoupon);
+      await axios.put(`${apiUrl}api/admin/coupons/${editingCoupon.id}`, editingCoupon, {headers});
       toast.success('Coupon updated successfully');
       setEditingCoupon(null);
       setCoupons(prev => prev.map(c => c.id === editingCoupon.id ? editingCoupon : c));
     } catch (error) {
       toast.error('Failed to update coupon');
+      console.error('Update error:', error);
     }
   };
 

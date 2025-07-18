@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams} from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -28,8 +28,7 @@ const CourseDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
-  const router = useRouter();
+const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
 
   useEffect(() => {
     const fetchCourse = async () => {

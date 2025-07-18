@@ -1,27 +1,20 @@
-// File: app/(auth)/verify-email/page.tsx
-// Suggested path for this page.
-// You might want to pass the email as a query parameter from the registration flow,
-// e.g., router.push('/verify-email?email=user@example.com')
-// Or retrieve it from a global state/local storage.
-
 "use client";
 
 import React, {
   useState,
   useEffect,
-  ChangeEvent,
   KeyboardEvent,
   useRef,
 } from "react";
-import { useSearchParams, useRouter } from "next/navigation"; // For reading query params and navigation
-import axios from "axios"; // For API calls
-import { toast } from "react-toastify"; // Uncomment when ready
-import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "react-toastify";
 import Input from "@/app/components/Input";
 import { Button } from "@/app/components/Button";
 import Image from "next/image";
+import Link from "next/link";
 
-const OTP_LENGTH = 6; // Define the length of your OTP
+const OTP_LENGTH = 6;
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const VerifyEmailPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -42,25 +35,20 @@ const VerifyEmailPage: React.FC = () => {
     if (emailFromQuery) {
       setEmail(emailFromQuery);
     } else {
-      // Handle case where email is not in query params
-      // Maybe redirect to register or show an error
-      // For now, let's set a placeholder or prompt user
       setError(
         "Email address not found. Please try registering again or contact support."
       );
-      // toast.error("Email address not found.");
     }
   }, [searchParams]);
 
   const handleOtpChange = (index: number, value: string) => {
-    if (isNaN(Number(value))) return; // Only allow numbers
+    if (isNaN(Number(value))) return;
 
     const newOtp = [...otp];
-    newOtp[index] = value.slice(-1); // Take only the last digit entered
+    newOtp[index] = value.slice(-1);
     setOtp(newOtp);
-    setError(null); // Clear error on input change
+    setError(null);
 
-    // Focus next input field if a digit is entered
     if (value && index < OTP_LENGTH - 1) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -93,7 +81,7 @@ const VerifyEmailPage: React.FC = () => {
     try {
       const response = await axios.post(
         `${apiUrl}api/auth/verify-email`,
-        null, // No request body needed for this endpoint as per Spring Boot controller
+        null,
         { params: { email, otp: enteredOtp } }
       );
 
@@ -103,7 +91,6 @@ const VerifyEmailPage: React.FC = () => {
             "Email verified successfully! You can now login."
         );
         // toast.success(response.data.message || 'Email verified successfully! Redirecting to login...');
-        // Redirect to login page after a short delay
         setTimeout(() => {
           router.push("/verify-email");
         }, 3000);
@@ -115,14 +102,17 @@ const VerifyEmailPage: React.FC = () => {
           response.data.message || "OTP verification failed. Please try again."
         );
       }
-    } catch (err: any) {
+    } 
+    catch (err: unknown) {
       console.error("OTP Verification error:", err);
+
       const errorMessage =
-        err.response?.data?.message ||
-        "An unexpected error occurred during verification.";
+        axios.isAxiosError(err) && err.response?.data?.message
+          ? err.response.data.message
+          : "An unexpected error occurred during verification.";
       setError(errorMessage);
-      // toast.error(errorMessage);
-    } finally {
+    }
+    finally {
       setIsLoading(false);
     }
   };
@@ -138,8 +128,6 @@ const VerifyEmailPage: React.FC = () => {
 
     setIsResending(true);
     try {
-      // You'll need to create this backend endpoint: /api/auth/resend-otp
-      // It should generate a new OTP for the given email, save it, and send a new email.
       const response = await axios.post(
         `${apiUrl}api/auth/resend-otp`,
         null,
@@ -154,27 +142,27 @@ const VerifyEmailPage: React.FC = () => {
             "A new OTP has been sent to your email address."
         );
         // toast.success(response.data.message || 'A new OTP has been sent.');
-        setOtp(new Array(OTP_LENGTH).fill("")); // Clear OTP fields
+        setOtp(new Array(OTP_LENGTH).fill(""));
       } else {
         setError(
           response.data.message || "Failed to resend OTP. Please try again."
         );
         // toast.error(response.data.message || 'Failed to resend OTP.');
       }
-    } catch (err: any) {
+   } catch (err: unknown) {
       console.error("Resend OTP error:", err);
+
       const errorMessage =
-        err.response?.data?.message ||
-        "An unexpected error occurred while resending OTP.";
+        axios.isAxiosError(err) && err.response?.data?.message
+          ? err.response.data.message
+          : "An unexpected error occurred while resending OTP.";
       setError(errorMessage);
-      // toast.error(errorMessage);
     } finally {
       setIsResending(false);
     }
   };
 
   if (!email && !error) {
-    // Show loading or a specific message while email is being fetched
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600">Loading verification details...</p>
@@ -237,7 +225,7 @@ const VerifyEmailPage: React.FC = () => {
                     inputRefs.current[index] = el;
                   }}
                   type="text"
-                  inputMode="numeric" // Suggests numeric keyboard on mobile
+                  inputMode="numeric"
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleOtpChange(index, e.target.value)}

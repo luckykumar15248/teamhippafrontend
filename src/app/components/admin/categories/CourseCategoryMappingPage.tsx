@@ -1,6 +1,3 @@
-// File: app/(dashboard)/admin/course-categories/page.tsx
-// A dedicated page for mapping existing courses to their categories.
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -9,7 +6,6 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 
-// --- Type Definitions (Corrected to match API response) ---
 interface Course {
   id: number;
   name: string;
@@ -21,10 +17,6 @@ interface Category {
   parentCategoryId: number | null;
 }
 
-interface CourseCategoryMapping {
-  courseId: number;
-  categoryId: number;
-}
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const CourseCategoryMappingPage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -36,7 +28,7 @@ const CourseCategoryMappingPage = () => {
   const router = useRouter();
 
   // --- API Helper ---
-  const getAuthHeaders = () => {
+  const getAuthHeaders = (router: ReturnType<typeof useRouter>) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (!token) {
         toast.error("Authentication session expired. Please log in again.");
@@ -49,7 +41,7 @@ const CourseCategoryMappingPage = () => {
   useEffect(() => {
     const fetchData = async () => {
         setIsLoading(true);
-        const headers = getAuthHeaders();
+        const headers = getAuthHeaders(router);
         if (!headers) return;
 
         try {
@@ -60,8 +52,17 @@ const CourseCategoryMappingPage = () => {
 
             setCourses(coursesRes.data.data || coursesRes.data || []);
             setCategories(categoriesRes.data || []);
-        } catch (error: any) {
-            if (error.response?.status === 401 || error.response?.status === 403) {
+        } catch (error: unknown) {
+            if (
+                typeof error === 'object' &&
+                error !== null &&
+                'response' in error &&
+                typeof (error as { response?: { status?: number } }).response?.status === 'number' &&
+                (
+                    (error as { response: { status: number } }).response.status === 401 ||
+                    (error as { response: { status: number } }).response.status === 403
+                )
+            ) {
                  toast.error("Session expired. Please log in again.");
                  router.push('/login');
             } else {
@@ -78,7 +79,7 @@ const CourseCategoryMappingPage = () => {
   useEffect(() => {
     if (selectedCourseId) {
       const fetchMappings = async (courseId: number) => {
-        const headers = getAuthHeaders();
+        const headers = getAuthHeaders(router);
         if (!headers) return;
 
         try {
@@ -93,7 +94,7 @@ const CourseCategoryMappingPage = () => {
     } else {
         setMappedCategoryIds([]);
     }
-  }, [selectedCourseId]);
+  }, [selectedCourseId,router]);
 
   const handleToggleMapping = async (categoryId: number) => {
     if (!selectedCourseId) return;
@@ -101,7 +102,7 @@ const CourseCategoryMappingPage = () => {
     const isMapped = mappedCategoryIds.includes(categoryId);
     setIsUpdating(true);
     
-    const headers = getAuthHeaders();
+    const headers = getAuthHeaders(router);
     if (!headers) {
         setIsUpdating(false);
         return;

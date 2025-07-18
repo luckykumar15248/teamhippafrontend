@@ -1,7 +1,3 @@
-// File: app/booking/[courseId]/page.tsx
-// A complete, multi-step booking page with a fix for multi-month price calculations
-// and price display on the calendar.
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -10,7 +6,6 @@ import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 
-// --- Type Definitions ---
 interface Course {
   id: number;
   name: string;
@@ -25,7 +20,7 @@ interface CourseSchedule {
 }
 
 interface Participant {
-    id: number; // Temporary client-side ID
+    id: number; 
     firstName: string;
     lastName: string;
     dateOfBirth: string;
@@ -38,7 +33,7 @@ interface Participant {
 }
 
 interface AvailabilitySlot {
-    date: string; // "YYYY-MM-DD"
+    date: string;
     availableSlots: number;
     price: number;
     isBookingOpen: boolean;
@@ -68,7 +63,6 @@ const toYYYYMMDD = (date: Date) => {
     return `${year}-${month}-${day}`;
 };
 
-// --- Main Page Component ---
 const BookingPage: React.FC = () => {
     const [course, setCourse] = useState<Course | null>(null);
     const [schedules, setSchedules] = useState<CourseSchedule[]>([]);
@@ -86,13 +80,9 @@ const BookingPage: React.FC = () => {
     ]);
     const [selectedDates, setSelectedDates] = useState<Set<string>>(new Set());
 
-    // Calendar & Availability State
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [availabilityData, setAvailabilityData] = useState<Map<string, AvailabilitySlot>>(new Map());
     const [fetchedMonths, setFetchedMonths] = useState<Set<string>>(new Set());
-    const [availabilityLoading, setAvailabilityLoading] = useState(false);
-    
-    // Coupon & Price State
     const [couponCode, setCouponCode] = useState('');
     const [couponLoading, setCouponLoading] = useState(false);
     const [discount, setDiscount] = useState<{ amount: number; type: 'PERCENTAGE' | 'FIXED_AMOUNT' } | null>(null);
@@ -100,7 +90,6 @@ const BookingPage: React.FC = () => {
 
     const bookingDataKey = `booking-progress-${params.courseId}`;
 
-    // --- Fetch Logged-in User Data & Handle State Persistence ---
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
@@ -128,7 +117,7 @@ const BookingPage: React.FC = () => {
                 }
             }
         }
-    }, [bookingDataKey, apiUrl]);
+    }, [bookingDataKey]);
 
     useEffect(() => {
         if (!currentUser) {
@@ -137,7 +126,6 @@ const BookingPage: React.FC = () => {
         }
     }, [contactName, contactEmail, contactPhone, participants, selectedDates, bookingDataKey, currentUser]);
     
-    // --- Data Fetching for Course & Schedules ---
     useEffect(() => {
         const courseId = params.courseId as string;
         if (courseId) {
@@ -154,7 +142,7 @@ const BookingPage: React.FC = () => {
                 })
                 .catch(() => toast.error("Could not load schedules for this course."));
         }
-    }, [params.courseId, apiUrl]);
+    }, [params.courseId]);
     
     const fetchAvailability = useCallback(async () => {
         if (!selectedScheduleId) {
@@ -167,8 +155,6 @@ const BookingPage: React.FC = () => {
         const monthKey = `${year}-${month}`;
 
         if (fetchedMonths.has(monthKey)) return;
-
-        setAvailabilityLoading(true);
         try {
             const response = await axios.get(`${apiUrl}api/public/booking-data/availability/schedule/${selectedScheduleId}`, { params: { year, month } });
             const dataMap = new Map<string, AvailabilitySlot>();
@@ -179,14 +165,13 @@ const BookingPage: React.FC = () => {
 
         } catch (error) {
             toast.error("Failed to load availability for this month.");
+            console.error(error);
         } finally {
-            setAvailabilityLoading(false);
         }
-    }, [currentMonth, selectedScheduleId, fetchedMonths, apiUrl]);
+    }, [currentMonth, selectedScheduleId, fetchedMonths]);
     
     useEffect(() => { fetchAvailability(); }, [fetchAvailability]);
 
-    // --- Component Logic ---
     const addParticipant = () => setParticipants([...participants, { id: Date.now(), firstName: '', lastName: '', dateOfBirth: '', gender: 'Prefer not to say', skillLevel: 'Beginner', medicalNotes: '', emergencyContactName: '', emergencyContactPhone: '', dailyHours: 1 }]);
     const removeParticipant = (id: number) => { if (participants.length > 1) setParticipants(participants.filter(p => p.id !== id)); else toast.error("At least one participant is required."); };
     const handleParticipantChange = (index: number, field: keyof Omit<Participant, 'id'>, value: string | number) => {
@@ -254,7 +239,7 @@ const BookingPage: React.FC = () => {
                 guestPhone: contactPhone,
                 courseId: course?.id,
                 scheduleId: selectedScheduleId,
-                participants: participants.map(({id, ...p}) => p),
+                participants: participants.map(({ ...p}) => p),
                 bookedDates: Array.from(selectedDates),
                 couponCode: discount ? couponCode : null,
                 originalAmount: priceDetails.subtotal,
@@ -272,8 +257,12 @@ const BookingPage: React.FC = () => {
             } else {
                  toast.error(response.data.message || "Booking failed. Please try again.");
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "There was an error saving your booking.");
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data?.message || "There was an error saving your booking.");
+            } else {
+                toast.error("There was an error saving your booking.");
+            }
         } finally {
             setIsSubmitting(false);
         }

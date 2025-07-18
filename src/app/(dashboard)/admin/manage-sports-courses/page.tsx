@@ -1,14 +1,9 @@
-// --- Main Page Component ---
-// File: app/(dashboard)/admin/manage-courses/page.tsx
-// This page provides a tabbed interface to switch between managing sports and courses.
-// It should be rendered within your DashboardLayout.
-
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import SportsManagement from '../../../components/admin/SportsManagement'; // Assuming you create this component
+import React, { useState} from 'react';
+import SportsManagement from '../../../components/admin/SportsManagement';
 import CoursesManagement from '../../../components/admin/CoursesManagement';
-import CourseScheduleManagement from '../../../components/admin/ScheduleRuleManagement'; // Assuming you create this component
+import CourseScheduleManagement from '../../../components/admin/ScheduleRuleManagement';
 import CourseSchedulesManagement from '../../../components/admin/CourseSchedulesManagement';
 import PackageScheduleRuleManagement from '../../../components/admin/PackageScheduleRuleManagement';
 import PackageSchedulesManagement from '../../../components/admin/PackageSchedulesManagement';
@@ -136,7 +131,6 @@ const ManageSportsAndCoursesPage: React.FC = () => {
         </nav>
       </div>
 
-      {/* Tab Content */}
       <div className="mt-8">
          {activeTab === 'courses' && <CoursesManagement />}
           {activeTab === 'sports' && <SportsManagement />}

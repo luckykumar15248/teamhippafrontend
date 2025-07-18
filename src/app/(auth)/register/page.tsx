@@ -1,4 +1,3 @@
-// File: app/(auth)/register/page.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -62,15 +61,18 @@ const Register: React.FC<RegisterProps> = ({ onClick }) => {
         setError(errorMessage);
         toast.error(errorMessage);
       }
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "An unexpected error occurred.";
+    } catch (err: unknown) {
+      let errorMessage = "An unexpected error occurred.";
+      if (axios.isAxiosError(err)) {
+        errorMessage = err.response?.data?.message || errorMessage;
+      }
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div

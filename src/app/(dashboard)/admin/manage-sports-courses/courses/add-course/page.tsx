@@ -1,10 +1,10 @@
-// File: app/(dashboard)/admin/add-course/page.tsx
 'use client';
 
 import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import JoditEditor from 'jodit-react';
+import Image from 'next/image';
 
 interface Sport {
   id: number;
@@ -23,6 +23,14 @@ interface Course {
   isActive: boolean;
   imagePaths?: string[];
 }
+// --- API Helper ---
+const getAuthHeaders = () => {
+    if (typeof window === 'undefined') return null;
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    return { 'Authorization': `Bearer ${token}` };
+};
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const ITEMS_PER_PAGE = 10;
 
@@ -47,25 +55,28 @@ const AddNewCoursePage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const editor = useRef(null);
 
-  // --- Data Fetching ---
   useEffect(() => {
     const fetchSports = async () => {
       try {
         const response = await axios.get(`${apiUrl}api/public_api/sports`);
         setSports(response.data);
-      } catch (error) {
+      } catch (error){
         toast.error("Failed to fetch sports categories.");
+        console.error(error);
       }
     };
 
     const fetchCourses = async () => {
+      const headers = getAuthHeaders();
+    if (!headers) return;
       try {
-        const response = await axios.get(`${apiUrl}api/admin/courses`);
+        const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
        //const coursesData = Array.isArray(response.data) ? response.data : [];
         setCourses(response.data.data);
         setFilteredCourses(response.data.data);
-      } catch (error) {
+      } catch(error) {
         toast.error("Failed to fetch courses.");
+        console.error(error);
       }
     };
     
@@ -73,11 +84,9 @@ const AddNewCoursePage: React.FC = () => {
     fetchCourses();
   }, []);
 
-  // --- Filter and Search Functionality ---
   useEffect(() => {
     let result = [...courses];
     
-    // Apply search filter
     if (searchTerm) {
       result = result.filter(course => 
         course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -85,23 +94,20 @@ const AddNewCoursePage: React.FC = () => {
       );
     }
     
-    // Apply sport filter
     if (selectedSportFilter > 0) {
       result = result.filter(course => course.sportId === selectedSportFilter);
     }
     
     setFilteredCourses(result);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1); 
   }, [searchTerm, selectedSportFilter, courses]);
 
-  // --- Pagination Logic ---
   const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
   const paginatedCourses = filteredCourses.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  // --- Image Handlers ---
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
@@ -117,7 +123,6 @@ const AddNewCoursePage: React.FC = () => {
     setImagePreviews(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
-  // --- Form Handlers ---
   const resetForm = () => {
     setCourseId(null);
     setCourseName('');
@@ -147,6 +152,8 @@ const AddNewCoursePage: React.FC = () => {
   };
 
   const handleCourseSubmit = async (e: React.FormEvent) => {
+      const headers = getAuthHeaders();
+        if (!headers) return;
     e.preventDefault();
     if (sportId === 0) {
       toast.error("Please select a sport category.");
@@ -156,13 +163,11 @@ const AddNewCoursePage: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      // Upload images first
       let imagePaths: string[] = [];
       if (selectedImages.length > 0) {
         imagePaths = await uploadImages(selectedImages);
       }
 
-      // Prepare course data
       const courseData = {
         name: courseName,
         sportId: sportId,
@@ -174,17 +179,16 @@ const AddNewCoursePage: React.FC = () => {
         imagePaths: imagePaths
       };
 
-      // Save course data
       if (courseId) {
-        await axios.put(`${apiUrl}api/admin/courses/${courseId}`, courseData);
+       
+        await axios.put(`${apiUrl}api/admin/courses/${courseId}`, courseData, { headers });
         toast.success(`Course "${courseName}" updated successfully!`);
       } else {
-        await axios.post(`${apiUrl}api/admin/courses`, courseData);
+        await axios.post(`${apiUrl}api/admin/courses`, courseData, { headers } );
         toast.success(`Course "${courseName}" created successfully!`);
       }
 
-      // Refresh course list
-      const response = await axios.get(`${apiUrl}api/admin/courses`);
+      const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
       //const coursesData = Array.isArray(response.data) ? response.data : [];
       setCourses(response.data.data);
       
@@ -217,13 +221,16 @@ const AddNewCoursePage: React.FC = () => {
   };
 
   const handleDeleteCourse = async (courseId: number) => {
+     const headers = getAuthHeaders();
+        if (!headers) return;
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
-        await axios.delete(`${apiUrl}api/admin/courses/${courseId}`);
+        await axios.delete(`${apiUrl}api/admin/courses/${courseId}`, { headers });
         setCourses(prev => prev.filter(c => c.id !== courseId));
         toast.success("Course deleted successfully.");
-      } catch (error) {
+      } catch (error){
         toast.error("Failed to delete course.");
+        console.error(error);
       }
     }
   };
@@ -373,12 +380,11 @@ const AddNewCoursePage: React.FC = () => {
                 </div>
               </div>
               
-              {/* Image Previews */}
               {imagePreviews.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {imagePreviews.map((src, index) => (
                     <div key={index} className="relative group">
-                      <img
+                      <Image
                         src={src}
                         alt={`Preview ${index + 1}`}
                         className="h-24 w-full object-cover rounded-md"

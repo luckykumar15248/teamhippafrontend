@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 
-// --- Type Definitions ---
 interface SeoMetadata {
     seoId: number;
     entityType: string;
@@ -26,7 +25,6 @@ interface SelectableEntity {
     name: string;
 }
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-// --- API Helper ---
 const getAuthHeaders = () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (!token) {
@@ -39,7 +37,7 @@ const getAuthHeaders = () => {
 // --- Main Page Component ---
 const ManageSeoPage: React.FC = () => {
     const [allSeoData, setAllSeoData] = useState<SeoMetadata[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // Removed unused isLoading state
     const [isSubmitting, setIsSubmitting] = useState(false);
     
     // Form state
@@ -61,7 +59,6 @@ const ManageSeoPage: React.FC = () => {
     const router = useRouter();
 
     const fetchData = useCallback(async () => {
-        setIsLoading(true);
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
 
@@ -71,8 +68,6 @@ const ManageSeoPage: React.FC = () => {
         } catch (error) {
             toast.error("Failed to load SEO data.");
             console.error(error);
-        } finally {
-            setIsLoading(false);
         }
     }, [router]);
 
@@ -104,7 +99,7 @@ const ManageSeoPage: React.FC = () => {
                 const response = await axios.get(url, { headers });
                 // Handle potential nested data object
                 const data = response.data.data || response.data || [];
-                setLinkableEntities(data.map((item: any) => ({ id: item.id, name: item.name })));
+                setLinkableEntities(data.map((item: SelectableEntity) => ({ id: item.id, name: item.name })));
             } catch {
                 toast.error(`Failed to load ${entityType} list.`);
                 setLinkableEntities([]);
@@ -190,8 +185,12 @@ const ManageSeoPage: React.FC = () => {
             toast.success(`SEO metadata ${editingSeoId ? 'updated' : 'created'} successfully!`);
             resetForm();
             fetchData();
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to save SEO metadata.");
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Failed to save SEO metadata.");
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -226,7 +225,6 @@ const ManageSeoPage: React.FC = () => {
                             </select>
                         </div>
 
-                        {/* Core SEO */}
                         <div className="md:col-span-2">
                              <label htmlFor="metaTitle" className="block text-sm font-medium text-gray-700">Meta Title</label>
                              <input type="text" id="metaTitle" value={metaTitle} onChange={e => setMetaTitle(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3"/>
@@ -273,7 +271,6 @@ const ManageSeoPage: React.FC = () => {
                 </form>
             </div>
             
-            {/* Table of existing SEO data */}
             <div className="mt-12">
                 <h3 className="text-2xl font-semibold leading-7 text-gray-900">Existing SEO Records</h3>
                 <div className="mt-6 overflow-x-auto bg-white rounded-lg shadow">

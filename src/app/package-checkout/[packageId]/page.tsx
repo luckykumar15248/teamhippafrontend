@@ -1,13 +1,10 @@
-// File: app/package-checkout/[packageId]/page.tsx
-// This page now initiates the booking and payment intent when it loads.
-
 'use client';
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { toast } from 'react-toastify';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -107,10 +104,21 @@ const PackageCheckoutContent: React.FC = () => {
                 setBookingDetails(details);
                 setClientSecret(details.clientSecret);
 
-             } catch (err: any) {
-                setError(err.response?.data?.message || err.message || "Could not start the checkout process.");
-                toast.error("Could not start the checkout process.");
-             } finally {
+             } 
+            catch (err: unknown) {
+    let message = "Could not start the checkout process.";
+    
+    if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.message || message;
+    } else if (err instanceof Error) {
+        message = err.message;
+    }
+
+    setError(message);
+    toast.error(message);
+}
+
+             finally {
                  setIsLoading(false);
              }
         };

@@ -1,7 +1,3 @@
-// File: app/booking/[courseId]/page.tsx
-// A complete, multi-step booking page with dynamic calendar, multi-participant forms,
-// coupon logic, and state persistence, fully integrated with the backend.
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -18,15 +14,13 @@ interface Course {
   basePriceInfo: string;
   pricePerSlot: number; 
 }
-
-// CORRECTED: Interface properties now match the API response
 interface CourseSchedule {
   schedule_id: number;
   scheduleName: string;
 }
 
 interface Participant {
-    id: number; // Temporary client-side ID
+    id: number;
     firstName: string;
     lastName: string;
     dateOfBirth: string;
@@ -39,7 +33,7 @@ interface Participant {
 }
 
 interface AvailabilitySlot {
-    date: string; // "YYYY-MM-DD"
+    date: string;
     availableSlots: number;
     price: number;
     isBookingOpen: boolean;
@@ -89,7 +83,7 @@ const BookingPage: React.FC = () => {
     // Calendar & Availability State
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [availabilityData, setAvailabilityData] = useState<Map<string, AvailabilitySlot>>(new Map());
-    const [availabilityLoading, setAvailabilityLoading] = useState(false);
+    // Removed unused availabilityLoading state
     
     // Coupon & Price State
     const [couponCode, setCouponCode] = useState('');
@@ -169,7 +163,6 @@ const BookingPage: React.FC = () => {
             setAvailabilityData(new Map());
             return;
         }
-        setAvailabilityLoading(true);
         try {
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth() + 1;
@@ -183,9 +176,8 @@ const BookingPage: React.FC = () => {
 
         } catch (error) {
             toast.error("Failed to load availability for this month.");
-        } finally {
-            setAvailabilityLoading(false);
-        }
+            console.error(error);
+        } 
     }, [currentMonth, selectedScheduleId]);
     
     useEffect(() => { fetchAvailability(); }, [fetchAvailability]);
@@ -209,41 +201,14 @@ const BookingPage: React.FC = () => {
         });
     };
 
-  /*  const priceDetails = useMemo(() => {
-        let subtotal = 0;
-        Array.from(selectedDates).forEach(date => {
-            subtotal += (availabilityData.get(date)?.price || course?.pricePerSlot || 0);
-        });
-        subtotal *= participants.length;
-
-
-
-
-        let discountAmount = 0;
-        if (discount) {
-            if (discount.type === 'PERCENTAGE') {
-                discountAmount = subtotal * (discount.amount / 100);
-            } else {
-                discountAmount = discount.amount;
-            }
-        }
-        
-        const finalPrice = Math.max(0, subtotal - discountAmount);
-        return { subtotal, discountAmount, finalPrice };
-    }, [selectedDates, participants.length, course, discount, availabilityData]);*/
-
-
 const priceDetails = useMemo(() => {
-        let subtotal = 0;
-        Array.from(selectedDates).forEach(date => {
-            const pricePerSlot = availabilityData.get(date)?.price || course?.pricePerSlot || 0;
-            // Sum the total hours for all participants for this specific day
-            const totalHoursForDay = participants.reduce((total, p) => total + (p.dailyHours || 1), 0);
-            subtotal += pricePerSlot * totalHoursForDay;
-        });
-        
-        // This is a simplified total; a more accurate one might calculate per participant if hours differ.
-        // For now, let's assume price is per participant per slot per hour.
+        // let subtotal = 0;
+        // Array.from(selectedDates).forEach(date => {
+        //     const pricePerSlot = availabilityData.get(date)?.price || course?.pricePerSlot || 0;
+        //     const totalHoursForDay = participants.reduce((total, p) => total + (p.dailyHours || 1), 0);
+        //     subtotal += pricePerSlot * totalHoursForDay;
+        // });
+
         
         let subtotalPerParticipant = 0;
          Array.from(selectedDates).forEach(date => {
@@ -296,7 +261,7 @@ const priceDetails = useMemo(() => {
     
 const isTodayOrFuture = (date: Date) => {
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Reset time to compare dates only
+  today.setHours(0, 0, 0, 0);
   return date >= today;
 };
 
@@ -315,7 +280,7 @@ const isTodayOrFuture = (date: Date) => {
                 guestPhone: contactPhone,
                 courseId: course?.id,
                 scheduleId: selectedScheduleId,
-                participants: participants.map(({id, ...p}) => p),
+                participants: participants.map(({...p}) => p),
                 bookedDates: Array.from(selectedDates),
                 couponCode: discount ? couponCode : null,
                 originalAmount: priceDetails.subtotal,
@@ -337,8 +302,12 @@ const isTodayOrFuture = (date: Date) => {
             } else {
                  toast.error(response.data.message || "Booking failed. Please try again.");
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "There was an error saving your booking.");
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data?.message || "There was an error saving your booking.");
+            } else {
+                toast.error("There was an error saving your booking.");
+            }
         } finally {
             setIsSubmitting(false);
         }
