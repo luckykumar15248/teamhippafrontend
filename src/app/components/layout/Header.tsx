@@ -94,7 +94,7 @@ const Header: React.FC = () => {
           />
         )}
 
-      {isLogin && <Login onClick={LoginClick} />}
+      {isLogin && <Login />}
     </header>
   );
 };
