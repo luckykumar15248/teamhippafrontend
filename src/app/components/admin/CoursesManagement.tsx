@@ -1,9 +1,11 @@
 'use client';
 import { default as NextLink } from 'next/link';
-import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+// --- Interfaces (No changes) ---
 interface Sport {
   id: number;
   name: string;
@@ -21,38 +23,32 @@ interface Course {
   isActive: boolean;
   imagePaths?: string[];
 }
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const ITEMS_PER_PAGE = 10;
 
 const CoursesManagement: React.FC = () => {
-  // --- State Management ---
-  const [courseId, setCourseId] = useState<number | null>(null);
-  const [courseName, setCourseName] = useState('');
-  const [sportId, setSportId] = useState<number>(0);
-  const [description, setDescription] = useState('');
-  const [shortDescription, setShortDescription] = useState('');
-  const [duration, setDuration] = useState('');
-  const [basePriceInfo, setBasePriceInfo] = useState('');
-  const [isActive, setIsActive] = useState(true);
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter(); // Initialize router for navigation
+
+  // --- State Management (Cleaned) ---
+  // All state related to the add/edit form has been removed as the form is not in this component.
+  // This includes: courseId, courseName, sportId, description, etc.
   const [sports, setSports] = useState<Sport[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSportFilter, setSelectedSportFilter] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const editor = useRef(null);
+  // REMOVED: Unused ref 'editor'.
 
   const getAuthHeaders = () => {
     if (typeof window === 'undefined') return null;
     const token = localStorage.getItem('authToken');
     if (!token) return null;
     return { 'Authorization': `Bearer ${token}` };
-};
+  };
 
-  // --- Data Fetching ---
+  // --- Data Fetching (No changes) ---
   useEffect(() => {
     const fetchSports = async () => {
       try {
@@ -66,10 +62,9 @@ const CoursesManagement: React.FC = () => {
 
     const fetchCourses = async () => {
       const headers = getAuthHeaders();
-    if (!headers) return;
+      if (!headers) return;
       try {
         const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
-       //const coursesData = Array.isArray(response.data) ? response.data : [];
         setCourses(response.data.data);
         setFilteredCourses(response.data.data);
       } catch (error) {
@@ -82,11 +77,10 @@ const CoursesManagement: React.FC = () => {
     fetchCourses();
   }, []);
 
-  // --- Filter and Search Functionality ---
+  // --- Filter and Search Functionality (No changes) ---
   useEffect(() => {
     let result = [...courses];
     
-    // Apply search filter
     if (searchTerm) {
       result = result.filter(course => 
         course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -94,141 +88,37 @@ const CoursesManagement: React.FC = () => {
       );
     }
     
-    // Apply sport filter
     if (selectedSportFilter > 0) {
       result = result.filter(course => course.sportId === selectedSportFilter);
     }
     
     setFilteredCourses(result);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [searchTerm, selectedSportFilter, courses]);
 
-  // --- Pagination Logic ---
+  // --- Pagination Logic (No changes) ---
   const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
   const paginatedCourses = filteredCourses.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  // --- Image Handlers ---
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setSelectedImages(prev => [...prev, ...files]);
+  // REMOVED: All unused form handlers have been removed.
+  // - handleImageChange
+  // - handleRemoveImage
+  // - resetForm
+  // - uploadImages
+  // - handleCourseSubmit
 
-      const newPreviews = files.map(file => URL.createObjectURL(file));
-      setImagePreviews(prev => [...prev, ...newPreviews]);
-    }
-  };
-
-  const handleRemoveImage = (indexToRemove: number) => {
-    setSelectedImages(prev => prev.filter((_, index) => index !== indexToRemove));
-    setImagePreviews(prev => prev.filter((_, index) => index !== indexToRemove));
-  };
-
-  // --- Form Handlers ---
-  const resetForm = () => {
-    setCourseId(null);
-    setCourseName('');
-    setSportId(0);
-    setDescription('');
-    setShortDescription('');
-    setDuration('');
-    setBasePriceInfo('');
-    setIsActive(true);
-    setSelectedImages([]);
-    setImagePreviews([]);
-  };
-
-  const uploadImages = async (files: File[]) => {
-    const formData = new FormData();
-    files.forEach(file => {
-      formData.append('files', file);
-    });
-
-    try {
-      const response = await axios.post('/api/upload', formData);
-      return response.data.paths;
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      throw new Error('Image upload failed');
-    }
-  };
-
-  const handleCourseSubmit = async (e: React.FormEvent) => {
-       const headers = getAuthHeaders();
-    if (!headers) return;
-    e.preventDefault();
-    if (sportId === 0) {
-      toast.error("Please select a sport category.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    try {
-      // Upload images first
-      let imagePaths: string[] = [];
-      if (selectedImages.length > 0) {
-        imagePaths = await uploadImages(selectedImages);
-      }
-
-      // Prepare course data
-      const courseData = {
-        name: courseName,
-        sportId: sportId,
-        description: description,
-        shortDescription: shortDescription,
-        duration: duration,
-        basePriceInfo: basePriceInfo,
-        isActive: isActive,
-        imagePaths: imagePaths
-      };
-
-      // Save course data
-      if (courseId) {
-        await axios.put(`${apiUrl}api/admin/courses/${courseId}`, courseData, { headers});
-        toast.success(`Course "${courseName}" updated successfully!`);
-      } else {
-        await axios.post(`${apiUrl}api/admin/courses`, courseData, { headers });
-        toast.success(`Course "${courseName}" created successfully!`);
-      }
-
-      // Refresh course list
-      const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
-      //const coursesData = Array.isArray(response.data) ? response.data : [];
-      setCourses(response.data.data);
-      
-      resetForm();
-    } catch (error) {
-      toast.error("Failed to save the course. Please try again.");
-      console.error(error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-  
-  const handleEditCourse = (course: Course) => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setCourseId(course.id);
-    setCourseName(course.name);
-    setSportId(course.sportId);
-    setDescription(course.description);
-    setShortDescription(course.shortDescription);
-    setDuration(course.duration);
-    setBasePriceInfo(course.basePriceInfo);
-    setIsActive(course.isActive);
-    setSelectedImages([]);
-    setImagePreviews([]);
-    
-    // If there are existing images, show them as previews
-    if (course.imagePaths && course.imagePaths.length > 0) {
-      setImagePreviews(course.imagePaths.map(path => `http://localhost:8091${path}`));
-    }
+  // --- Action Handlers (Updated) ---
+  const handleEditCourse = (courseId: number) => {
+    // Instead of setting state, navigate to a dedicated edit page.
+    // This is a more robust pattern.
+    router.push(`/admin/manage-sports-courses/courses/edit-course/${courseId}`);
   };
 
   const handleDeleteCourse = async (courseId: number) => {
-       const headers = getAuthHeaders();
+    const headers = getAuthHeaders();
     if (!headers) return;
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
@@ -349,7 +239,7 @@ const CoursesManagement: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                         <button
-                          onClick={() => handleEditCourse(course)}
+                          onClick={() => handleEditCourse(course.id)}
                           className="text-indigo-600 hover:text-indigo-900 px-2 py-1 rounded hover:bg-indigo-50"
                         >
                           Edit

@@ -9,38 +9,33 @@ import { useRouter } from 'next/navigation';
 const PlusIcon = ({ className = "mr-2" }: { className?: string }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
 );
-
 const EditIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
 );
-
 const TrashIcon = ({ className = "" }: { className?: string }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
 );
-
 const XIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 );
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-// --- Type Definitions (Matching your DTOs) ---
+
+// --- Type Definitions ---
 interface CourseSchedule {
     schedule_id: number;
     scheduleName: string;
     start_date: string;
     end_date: string;
-    // Other properties from your API
     active?: boolean;
     booking_cutoff_hours?: number;
     course_id?: number;
     description_override?: string;
     instructor_name?: string;
-    //isActive?: boolean;
     location?: string;
     max_bookings_per_day?: number;
     max_total_bookings?: number;
 }
-
 interface RuleRange {
     id?: number;
     start_date: string | null;
@@ -48,7 +43,6 @@ interface RuleRange {
     start_time: string | null;
     end_time: string | null;
 }
-
 interface CourseRule {
   rule_id: number;
   schedule_id: number;
@@ -60,12 +54,11 @@ interface CourseRule {
   ranges: RuleRange[];
   day_of_week: string[];
 }
-
 type RuleFormData = Omit<CourseRule, 'rule_id'> & { rule_id?: number };
 
 // --- API Helper ---
 const getAuthHeaders = () => {
-    const token = localStorage.getItem('authToken');
+    const token = typeof window !== "undefined" ? localStorage.getItem('authToken') : null;
     if (!token) {
         toast.error("Authentication session expired. Please log in again.");
         return null;
@@ -73,13 +66,12 @@ const getAuthHeaders = () => {
     return { 'Authorization': `Bearer ${token}` };
 };
 
-// --- Component Prop Interfaces ---
+// --- Prop Interfaces ---
 interface RuleListProps {
   rules: CourseRule[];
   onEdit: (rule: CourseRule) => void;
   onDelete: (rule: CourseRule) => void;
 }
-
 interface RuleModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -88,7 +80,6 @@ interface RuleModalProps {
     schedules: CourseSchedule[];
     selectedScheduleId: number;
 }
-
 interface DeleteConfirmationModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -96,30 +87,33 @@ interface DeleteConfirmationModalProps {
     rule: CourseRule | null;
 }
 
-// Main Page Component
+// --- Main Page Component ---
 const CourseBookingRulesPage = () => {
     const [rules, setRules] = useState<CourseRule[]>([]);
     const [schedules, setSchedules] = useState<CourseSchedule[]>([]);
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentRule, setCurrentRule] = useState<CourseRule | null>(null);
     const [ruleToDelete, setRuleToDelete] = useState<CourseRule | null>(null);
     const router = useRouter();
 
-    const fetchSchedules = async () => {
+    const fetchSchedules = useCallback(async () => {
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
         
+        setIsLoading(true);
         try {
             const response = await axios.get(`${apiUrl}api/admin/course-schedules`, { headers });
             setSchedules(response.data);
         } catch (error) {
             console.error("Failed to fetch schedules:", error);
             toast.error("Could not load course schedules.");
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }, [router]);
     
     const fetchRulesForSchedule = useCallback(async (scheduleId: number) => {
         const headers = getAuthHeaders();
@@ -128,7 +122,6 @@ const CourseBookingRulesPage = () => {
         setIsLoading(true);
         try {
             const response = await axios.get(`${apiUrl}api/admin/booking-rules/rules/${scheduleId}`, { headers });
-            console.log("fatch booking rule response ***********************");
             setRules(response.data);
         } catch (error) {
             console.error(`Failed to fetch rules for schedule ${scheduleId}:`, error);
@@ -141,8 +134,7 @@ const CourseBookingRulesPage = () => {
 
     useEffect(() => {
         fetchSchedules();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [fetchSchedules]);
 
     useEffect(() => {
         if (selectedScheduleId) {
@@ -184,17 +176,11 @@ const CourseBookingRulesPage = () => {
         try {
             await axios.delete(`${apiUrl}api/admin/booking-rules/${ruleToDelete.rule_id}`, { headers });
             toast.success("Rule deleted successfully.");
-            setRules(rules.filter(rule => rule.rule_id !== ruleToDelete.rule_id));
-        } 
-
-        catch (error) {
-      const axiosError = error as AxiosError<{ message: string }>;
-
-      toast.error(
-        axiosError.response?.data?.message || "Failed to delete schedule."
-      );
-    }
-        finally {
+            setRules(prevRules => prevRules.filter(rule => rule.rule_id !== ruleToDelete.rule_id));
+        } catch (error) {
+            const axiosError = error as AxiosError<{ message: string }>;
+            toast.error(axiosError.response?.data?.message || "Failed to delete the rule.");
+        } finally {
             closeDeleteModal();
         }
     };
@@ -211,7 +197,6 @@ const CourseBookingRulesPage = () => {
         const method = isUpdating ? 'put' : 'post';
         
         try {
-            console.log("data for submission is:------------", ruleData);
             const response = await axios[method](endpoint, ruleData, { headers });
             if(response.data.success) {
                 toast.success(response.data.message);
@@ -221,15 +206,10 @@ const CourseBookingRulesPage = () => {
             } else {
                 toast.error(response.data.message || "Failed to save rule.");
             }
-        }
-        catch (error) {
-      const axiosError = error as AxiosError<{ message: string }>;
-
-      toast.error(
-        axiosError.response?.data?.message || "Failed to delete schedule."
-      );
-    }
-         finally {
+        } catch (error) {
+            const axiosError = error as AxiosError<{ message: string }>;
+            toast.error(axiosError.response?.data?.message || "An error occurred while saving the rule.");
+        } finally {
             setIsModalOpen(false);
             setCurrentRule(null);
         }
@@ -241,8 +221,7 @@ const CourseBookingRulesPage = () => {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-0">Course Schedule Booking Rules</h1>
                     <button onClick={handleAddRule} disabled={!selectedScheduleId} className="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 disabled:bg-indigo-300 disabled:cursor-not-allowed">
-                        <PlusIcon />
-                        Add New Rule
+                        <PlusIcon /> Add New Rule
                     </button>
                 </div>
 
@@ -251,7 +230,7 @@ const CourseBookingRulesPage = () => {
                     <select
                         id="scheduleSelector"
                         value={selectedScheduleId || ''}
-                        onChange={(e) => setSelectedScheduleId(Number(e.target.value))}
+                        onChange={(e) => setSelectedScheduleId(e.target.value ? Number(e.target.value) : null)}
                         className="block w-full md:w-1/2 lg:w-1/3 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                         <option value="">-- Select Schedule --</option>
@@ -264,7 +243,7 @@ const CourseBookingRulesPage = () => {
                 </div>
                 
                 {isLoading ? (
-                    <div className="text-center py-12 text-gray-500">Loading rules...</div>
+                    <div className="text-center py-12 text-gray-500">Loading...</div>
                 ) : !selectedScheduleId ? (
                     <div className="text-center py-12 bg-white rounded-lg shadow-md">
                         <p className="text-gray-500">Please select a schedule above to view or add booking rules.</p>
@@ -352,7 +331,7 @@ const RuleList: React.FC<RuleListProps> = ({ rules, onEdit, onDelete }) => {
 };
 
 const RuleModal: React.FC<RuleModalProps> = ({ isOpen, onClose, onSave, rule, schedules, selectedScheduleId }) => {
-    const getInitialFormData = (): RuleFormData => ({
+    const getInitialFormData = useCallback((): RuleFormData => ({
         schedule_id: selectedScheduleId,
         rule_type: 'OPEN',
         recurring: false,
@@ -361,7 +340,7 @@ const RuleModal: React.FC<RuleModalProps> = ({ isOpen, onClose, onSave, rule, sc
         description: '',
         ranges: [],
         day_of_week: [],
-    });
+    }), [selectedScheduleId]);
     
     const [formData, setFormData] = useState<RuleFormData>(getInitialFormData());
     const [selectedSchedule, setSelectedSchedule] = useState<CourseSchedule | null>(null);

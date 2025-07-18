@@ -278,7 +278,7 @@ const CoursesAndPackagesPage: React.FC = () => {
         if (!bookableCategory) {
           console.warn("'Available for Booking' category not found.");
         }
-
+/*
         const bookableCourseIds = new Set(
           (mappingsRes.data || [])
             .filter(
@@ -286,7 +286,7 @@ const CoursesAndPackagesPage: React.FC = () => {
                 m.categoryId === bookableCategory?.categoryId
             )
             .map((m: CourseCategoryMapping) => m.courseId)
-        );
+        );*/
 
         // Transform courses to include full image URLs and ensure imagePaths exists
         const transformedCourses = (coursesRes.data || []).map(

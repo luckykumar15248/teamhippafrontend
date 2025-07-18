@@ -82,6 +82,7 @@ const PackageDetailPage: React.FC = () => {
                 setPackage(response.data);
                 setMainImage(response.data.imageUrls?.[0] || null);
             } catch (error) {
+                console.log(error)
                 toast.error("Package not found.");
                 router.push('/packages');
             } finally {
