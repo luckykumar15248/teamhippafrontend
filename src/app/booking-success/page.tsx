@@ -43,7 +43,7 @@ const BookingSuccessContent: React.FC = () => {
 
     const fetchBookingConfirmation = useCallback(async (bookingId: string, retries = 3) => {
         try {
-            const response = await axios.get(`${apiUrl}api/public/booking-data/confirmation/${bookingId}`);
+            const response = await axios.get(`${apiUrl}/api/public/booking-data/confirmation/${bookingId}`);
             setBookingDetails(response.data);
             setIsLoading(false);
         } catch (err) {

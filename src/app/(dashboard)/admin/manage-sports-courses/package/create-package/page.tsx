@@ -100,9 +100,9 @@ const ManagePackagesPage: React.FC = () => {
     
     try {
       const [sportsRes, coursesRes, packagesRes] = await Promise.all([
-        axios.get(`${apiUrl}api/public_api/sports`),
-        axios.get(`${apiUrl}api/admin/courses`, { headers }),
-        axios.get(`${apiUrl}api/admin/packages`, { headers })
+        axios.get(`${apiUrl}/api/public_api/sports`),
+        axios.get(`${apiUrl}/api/admin/courses`, { headers }),
+        axios.get(`${apiUrl}/api/admin/packages`, { headers })
       ]);
       
       const sportsData = sportsRes.data || [];
@@ -274,7 +274,7 @@ const ManagePackagesPage: React.FC = () => {
       if (!headers) { router.push('/login'); return; }
       
       try {
-        await axios.delete(`${apiUrl}api/admin/packages/${packageId}`, { headers });
+        await axios.delete(`${apiUrl}/api/admin/packages/${packageId}`, { headers });
         toast.success("Package deleted successfully.");
         fetchData();
       } catch (error: unknown) {
@@ -331,8 +331,8 @@ const ManagePackagesPage: React.FC = () => {
       if (!headers) { setIsSubmitting(false); router.push('/login'); return; }
       
       const endpoint = editingPackageId 
-        ? `${apiUrl}api/admin/packages/${editingPackageId}` 
-        : `${apiUrl}api/admin/packages`;
+        ? `${apiUrl}/api/admin/packages/${editingPackageId}` 
+        : `${apiUrl}/api/admin/packages`;
       const method = editingPackageId ? 'put' : 'post';
 
       const response = await axios[method](endpoint, packageData, { headers });

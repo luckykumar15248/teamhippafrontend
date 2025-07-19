@@ -92,7 +92,7 @@ const PackageCheckoutContent: React.FC = () => {
         const initiateCheckout = async () => {
              try {
                 // Call the new backend endpoint to create the booking and payment intent
-                const response = await axios.post(`${apiUrl}api/public/package-bookings/initiate-checkout`, {
+                const response = await axios.post(`${apiUrl}/api/public/package-bookings/initiate-checkout`, {
                     packageId: parseInt(packageId),
                 });
 

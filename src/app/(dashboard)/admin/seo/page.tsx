@@ -63,7 +63,7 @@ const ManageSeoPage: React.FC = () => {
         if (!headers) { router.push('/login'); return; }
 
         try {
-            const response = await axios.get(`${apiUrl}api/admin/seo`, { headers });
+            const response = await axios.get(`${apiUrl}/api/admin/seo`, { headers });
             setAllSeoData(response.data || []);
         } catch (error) {
             toast.error("Failed to load SEO data.");
@@ -89,8 +89,8 @@ const ManageSeoPage: React.FC = () => {
             
             let url = '';
             switch(entityType.toLowerCase()) {
-                case 'course': url = `${apiUrl}api/admin/courses`; break;
-                case 'package': url = `${apiUrl}api/admin/packages`; break;
+                case 'course': url = `${apiUrl}/api/admin/courses`; break;
+                case 'package': url = `${apiUrl}/api/admin/packages`; break;
                 // Add cases for other entity types like Sport, Schedule etc.
                 default: setLinkableEntities([]); return;
             }
@@ -142,7 +142,7 @@ const ManageSeoPage: React.FC = () => {
              const headers = getAuthHeaders();
              if (!headers) return;
              try {
-                await axios.delete(`${apiUrl}api/admin/seo/${seoId}`, { headers });
+                await axios.delete(`${apiUrl}/api/admin/seo/${seoId}`, { headers });
                 toast.success("SEO record deleted successfully.");
                 fetchData();
              } catch {
@@ -176,8 +176,8 @@ const ManageSeoPage: React.FC = () => {
         };
 
         const url = editingSeoId 
-            ? `${apiUrl}api/admin/seo/${editingSeoId}`
-            : `${apiUrl}api/admin/seo`;
+            ? `${apiUrl}/api/admin/seo/${editingSeoId}`
+            : `${apiUrl}/api/admin/seo`;
         const method = editingSeoId ? 'put' : 'post';
         
         try {

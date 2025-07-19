@@ -80,7 +80,7 @@ const PackageBookingPage: React.FC = () => {
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
-            axios.get(`${apiUrl}api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
+            axios.get(`${apiUrl}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
                 .then(response => {
                     const user = response.data;
                     setCurrentUser(user);
@@ -115,11 +115,11 @@ const PackageBookingPage: React.FC = () => {
     useEffect(() => {
         const packageId = params.packageId as string;
         if (packageId) {
-            axios.get(`${apiUrl}api/public/packages/${packageId}`)
+            axios.get(`${apiUrl}/api/public/packages/${packageId}`)
                 .then(res => setPkg(res.data))
                 .catch(() => toast.error("Could not load package details."));
             
-            axios.get(`${apiUrl}api/public/package-schedules/package/${packageId}`)
+            axios.get(`${apiUrl}/api/public/package-schedules/package/${packageId}`)
                 .then(res => {
                     // Filter out any schedules with undefined or null IDs
                     const validSchedules = (res.data || []).filter((schedule: PackageSchedule) => schedule.scheduleId != null);
@@ -166,7 +166,7 @@ const PackageBookingPage: React.FC = () => {
         setCouponLoading(true);
         try {
             
-            const response = await axios.post(`${apiUrl}api/public/package-bookings/validate-coupon`, { 
+            const response = await axios.post(`${apiUrl}/api/public/package-bookings/validate-coupon`, { 
                 couponCode, 
                 packageId: pkg.id 
             });
@@ -265,7 +265,7 @@ const PackageBookingPage: React.FC = () => {
                 couponCode: discount ? couponCode : null,
             };
 
-            const response = await axios.post(`${apiUrl}api/public/package-bookings/initiate`, bookingPayload);
+            const response = await axios.post(`${apiUrl}/api/public/package-bookings/initiate`, bookingPayload);
             
             if (response.data.success) {
                 const { bookingToken } = response.data.data;

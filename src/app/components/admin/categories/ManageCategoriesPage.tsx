@@ -88,7 +88,7 @@ const ManageCategoriesPage: React.FC = () => {
         if (!headers) { router.push('/login'); return; }
 
         try {
-            const response = await axios.get(`${apiUrl}api/admin/categories`, { headers });
+            const response = await axios.get(`${apiUrl}/api/admin/categories`, { headers });
             setCategories(response.data);
         } catch (error) {
             toast.error("Failed to load categories.");
@@ -144,7 +144,7 @@ const ManageCategoriesPage: React.FC = () => {
             const headers = getAuthHeaders();
             if (!headers) return;
             try {
-                await axios.delete(`${apiUrl}api/admin/categories/${category.categoryId}`, { headers });
+                await axios.delete(`${apiUrl}/api/admin/categories/${category.categoryId}`, { headers });
                 toast.success("Category deleted successfully.");
                 fetchData();
             } catch (error: unknown) {
@@ -174,10 +174,10 @@ const ManageCategoriesPage: React.FC = () => {
 
         try {
             if (editingCategory) {
-                await axios.put(`${apiUrl}api/admin/categories/${editingCategory.categoryId}`, payload, { headers });
+                await axios.put(`${apiUrl}/api/admin/categories/${editingCategory.categoryId}`, payload, { headers });
                 toast.success("Category updated successfully!");
             } else {
-                await axios.post(`${apiUrl}api/admin/categories`, payload, { headers });
+                await axios.post(`${apiUrl}/api/admin/categories`, payload, { headers });
             }
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {

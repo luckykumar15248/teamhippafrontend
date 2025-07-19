@@ -40,7 +40,7 @@ const PackagesPage: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${apiUrl}api/admin/packages`
+          `${apiUrl}/api/admin/packages`
         );
 
         setPackages((response.data || []).filter((p: Package) => p.isActive));

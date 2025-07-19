@@ -61,9 +61,9 @@ const [packages, setPackages] = useState<Package[]>([]);
     if (!headers) return;
        try {
         const [sportsRes, coursesRes, packagesRes] = await Promise.all([
-                axios.get(`${apiUrl}api/public_api/sports`),
-                axios.get(`${apiUrl}api/admin/courses`, {headers}),
-                axios.get(`${apiUrl}api/admin/packages`, {headers})
+                axios.get(`${apiUrl}/api/public_api/sports`),
+                axios.get(`${apiUrl}/api/admin/courses`, {headers}),
+                axios.get(`${apiUrl}/api/admin/packages`, {headers})
         ]);
 
         const sportsData = sportsRes.data;
@@ -81,7 +81,7 @@ const [packages, setPackages] = useState<Package[]>([]);
 
     fetchData();
 /*
-    const response=fetch(`${apiUrl}api/coupons/codes/check`)
+    const response=fetch(`${apiUrl}/api/coupons/codes/check`)
       .then(res => res.json())
       .then(data => setExistingCodes(data))
       .catch(() => toast.error('Failed to load existing codes'));
@@ -164,7 +164,7 @@ applicablePackageIds: selectedPackages
     try {
     const headers = getAuthHeaders();
     if (!headers) return;
-      const res = await axios.post(`${apiUrl}api/admin/coupons`, payload, { headers });
+      const res = await axios.post(`${apiUrl}/api/admin/coupons`, payload, { headers });
       console.log("response is", res);
          toast.success('Coupon created successfully!');
       

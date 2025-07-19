@@ -45,8 +45,8 @@ const Inquiry: React.FC = () => {
     const fetchData = async () => {
       try {
         const [sportsRes, coursesRes] = await Promise.all([
-          axios.get(`${apiUrl}api/public_api/sports`),
-          axios.get(`${apiUrl}api/public_api/courses`),
+          axios.get(`${apiUrl}/api/public_api/sports`),
+          axios.get(`${apiUrl}/api/public_api/courses`),
         ]);
         setSports(sportsRes.data);
         setCourses(coursesRes.data);
@@ -93,7 +93,7 @@ const Inquiry: React.FC = () => {
     };
 
     try {
-      await axios.post(`${apiUrl}api/public_api/inquiries`, data);
+      await axios.post(`${apiUrl}/api/public_api/inquiries`, data);
       toast.success("Inquiry submitted successfully!");
 
       // Reset form

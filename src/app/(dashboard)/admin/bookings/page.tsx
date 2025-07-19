@@ -224,7 +224,7 @@ const AdminAllBookingsPage: React.FC = () => {
 
         setIsLoading(true);
         try {
-            const response = await axios.get(`${apiUrl}api/admin/bookings`, { headers });
+            const response = await axios.get(`${apiUrl}/api/admin/bookings`, { headers });
             const sortedBookings = response.data.sort((a: AdminBookingDetails, b: AdminBookingDetails) => 
                 new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
@@ -241,7 +241,7 @@ const AdminAllBookingsPage: React.FC = () => {
         const headers = getAuthHeaders();
         if (!headers) return;
         try {
-            const response = await axios.get(`${apiUrl}api/public_api/courses`, { headers });
+            const response = await axios.get(`${apiUrl}/api/public_api/courses`, { headers });
             setAllCourses(response.data || []);
         } catch (error) {
             toast.error("Could not load courses");
@@ -317,7 +317,7 @@ const AdminAllBookingsPage: React.FC = () => {
         const headers = getAuthHeaders();
         if (!headers) return;
         try {
-            await axios.put(`${apiUrl}api/admin/bookings/${bookingId}/status`, { status: newStatus }, { headers });
+            await axios.put(`${apiUrl}/api/admin/bookings/${bookingId}/status`, { status: newStatus }, { headers });
             toast.success('Booking status updated');
             fetchData();
         } catch (error) {
@@ -330,7 +330,7 @@ const AdminAllBookingsPage: React.FC = () => {
         const headers = getAuthHeaders();
         if (!headers) return;
         try {
-            await axios.delete(`${apiUrl}api/admin/bookings/${bookingId}`, { headers });
+            await axios.delete(`${apiUrl}/api/admin/bookings/${bookingId}`, { headers });
             toast.success('Booking deleted');
             fetchData();
         } catch (error) {

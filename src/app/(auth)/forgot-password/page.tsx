@@ -28,7 +28,7 @@ const ForgotPasswordPage: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}api/auth/forgot-password`,
+        `${apiUrl}/api/auth/forgot-password`,
         { email },
         {
           headers: { "Content-Type": "application/json" },

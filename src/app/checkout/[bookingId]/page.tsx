@@ -442,7 +442,7 @@ const CheckoutPage: React.FC = () => {
         paymentIntentCreated.current = true;
        
         // Fetch booking details
-        const bookingResponse = await axios.get(`${apiUrl}api/public/booking-data/details/${bookingId}`);
+        const bookingResponse = await axios.get(`${apiUrl}/api/public/booking-data/details/${bookingId}`);
         const details = bookingResponse.data;
        
         if (!details || !details.finalAmount) {
@@ -456,7 +456,7 @@ const CheckoutPage: React.FC = () => {
         // Create PaymentIntent with idempotency key
         const idempotencyKey = `booking-${details.bookingId}-${Date.now()}`;
         
-        const paymentIntentResponse = await axios.post(`${apiUrl}api/public/payments/create-payment-intent`, {
+        const paymentIntentResponse = await axios.post(`${apiUrl}/api/public/payments/create-payment-intent`, {
           amount: Math.round(details.finalAmount * 100),
           bookingId: details.bookingId,
           currency: 'usd',
@@ -506,7 +506,7 @@ const CheckoutPage: React.FC = () => {
     return () => {
       // Cleanup function to cancel payment intent if user leaves page
       if (clientSecret) {
-        axios.post(`${apiUrl}api/public/payments/cancel-payment-intent`, {
+        axios.post(`${apiUrl}/api/public/payments/cancel-payment-intent`, {
           clientSecret
         }).catch(console.error);
       }
