@@ -87,7 +87,7 @@ const AdminEnquiriesPage = () => {
       return;
     }
     try {
-      const response = await axios.get(`${apiUrl}api/admin/inquiries`, {
+      const response = await axios.get(`${apiUrl}/api/admin/inquiries`, {
         headers,
       });
       setAllInquiries(response.data);
@@ -99,7 +99,7 @@ const AdminEnquiriesPage = () => {
 
   const fetchSports = async () => {
     try {
-      const response = await axios.get(`${apiUrl}api/public_api/sports`);
+      const response = await axios.get(`${apiUrl}/api/public_api/sports`);
       setSports(response.data);
     } catch (error) {
       toast.error("Failed to fetch sports.");
@@ -109,7 +109,7 @@ const AdminEnquiriesPage = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get(`${apiUrl}api/public_api/courses`);
+      const response = await axios.get(`${apiUrl}/api/public_api/courses`);
       setCourses(response.data);
     } catch (error) {
       toast.error("Failed to fetch courses.");
@@ -256,7 +256,7 @@ const AdminEnquiriesPage = () => {
     if (!headers) return;
     try {
       await axios.post(
-        `${apiUrl}api/admin/inquiries/bulk-status`,
+        `${apiUrl}/api/admin/inquiries/bulk-status`,
         {
           ids,
           status,
@@ -285,7 +285,7 @@ const AdminEnquiriesPage = () => {
     if (!headers) return;
     try {
       await axios.post(
-        `${apiUrl}api/admin/inquiries/delete`,
+        `${apiUrl}/api/admin/inquiries/delete`,
         { ids },
         { headers }
       );
@@ -333,7 +333,7 @@ const AdminEnquiriesPage = () => {
     if (!headers || !selectedInquiry) return;
     try {
       await axios.post(
-        `${apiUrl}api/admin/inquiries/reply`,
+        `${apiUrl}/api/admin/inquiries/reply`,
         {
           inquiryId: selectedInquiry.id,
           toEmail: selectedInquiry.visitorEmail,

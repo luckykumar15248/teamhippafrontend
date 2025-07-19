@@ -52,7 +52,7 @@ const CoursesManagement: React.FC = () => {
   useEffect(() => {
     const fetchSports = async () => {
       try {
-        const response = await axios.get(`${apiUrl}api/public_api/sports`);
+        const response = await axios.get(`${apiUrl}/api/public_api/sports`);
         setSports(response.data);
       } catch (error) {
         toast.error("Failed to fetch sports categories.");
@@ -64,7 +64,7 @@ const CoursesManagement: React.FC = () => {
       const headers = getAuthHeaders();
       if (!headers) return;
       try {
-        const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
+        const response = await axios.get(`${apiUrl}/api/admin/courses`, { headers });
         setCourses(response.data.data);
         setFilteredCourses(response.data.data);
       } catch (error) {
@@ -122,7 +122,7 @@ const CoursesManagement: React.FC = () => {
     if (!headers) return;
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
-        await axios.delete(`${apiUrl}api/admin/courses/${courseId}`, { headers });
+        await axios.delete(`${apiUrl}/api/admin/courses/${courseId}`, { headers });
         setCourses(prev => prev.filter(c => c.id !== courseId));
         toast.success("Course deleted successfully.");
       } catch (error) {

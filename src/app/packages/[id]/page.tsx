@@ -77,7 +77,7 @@ const PackageDetailPage: React.FC = () => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get(`${apiUrl}api/public/packages/${packageId}`);
+                const response = await axios.get(`${apiUrl}/api/public/packages/${packageId}`);
                 console.log("package details is",response.data);
                 setPackage(response.data);
                 setMainImage(response.data.imageUrls?.[0] || null);

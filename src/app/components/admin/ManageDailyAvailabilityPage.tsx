@@ -143,7 +143,7 @@ const ManageDailyAvailabilityPage: React.FC = () => {
     useEffect(() => {
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
-        axios.get(`${apiUrl}api/admin/courses`, { headers })
+        axios.get(`${apiUrl}/api/admin/courses`, { headers })
             .then(res => setCourses(res.data.data))
             .catch(() => toast.error("Failed to load courses."));
     }, [router]);
@@ -156,7 +156,7 @@ const ManageDailyAvailabilityPage: React.FC = () => {
         }
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
-        axios.get(`${apiUrl}api/admin/course-schedules/course/${selectedCourseId}`, { headers })
+        axios.get(`${apiUrl}/api/admin/course-schedules/course/${selectedCourseId}`, { headers })
             .then(res => {
                 setSchedules(res.data);
                 if (res.data.length > 0) {
@@ -179,7 +179,7 @@ const ManageDailyAvailabilityPage: React.FC = () => {
         try {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth() + 1;
-            const response = await axios.get(`${apiUrl}api/admin/daily-availability/schedule/${selectedScheduleId}`, {
+            const response = await axios.get(`${apiUrl}/api/admin/daily-availability/schedule/${selectedScheduleId}`, {
                 params: { year, month },
                 headers
             });
@@ -231,7 +231,7 @@ const ManageDailyAvailabilityPage: React.FC = () => {
                 scheduleName: selectedSchedule?.scheduleName || ''
             };
             
-            await axios.post(`${apiUrl}api/admin/daily-availability`, payload, { headers });
+            await axios.post(`${apiUrl}/api/admin/daily-availability`, payload, { headers });
             toast.success("Availability updated successfully!");
             fetchAvailability();
         } catch (error) {
@@ -250,7 +250,7 @@ const ManageDailyAvailabilityPage: React.FC = () => {
 
             setIsSubmitting(true);
             try {
-                await axios.delete(`${apiUrl}api/admin/daily-availability/${availabilityId}`, { headers });
+                await axios.delete(`${apiUrl}/api/admin/daily-availability/${availabilityId}`, { headers });
                 toast.success("Daily override deleted.");
                 fetchAvailability();
             } catch (error) {

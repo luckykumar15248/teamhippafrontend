@@ -71,7 +71,7 @@ export default function SportsManagement() {
       return;
     }
     try {
-      const res = await axios.get<Sport[]>(`${apiUrl}api/admin/sports`, { headers });
+      const res = await axios.get<Sport[]>(`${apiUrl}/api/admin/sports`, { headers });
       setSports(res.data);
     } catch (error) {
       console.error('Failed to load sports:', error);
@@ -103,7 +103,7 @@ export default function SportsManagement() {
       return;
     }
     try {
-      await axios.delete(`${apiUrl}api/admin/sports/${id}`, { headers });
+      await axios.delete(`${apiUrl}/api/admin/sports/${id}`, { headers });
       fetchSports(); // Refresh the list after deletion
       showMessage('Sport deleted successfully!', 'success');
     } catch (error) {
@@ -153,11 +153,11 @@ export default function SportsManagement() {
     try {
       if (editingSport) {
         // If editing, send a PUT request
-        await axios.put(`${apiUrl}api/admin/sports/${editingSport.id}`, payload, { headers });
+        await axios.put(`${apiUrl}/api/admin/sports/${editingSport.id}`, payload, { headers });
         showMessage('Sport updated successfully!', 'success');
       } else {
         // If adding, send a POST request
-        await axios.post(`${apiUrl}api/admin/sports`, payload, { headers });
+        await axios.post(`${apiUrl}/api/admin/sports`, payload, { headers });
         showMessage('Sport added successfully!', 'success');
       }
       fetchSports(); // Refresh the list after submission

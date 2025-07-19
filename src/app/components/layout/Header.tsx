@@ -5,9 +5,9 @@ import React, { useState } from "react";
 import { MenuIcon } from "../Icons/MenuIcon";
 import Image from "next/image";
 import { UserIcon } from "../Icons";
-import Login from "@/app/(auth)/login/page";
 import { Button } from "../Button";
 import MobileMenu from "../MobileMenu";
+import LoginPage from "@/app/(auth)/login/page";
 
 const Header: React.FC = () => {
   const isLoggedIn = false;
@@ -94,7 +94,7 @@ const Header: React.FC = () => {
           />
         )}
 
-      {isLogin && <Login />}
+      {isLogin && <LoginPage onClose={() => setLogin(false)} />}
     </header>
   );
 };

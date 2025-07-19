@@ -279,7 +279,7 @@ const ManagePackageSchedulesPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`${apiUrl}api/admin/packages`, {
+      const response = await axios.get(`${apiUrl}/api/admin/packages`, {
         headers,
       });
       setPackages(response.data);
@@ -300,7 +300,7 @@ const ManagePackageSchedulesPage: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${apiUrl}api/admin/package-schedules/package/${packageId}`,
+          `${apiUrl}/api/admin/package-schedules/package/${packageId}`,
           { headers }
         );
         setSchedules(response.data);
@@ -351,8 +351,8 @@ const ManagePackageSchedulesPage: React.FC = () => {
     }
 
     const endpoint = editingSchedule
-      ? `${apiUrl}api/admin/package-schedules/${editingSchedule.scheduleId}`
-      : `${apiUrl}api/admin/package-schedules`;
+      ? `${apiUrl}/api/admin/package-schedules/${editingSchedule.scheduleId}`
+      : `${apiUrl}/api/admin/package-schedules`;
 
     const method = editingSchedule ? "put" : "post";
 
@@ -387,7 +387,7 @@ const ManagePackageSchedulesPage: React.FC = () => {
 
       try {
         await axios.delete(
-          `${apiUrl}api/admin/package-schedules/${scheduleId}`,
+          `${apiUrl}/api/admin/package-schedules/${scheduleId}`,
           { headers }
         );
         toast.success("Schedule deleted successfully.");

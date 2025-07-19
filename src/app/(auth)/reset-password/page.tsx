@@ -64,7 +64,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       // API endpoint to perform the password reset
       // You will need to create this in Spring Boot
       const response = await axios.post(
-        `${apiUrl}api/auth/reset-password`,
+        `${apiUrl}/api/auth/reset-password`,
         {
           token: token,
           newPassword: password,

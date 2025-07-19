@@ -82,7 +82,7 @@ const DashboardHomePage: React.FC = () => {
       setIsLoading(true);
       try {
         const profileRes = await axios.get(
-          `${apiUrl}api/auth/me`,
+          `${apiUrl}/api/auth/me`,
           { headers }
         );
 

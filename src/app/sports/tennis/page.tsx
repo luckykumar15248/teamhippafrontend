@@ -71,10 +71,10 @@ const TennisLandingPage: React.FC = () => {
       setIsLoading(true);
       try {
         const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
-          axios.get(`${apiUrl}api/public_api/courses`),
-          axios.get(`${apiUrl}api/public/categories`),
+          axios.get(`${apiUrl}/api/public_api/courses`),
+          axios.get(`${apiUrl}/api/public/categories`),
           axios.get(
-            `${apiUrl}api/public/course-category-mappings`
+            `${apiUrl}/api/public/course-category-mappings`
           ),
         ]);
 

@@ -114,9 +114,9 @@ const CourseSchedulePage = () => {
                 try {
             // Public endpoints don't require a token
             const [schedulesRes, coursesRes, sportsRes] = await Promise.all([
-                axios.get(`${apiUrl}api/admin/course-schedules`,{headers}),
-                axios.get(`${apiUrl}api/public_api/courses`),
-                axios.get<Sport[]>(`${apiUrl}api/admin/sports`, {headers})
+                axios.get(`${apiUrl}/api/admin/course-schedules`,{headers}),
+                axios.get(`${apiUrl}/api/public_api/courses`),
+                axios.get<Sport[]>(`${apiUrl}/api/admin/sports`, {headers})
             ]);
 
            // if (!schedulesRes.ok) throw new Error('Failed to fetch schedules.');
@@ -170,7 +170,7 @@ const CourseSchedulePage = () => {
         }
 
         try {
-            const response = await fetch(`${apiUrl}api/admin/course-schedules/${scheduleToDelete.schedule_id}`, { 
+            const response = await fetch(`${apiUrl}/api/admin/course-schedules/${scheduleToDelete.schedule_id}`, { 
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -198,7 +198,7 @@ const CourseSchedulePage = () => {
     const handleSaveSchedule = useCallback(async (scheduleData: ScheduleFormData) => {
     
         const isUpdating = !!scheduleData.schedule_id;
-        const url = isUpdating ? `${apiUrl}api/admin/course-schedules/${scheduleData.schedule_id}` : `${apiUrl}api/admin/course-schedules`;
+        const url = isUpdating ? `${apiUrl}/api/admin/course-schedules/${scheduleData.schedule_id}` : `${apiUrl}/api/admin/course-schedules`;
         const method = isUpdating ? 'PUT' : 'POST';
         
         // --- UPDATED: Added Authorization header ---

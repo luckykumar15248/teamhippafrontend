@@ -158,14 +158,14 @@ const UserDashboardPage: React.FC = () => {
         setIsLoading(true);
         try {
             if (!user) {
-                const profileRes = await axios.get(`${apiUrl}api/auth/me`, { headers });
+                const profileRes = await axios.get(`${apiUrl}/api/auth/me`, { headers });
                 console.log("auth response is ---------------->",profileRes.data )
                 setUser(profileRes.data);
             }
             
             const [upcomingRes, pastRes] = await Promise.all([
-                axios.get(`${apiUrl}api/users/bookings/upcoming`, { headers }),
-                axios.get(`${apiUrl}api/users/bookings/past`, { headers })
+                axios.get(`${apiUrl}/api/users/bookings/upcoming`, { headers }),
+                axios.get(`${apiUrl}/api/users/bookings/past`, { headers })
             ]);
 
             setAllUpcomingBookings(upcomingRes.data || []);

@@ -35,7 +35,7 @@ const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
       try {
         setLoading(true);
         const response = await axios.get(
-          `${apiUrl}api/public_api/courses/${id}`
+          `${apiUrl}/api/public_api/courses/${id}`
         );
         const courseData: Course = {
           ...response.data,

@@ -177,7 +177,7 @@ const PackageBookingRulesPage = () => {
     }
 
     try {
-      const response = await axios.get(`${apiUrl}api/admin/packages`, {
+      const response = await axios.get(`${apiUrl}/api/admin/packages`, {
         headers,
       });
       setPackages(response.data);
@@ -197,7 +197,7 @@ const PackageBookingRulesPage = () => {
 
       try {
         const response = await axios.get(
-          `${apiUrl}api/admin/package-schedules/package/${packageId}`,
+          `${apiUrl}/api/admin/package-schedules/package/${packageId}`,
           { headers }
         );
         setSchedules(response.data);
@@ -221,7 +221,7 @@ const PackageBookingRulesPage = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${apiUrl}api/admin/package-booking-rules/schedule/${scheduleId}`,
+          `${apiUrl}/api/admin/package-booking-rules/schedule/${scheduleId}`,
           { headers }
         );
         setRules(response.data);
@@ -293,7 +293,7 @@ const PackageBookingRulesPage = () => {
 
     try {
       await axios.delete(
-        `${apiUrl}api/admin/package-booking-rules/${ruleToDelete.rule_id}`,
+        `${apiUrl}/api/admin/package-booking-rules/${ruleToDelete.rule_id}`,
         { headers }
       );
       toast.success("Rule deleted successfully.");
@@ -320,8 +320,8 @@ const PackageBookingRulesPage = () => {
     }
 
     const endpoint = isUpdating
-      ? `${apiUrl}api/admin/package-booking-rules/${ruleData.rule_id}`
-      : `${apiUrl}api/admin/package-booking-rules`;
+      ? `${apiUrl}/api/admin/package-booking-rules/${ruleData.rule_id}`
+      : `${apiUrl}/api/admin/package-booking-rules`;
 
     const method = isUpdating ? "put" : "post";
 

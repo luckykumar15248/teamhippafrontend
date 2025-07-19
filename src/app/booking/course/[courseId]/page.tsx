@@ -93,7 +93,7 @@ const BookingPage: React.FC = () => {
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
-            axios.get(`${apiUrl}api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
+            axios.get(`${apiUrl}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
                 .then(response => {
                     const user = response.data;
                     setCurrentUser(user);
@@ -129,11 +129,11 @@ const BookingPage: React.FC = () => {
     useEffect(() => {
         const courseId = params.courseId as string;
         if (courseId) {
-            axios.get(`${apiUrl}api/public_api/courses/${courseId}`)
+            axios.get(`${apiUrl}/api/public_api/courses/${courseId}`)
                 .then(res => setCourse(res.data))
                 .catch(() => toast.error("Could not load course details."));
             
-            axios.get(`${apiUrl}api/public/course-schedules/course/${courseId}`)
+            axios.get(`${apiUrl}/api/public/course-schedules/course/${courseId}`)
                 .then(res => {
                     setSchedules(res.data || []);
                     if (res.data && res.data.length > 0) {
@@ -156,7 +156,7 @@ const BookingPage: React.FC = () => {
 
         if (fetchedMonths.has(monthKey)) return;
         try {
-            const response = await axios.get(`${apiUrl}api/public/booking-data/availability/schedule/${selectedScheduleId}`, { params: { year, month } });
+            const response = await axios.get(`${apiUrl}/api/public/booking-data/availability/schedule/${selectedScheduleId}`, { params: { year, month } });
             const dataMap = new Map<string, AvailabilitySlot>();
             (response.data || []).forEach((slot: AvailabilitySlot) => dataMap.set(slot.date, slot));
             
@@ -206,7 +206,7 @@ const BookingPage: React.FC = () => {
         if (!course) { toast.error("Course information not loaded."); return; }
         setCouponLoading(true);
         try {
-            const response = await axios.post(`${apiUrl}api/public/booking-data/validate-coupon`, { couponCode, courseId: course.id  });
+            const response = await axios.post(`${apiUrl}/api/public/booking-data/validate-coupon`, { couponCode, courseId: course.id  });
             // CORRECTED: Use 'valid' to match the API response
             console.log("Coupon validation response:", response.data);
             const { valid, message, discountType, discountValue } = response.data;
@@ -247,7 +247,7 @@ const BookingPage: React.FC = () => {
                 finalAmount: priceDetails.finalPrice
             };
 
-            const response = await axios.post(`${apiUrl}api/public/booking-data/initiate-booking`, bookingPayload);
+            const response = await axios.post(`${apiUrl}/api/public/booking-data/initiate-booking`, bookingPayload);
             
             if (response.data.success) {
                 const { bookingId } = response.data.data;

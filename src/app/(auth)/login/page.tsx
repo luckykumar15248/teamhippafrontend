@@ -11,7 +11,7 @@ import Input from "@/app/components/Input";
 import Image from "next/image";
 import { CloseIcon } from "@/app/components/Icons/CloseIcon";
 
-const LoginPage = () => {
+const LoginPage = ({onClose}:{onClose: () => void}) => {
   const [activeModal, setActiveModal] = useState<"login" | "register">("login");
   const [loginFormData, setLoginFormData] = useState({
     identifier: "",
@@ -65,7 +65,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}api/auth/login`,
+        `${apiUrl}/api/auth/login`,
         {
           usernameOrEmail: loginFormData.identifier,
           password: loginFormData.password,
@@ -135,7 +135,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}api/auth/register`,
+        `${apiUrl}/api/auth/register`,
         {
           firstName: registerFormData.firstName,
           lastName: registerFormData.lastName,
@@ -170,19 +170,20 @@ const LoginPage = () => {
     }
   };
 
-  const handleClose = () => {
-    router.push('/');
-  };
+
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div
+     className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+     onClick={onClose}
+     >
       {activeModal === "login" ? (
         <div 
           onClick={(e) => e.stopPropagation()}
           className="relative max-w-md md:max-w-4xl w-full flex space-y-8 bg-white rounded-xl shadow-lg"
         >
           <CloseIcon
-            onClick={handleClose}
+            onClick={onClose}
             className="absolute right-5 top-4 cursor-pointer"
           />
 

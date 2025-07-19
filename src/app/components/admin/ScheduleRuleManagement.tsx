@@ -105,7 +105,7 @@ const CourseBookingRulesPage = () => {
         
         setIsLoading(true);
         try {
-            const response = await axios.get(`${apiUrl}api/admin/course-schedules`, { headers });
+            const response = await axios.get(`${apiUrl}/api/admin/course-schedules`, { headers });
             setSchedules(response.data);
         } catch (error) {
             console.error("Failed to fetch schedules:", error);
@@ -121,7 +121,7 @@ const CourseBookingRulesPage = () => {
 
         setIsLoading(true);
         try {
-            const response = await axios.get(`${apiUrl}api/admin/booking-rules/rules/${scheduleId}`, { headers });
+            const response = await axios.get(`${apiUrl}/api/admin/booking-rules/rules/${scheduleId}`, { headers });
             setRules(response.data);
         } catch (error) {
             console.error(`Failed to fetch rules for schedule ${scheduleId}:`, error);
@@ -174,7 +174,7 @@ const CourseBookingRulesPage = () => {
         if (!headers) { router.push('/login'); return; }
         
         try {
-            await axios.delete(`${apiUrl}api/admin/booking-rules/${ruleToDelete.rule_id}`, { headers });
+            await axios.delete(`${apiUrl}/api/admin/booking-rules/${ruleToDelete.rule_id}`, { headers });
             toast.success("Rule deleted successfully.");
             setRules(prevRules => prevRules.filter(rule => rule.rule_id !== ruleToDelete.rule_id));
         } catch (error) {
@@ -191,8 +191,8 @@ const CourseBookingRulesPage = () => {
         if (!headers) { router.push('/login'); return; }
         
         const endpoint = isUpdating 
-            ? `${apiUrl}api/admin/booking-rules/${ruleData.rule_id}` 
-            : `${apiUrl}api/admin/booking-rules`;
+            ? `${apiUrl}/api/admin/booking-rules/${ruleData.rule_id}` 
+            : `${apiUrl}/api/admin/booking-rules`;
         
         const method = isUpdating ? 'put' : 'post';
         

@@ -79,7 +79,7 @@ const VerifyEmailForm: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `${apiUrl}api/auth/verify-email`,
+        `${apiUrl}/api/auth/verify-email`,
         null,
         { params: { email, otp: enteredOtp } }
       );
@@ -123,7 +123,7 @@ const VerifyEmailForm: React.FC = () => {
     setIsResending(true);
     try {
       const response = await axios.post(
-        `${apiUrl}api/auth/resend-otp`,
+        `${apiUrl}/api/auth/resend-otp`,
         null,
         { params: { email } }
       );

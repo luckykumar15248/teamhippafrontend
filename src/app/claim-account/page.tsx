@@ -56,7 +56,7 @@ const ClaimAccountForm: React.FC = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
         const response = await axios.get(
-          `${apiUrl}api/public/booking-data/guest-details/${token}`
+          `${apiUrl}/api/public/booking-data/guest-details/${token}`
         );
         const guestInfo = response.data;
         console.log("Guest Info:", response.data);
@@ -95,7 +95,7 @@ const ClaimAccountForm: React.FC = () => {
       // TODO: You will need to create this backend endpoint.
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-      await axios.post(`${apiUrl}api/auth/convert-guest`, {
+      await axios.post(`${apiUrl}/api/auth/convert-guest`, {
         token,
         username,
         password,

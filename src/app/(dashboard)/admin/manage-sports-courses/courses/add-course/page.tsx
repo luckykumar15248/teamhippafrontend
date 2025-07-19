@@ -58,7 +58,7 @@ const AddNewCoursePage: React.FC = () => {
   useEffect(() => {
     const fetchSports = async () => {
       try {
-        const response = await axios.get(`${apiUrl}api/public_api/sports`);
+        const response = await axios.get(`${apiUrl}/api/public_api/sports`);
         setSports(response.data);
       } catch (error){
         toast.error("Failed to fetch sports categories.");
@@ -70,7 +70,7 @@ const AddNewCoursePage: React.FC = () => {
       const headers = getAuthHeaders();
     if (!headers) return;
       try {
-        const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
+        const response = await axios.get(`${apiUrl}/api/admin/courses`, { headers });
        //const coursesData = Array.isArray(response.data) ? response.data : [];
         setCourses(response.data.data);
         setFilteredCourses(response.data.data);
@@ -181,14 +181,14 @@ const AddNewCoursePage: React.FC = () => {
 
       if (courseId) {
        
-        await axios.put(`${apiUrl}api/admin/courses/${courseId}`, courseData, { headers });
+        await axios.put(`${apiUrl}/api/admin/courses/${courseId}`, courseData, { headers });
         toast.success(`Course "${courseName}" updated successfully!`);
       } else {
-        await axios.post(`${apiUrl}api/admin/courses`, courseData, { headers } );
+        await axios.post(`${apiUrl}/api/admin/courses`, courseData, { headers } );
         toast.success(`Course "${courseName}" created successfully!`);
       }
 
-      const response = await axios.get(`${apiUrl}api/admin/courses`, { headers });
+      const response = await axios.get(`${apiUrl}/api/admin/courses`, { headers });
       //const coursesData = Array.isArray(response.data) ? response.data : [];
       setCourses(response.data.data);
       
@@ -225,7 +225,7 @@ const AddNewCoursePage: React.FC = () => {
         if (!headers) return;
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
-        await axios.delete(`${apiUrl}api/admin/courses/${courseId}`, { headers });
+        await axios.delete(`${apiUrl}/api/admin/courses/${courseId}`, { headers });
         setCourses(prev => prev.filter(c => c.id !== courseId));
         toast.success("Course deleted successfully.");
       } catch (error){

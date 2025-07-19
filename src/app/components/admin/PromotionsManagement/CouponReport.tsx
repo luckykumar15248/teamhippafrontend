@@ -74,11 +74,11 @@ const getAuthHeaders = () => {
           packagesRes,
           //codesRes
         ] = await Promise.all([
-          axios.get(`${apiUrl}api/admin/coupons`, {headers}),
-          axios.get(`${apiUrl}api/public_api/sports`),
-          axios.get(`${apiUrl}api/admin/courses`, {headers}),
-          axios.get(`${apiUrl}api/admin/packages`, {headers}),
-          //axios.get(`${apiUrl}api/admin/coupons/check`)
+          axios.get(`${apiUrl}/api/admin/coupons`, {headers}),
+          axios.get(`${apiUrl}/api/public_api/sports`),
+          axios.get(`${apiUrl}/api/admin/courses`, {headers}),
+          axios.get(`${apiUrl}/api/admin/packages`, {headers}),
+          //axios.get(`${apiUrl}/api/admin/coupons/check`)
         ]);
 
         setCoupons(couponsRes.data);
@@ -103,7 +103,7 @@ const getAuthHeaders = () => {
       const headers = getAuthHeaders();
     if (!headers) return;
     try {
-      await axios.delete(`${apiUrl}api/admin/coupons/${couponId}`, {headers});
+      await axios.delete(`${apiUrl}/api/admin/coupons/${couponId}`, {headers});
       setCoupons(prev => prev.filter(c => c.id !== couponId));
       toast.success('Coupon deleted successfully');
     } catch (error) {
@@ -116,7 +116,7 @@ const getAuthHeaders = () => {
       const headers = getAuthHeaders();
     if (!headers) return;
     try {
-      const res = await axios.get(`${apiUrl}api/admin/coupons/${couponId}`, {headers});
+      const res = await axios.get(`${apiUrl}/api/admin/coupons/${couponId}`, {headers});
       setSelectedCoupon(res.data[0]);
     } catch (error) {
       toast.error('Failed to fetch coupon details');
@@ -128,7 +128,7 @@ const getAuthHeaders = () => {
       const headers = getAuthHeaders();
     if (!headers) return;
     try {
-      const res = await axios.get(`${apiUrl}api/admin/coupons/${couponId}`, {headers});
+      const res = await axios.get(`${apiUrl}/api/admin/coupons/${couponId}`, {headers});
       setEditingCoupon(res.data[0]);
     } catch (error) {
       toast.error('Failed to load coupon for editing');
@@ -192,7 +192,7 @@ const getAuthHeaders = () => {
     if (!editingCoupon) return;
     
     try {
-      await axios.put(`${apiUrl}api/admin/coupons/${editingCoupon.id}`, editingCoupon, {headers});
+      await axios.put(`${apiUrl}/api/admin/coupons/${editingCoupon.id}`, editingCoupon, {headers});
       toast.success('Coupon updated successfully');
       setEditingCoupon(null);
       setCoupons(prev => prev.map(c => c.id === editingCoupon.id ? editingCoupon : c));
