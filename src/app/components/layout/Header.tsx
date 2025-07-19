@@ -7,7 +7,8 @@ import Image from "next/image";
 import { UserIcon } from "../Icons";
 import { Button } from "../Button";
 import MobileMenu from "../MobileMenu";
-import LoginPage from "@/app/(auth)/login/page";
+import LoginPage from "../login";
+
 
 const Header: React.FC = () => {
   const isLoggedIn = false;
