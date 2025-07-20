@@ -50,7 +50,7 @@ interface CourseCategoryMapping {
   categoryId: number;
 }
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
+const frontendServerUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL;
 type SelectableItem = (Course | Package) & { type: "course" | "package" };
 
 // --- SVG Icons ---
@@ -293,7 +293,7 @@ const CoursesAndPackagesPage: React.FC = () => {
           (course: Course) => ({
             ...course,
             imagePaths: (course.imagePaths || []).map((path) =>
-              path.startsWith("http") ? path : `http://localhost:3000${path}`
+              path.startsWith("http") ? path : `${frontendServerUrl}${path}`
             ),
           })
         );
