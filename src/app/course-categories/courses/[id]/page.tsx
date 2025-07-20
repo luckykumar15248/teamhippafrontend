@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams} from "next/navigation";
+import { useParams, useRouter} from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
@@ -24,12 +24,13 @@ interface Course {
   imagePaths: string[];
 }
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const frontendServerUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL;
 const CourseDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
-
+const router = useRouter();
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -40,7 +41,7 @@ const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
         const courseData: Course = {
           ...response.data,
           imagePaths: (response.data.imagePaths || []).map((path: string) =>
-            path.startsWith("http") ? path : `http://localhost:3000${path}`
+            path.startsWith("http") ? path : `${frontendServerUrl}${path}`
           ),
         };
         setCourse(courseData);
@@ -158,7 +159,7 @@ const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
               <Button
                 onClick={() => {
                   toast.info("Redirecting to booking page...");
-                  // router.push(`/booking/course/${course.id}`);
+                   router.push(`/booking/course/${course.id}`);
                 }}
                 className="mt-6 w-full text-white font-bold py-3 px-6 shadow transition duration-200"
               >
