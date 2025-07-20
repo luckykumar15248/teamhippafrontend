@@ -53,7 +53,7 @@ const RegisterPage = () => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}/api/auth/register`,
+        `${apiUrl}/api/auth/signup`,
         {
           firstName: formData.firstName,
           lastName: formData.lastName,
