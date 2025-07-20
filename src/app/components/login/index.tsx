@@ -135,7 +135,7 @@ const LoginPage = ({onClose}:{onClose: () => void}) => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}/api/auth/register`,
+        `${apiUrl}/api/auth/signup`,
         {
           firstName: registerFormData.firstName,
           lastName: registerFormData.lastName,
