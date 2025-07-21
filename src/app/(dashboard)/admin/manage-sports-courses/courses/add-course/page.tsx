@@ -377,7 +377,7 @@ const AddNewCoursePage: React.FC = () => {
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs leading-5 text-gray-600">PNG, JPG, WEBP up to 5MB</p>
-                </div>
+                </div>d
               </div>
               
               {imagePreviews.length > 0 && (
@@ -386,6 +386,8 @@ const AddNewCoursePage: React.FC = () => {
                     <div key={index} className="relative group">
                       <Image
                         src={src}
+                        height={100}
+                        width={100}
                         alt={`Preview ${index + 1}`}
                         className="h-24 w-full object-cover rounded-md"
                       />
