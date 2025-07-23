@@ -377,7 +377,7 @@ const AddNewCoursePage: React.FC = () => {
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs leading-5 text-gray-600">PNG, JPG, WEBP up to 5MB</p>
-                </div>d
+                </div>
               </div>
               
               {imagePreviews.length > 0 && (
