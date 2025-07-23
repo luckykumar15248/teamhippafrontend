@@ -19,8 +19,9 @@ export async function POST(request: Request) {
     // Create an array of promises for all file uploads
     const uploadPromises = files.map(file => {
       // Use the original filename for the blob store, replacing spaces
-      const filename = file.name.replace(/\s+/g, '_');
-      
+      //const filename = file.name.replace(/\s+/g, '_');
+        const filename = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+       // const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
       // The 'put' function uploads the file to Vercel Blob
       return put(filename, file, {
         access: 'public', // Make the file publicly accessible
