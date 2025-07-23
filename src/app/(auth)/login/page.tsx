@@ -13,7 +13,7 @@ import Image from "next/image";
 // Define a type for the user data to be parsed from localStorage
 
 
-const SimpleLoginPage = () => {
+const LoginPage = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -159,4 +159,4 @@ const SimpleLoginPage = () => {
   );
 };
 
-export default SimpleLoginPage;
+export default LoginPage;
