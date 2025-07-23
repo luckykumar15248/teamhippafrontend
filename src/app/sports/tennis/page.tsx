@@ -77,6 +77,9 @@ const TennisLandingPage: React.FC = () => {
             `${apiUrl}/api/public/course-category-mappings`
           ),
         ]);
+        console.log("Course data is ", coursesRes)
+        console.log("categories data is ", categoriesRes)
+        console.log("course-category-mappings data is ", mappingsRes)
 
         const allFetchedCourses = coursesRes.data || [];
         const allFetchedCategories = categoriesRes.data || [];
