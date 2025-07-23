@@ -7,7 +7,7 @@ import Image from "next/image";
 import { UserIcon } from "../Icons";
 import { Button } from "../Button";
 import MobileMenu from "../MobileMenu";
-import LoginPage from "../login";
+import LoginPage from "../../(auth)/login/page";
 
 
 const Header: React.FC = () => {
@@ -63,12 +63,11 @@ const Header: React.FC = () => {
               </Link>
             ) : (
               <>
-                <Button
-                  onClick={LoginClick}
-                  className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
-                >
-                  <UserIcon className="text-white" />
+                <Button>
+                  <Link href="/login" className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150">
+                      <UserIcon className="text-white" />
                   Login/Register
+                  </Link>
                 </Button>
               </>
             )}
@@ -95,7 +94,7 @@ const Header: React.FC = () => {
           />
         )}
 
-      {isLogin && <LoginPage onClose={() => setLogin(false)} />}
+
     </header>
   );
 };
