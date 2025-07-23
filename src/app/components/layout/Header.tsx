@@ -7,16 +7,14 @@ import Image from "next/image";
 import { UserIcon } from "../Icons";
 import { Button } from "../Button";
 import MobileMenu from "../MobileMenu";
-import LoginPage from "../login";
-
 
 const Header: React.FC = () => {
   const isLoggedIn = false;
-  const [isLogin, setLogin] = useState(false);
+ 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const LoginClick = () => {
-    setLogin((prev) => !prev);
+  
   };
 
     const toggleMobileMenu = () => {
@@ -63,13 +61,15 @@ const Header: React.FC = () => {
               </Link>
             ) : (
               <>
-                <Button
-                  onClick={LoginClick}
+              <Button>
+                <Link
+                  href="/login"
                   className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
                 >
                   <UserIcon className="text-white" />
                   Login/Register
-                </Button>
+                </Link>
+              </Button>
               </>
             )}
           </div>
@@ -95,7 +95,7 @@ const Header: React.FC = () => {
           />
         )}
 
-      {isLogin && <LoginPage onClose={() => setLogin(false)} />}
+  
     </header>
   );
 };
