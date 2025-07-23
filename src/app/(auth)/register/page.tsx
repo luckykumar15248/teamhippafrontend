@@ -10,13 +10,12 @@ import Input from "@/app/components/Input";
 import { Button } from "@/app/components/Button";
 import { AppleIcon, GoogleIcon } from "@/app/components/Icons";
 import Image from "next/image";
-import { CloseIcon } from "@/app/components/Icons/CloseIcon";
 
-// ✅ FIX: Removed RegisterProps as page components have specific props from Next.js
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-const Register: React.FC = () => { // ✅ FIX: Component no longer accepts custom props
+
+const RegisterPage: React.FC = () => {
   const router = useRouter();
- const [firstName, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -24,11 +23,6 @@ const Register: React.FC = () => { // ✅ FIX: Component no longer accepts custo
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // ✅ FIX: New handler to navigate away when "closing" the page/modal
-  const handleClose = () => {
-    router.back(); // Or router.push('/') to always go to the homepage
-  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,11 +44,11 @@ const Register: React.FC = () => { // ✅ FIX: Component no longer accepts custo
 
     try {
       const res = await axios.post(
-        `${apiUrl}/api/auth/signup`, // Corrected URL concatenation
-        { username, email, password },
+        `${apiUrl}/api/auth/signup`,
+        // ✅ FIX: Added firstName and lastName to the API request payload
+        { firstName, lastName, username, email, password },
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: false,
         }
       );
 
@@ -83,31 +77,24 @@ const Register: React.FC = () => { // ✅ FIX: Component no longer accepts custo
   };
 
   return (
-    <div
-      onClick={handleClose} // ✅ FIX: Use the new handler
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    >
+    // ✅ FIX: Changed from modal to full-page layout
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <div
-        onClick={(e) => e.stopPropagation()}
-        className="relative max-w-md md:max-w-4xl w-full flex space-y-8 bg-white rounded-xl shadow-lg"
+        className="relative max-w-md md:max-w-4xl w-full flex bg-white rounded-xl shadow-lg overflow-hidden"
       >
-        <CloseIcon
-          onClick={handleClose} // ✅ FIX: Use the new handler
-          className="absolute right-5 top-4 cursor-pointer"
-        />
-        <div className="hidden w-1/2 md:flex flex-col p-6 justify-between items-center  mb-0 bg-[url('/images/login-banner.png')] bg-cover bg-center rounded-l-xl">
-          <div className="w-full flex justify-baseline">
+        <div className="hidden w-1/2 md:flex flex-col p-6 justify-between items-center bg-[url('/images/login-banner.png')] bg-cover bg-center rounded-l-xl">
+          <div className="w-full flex justify-start">
             <Link href="/">
               <Image
                 src="/images/logo.png"
-                alt="eamHippa-logo"
+                alt="TeamHippa-logo"
                 width={150}
                 height={50}
                 className="w-22 h-16"
               />
             </Link>
           </div>
-          <div className="">
+          <div>
             <Link href="/" className="flex items-center gap-2">
               <h1 className="text-2xl font-bold text-white">TeamHippa</h1>
             </Link>
@@ -116,134 +103,132 @@ const Register: React.FC = () => { // ✅ FIX: Component no longer accepts custo
         <div className="p-10 w-full md:w-1/2">
           <div>
             <h2 className="text-3xl font-semibold text-[#b0db72]">
-              Register Yourself!
+              Create an Account
             </h2>
             <p className="mt-2 text-base font-semibold text-gray-600">
-              Enter your information to register for
+              Enter your information to get started.
             </p>
           </div>
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             {error && (
-              <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+              <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
                 <p>{error}</p>
               </div>
             )}
-            <div className="rounded-md shadow-sm -space-y-px">
-
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
-                label="First Name*"
                 id="firstName"
                 name="firstName"
                 type="text"
-                placeholder="Enter your first name"
+                placeholder="First Name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
                 disabled={isLoading}
               />
               <Input
-                label="Last Name*"
                 id="lastName"
                 name="lastName"
                 type="text"
-                placeholder="Enter your last name"
+                placeholder="Last Name"
                 value={lastName}
-                 onChange={(e) => setLastName(e.target.value)}
+                onChange={(e) => setLastName(e.target.value)}
                 required
                 disabled={isLoading}
               />
             </div>
-              <div>
-                <Input
-                  id="username"
-                  name="username"
-                  type="text"
-                  autoComplete="username"
-                  required
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="mt-2">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="mt-2">
-                <Input
-                  id="password_register"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="mt-2">
-                <Input
-                  id="confirm-password"
-                  name="confirm-password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  placeholder="Confirm Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
+            
+            <Input
+              id="username"
+              name="username"
+              type="text"
+              autoComplete="username"
+              required
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
+            />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+            />
+            <Input
+              id="password_register"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+            />
+            <Input
+              id="confirm-password"
+              name="confirm-password"
+              type="password"
+              autoComplete="new-password"
+              required
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={isLoading}
+            />
 
             <div>
               <Button
                 type="submit"
                 isLoading={isLoading}
-                className="text-white px-4 py-2 rounded w-full"
+                className="text-white px-4 py-2 rounded w-full bg-indigo-600 hover:bg-indigo-700"
               >
                 Create Account
               </Button>
             </div>
           </form>
 
-          <div className="mt-6 grid grid-cols-1 gap-3">
-            <div>
-              <Button
-                type="button"
-                isLoading={isLoading}
-                className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm !font-medium !text-black hover:bg-gray-50 disabled:opacity-50"
-              >
-                <GoogleIcon className="min-w-4 min-h-4" />
-                Sign in with Google
-              </Button>
+          <div className="mt-6">
+             <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  Or continue with
+                </span>
+              </div>
             </div>
-            <div>
-              <Button
-                type="button"
-                isLoading={isLoading}
-                className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm !font-medium !text-black hover:bg-gray-50 disabled:opacity-50"
-              >
-                <AppleIcon className="min-w-4 min-h-4" />
-                Sign in with Apple
-              </Button>
+
+            <div className="mt-6 grid grid-cols-1 gap-3">
+                <Button
+                  type="button"
+                  isLoading={isLoading}
+                  className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm !font-medium !text-black hover:bg-gray-50 disabled:opacity-50"
+                >
+                  <GoogleIcon className="min-w-4 min-h-4" />
+                  Sign up with Google
+                </Button>
+                <Button
+                  type="button"
+                  isLoading={isLoading}
+                  className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm !font-medium !text-black hover:bg-gray-50 disabled:opacity-50"
+                >
+                  <AppleIcon className="min-w-4 min-h-4" />
+                  Sign up with Apple
+                </Button>
             </div>
-            <p className="mt-2 text-center text-base font-normal text-gray-600">
+            <p className="mt-4 text-center text-sm text-gray-600">
               <Link href="/login">
                 Already have an account?{" "}
-                <span className="text-[#b0db72] hover:text-[#64a506]">
+                <span className="font-medium text-[#b0db72] hover:text-[#64a506]">
                   Log in
                 </span>
               </Link>
@@ -255,4 +240,4 @@ const Register: React.FC = () => { // ✅ FIX: Component no longer accepts custo
   );
 };
 
-export default Register;
+export default RegisterPage;
