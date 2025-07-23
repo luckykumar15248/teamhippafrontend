@@ -7,16 +7,14 @@ import Image from "next/image";
 import { UserIcon } from "../Icons";
 import { Button } from "../Button";
 import MobileMenu from "../MobileMenu";
-import LoginPage from "../../(auth)/login/page";
-
 
 const Header: React.FC = () => {
   const isLoggedIn = false;
-  const [isLogin, setLogin] = useState(false);
+ 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const LoginClick = () => {
-    setLogin((prev) => !prev);
+    
   };
 
     const toggleMobileMenu = () => {

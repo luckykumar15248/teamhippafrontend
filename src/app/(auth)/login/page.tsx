@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -11,10 +11,7 @@ import Input from "@/app/components/Input";
 import Image from "next/image";
 
 // Define a type for the user data to be parsed from localStorage
-interface UserData {
-  roleName: "ADMIN" | "VISITOR_REGISTERED" | "USER" | string;
-  // Add other user properties if needed
-}
+
 
 const SimpleLoginPage = () => {
   const [identifier, setIdentifier] = useState("");
