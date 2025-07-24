@@ -20,7 +20,7 @@ import FAQ from "@/app/components/FAQ";
 interface Course {
   id: number;
   name: string;
-  sportName: string;
+  sportName: string; // sportName must be a string
   shortDescription: string;
   basePriceInfo: string;
   description: string;
@@ -78,17 +78,22 @@ const PickleballLandingPage: React.FC = () => {
 
         const bookableCourseIds = new Set(
           allFetchedMappings
-            // .filter((m: CourseCategoryMapping) => m.categoryId === bookableCategory?.categoryId)
             .map((m: CourseCategoryMapping) => m.courseId)
         );
 
-        // Filter for courses that are active and belong to "Pickleball"
-        const filteredPickleballCourses = allFetchedCourses.filter(
-          (c: Course) =>
-            c.isActive &&
-            c.sportName.toLowerCase() === "pickleball" &&
-            bookableCourseIds.has(c.id)
-        );
+        // Ensure sportName is a string and filter out courses with null sportName
+        const filteredPickleballCourses = allFetchedCourses
+          .filter(
+            (c: Course) =>
+              c.isActive &&
+              typeof c.sportName === "string" &&
+              c.sportName.toLowerCase() === "pickleball" &&
+              bookableCourseIds.has(c.id)
+          )
+          .map((c: Course) => ({
+            ...c,
+            sportName: c.sportName ?? "", // fallback to empty string if null
+          }));
 
         setPickleballCourses(filteredPickleballCourses);
         setCategories(
@@ -146,8 +151,6 @@ const PickleballLandingPage: React.FC = () => {
   const handleBookNow = (item: SelectableItem) => {
     console.log(`Navigating to book ${item.type} with ID ${item.id}`);
     toast.info(`Redirecting to book "${item.name}"...`);
-    // router.push(`/booking?type=${item.type}&id=${item.id}`);
-    console.log("item type is", item.type);
     router.push(`/booking/course/${item.id}`);
   };
 
@@ -242,8 +245,8 @@ const PickleballLandingPage: React.FC = () => {
           </div>
         </div>
       </section>
-      <section className="bg-gray-100  text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto flex flex-col-reverse  md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
+      <section className="bg-gray-100  text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
+        <div className="max-w-screen-2xl mx-auto flex flex-col-reverse  md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
             <img
               src="/images/offerings.jpg"
