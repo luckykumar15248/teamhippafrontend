@@ -13,8 +13,6 @@ import SportsHeroSection from "@/app/components/SportsHeroSection";
 import FAQ from "@/app/components/FAQ";
 import {
   ABOUT_FAQS,
-  CAMP_DETAILS,
-  COACH_LIST,
   PROGRAMS,
 } from "@/untils/constant";
 import Image from "next/image";
@@ -29,7 +27,7 @@ import { Button } from "@/app/components/Button";
 interface Course {
   id: number;
   name: string;
-  sportName: string;
+  sportName: string | null;
   shortDescription: string;
   basePriceInfo: string;
   description: string;
@@ -91,13 +89,14 @@ const TennisLandingPage: React.FC = () => {
 
         const bookableCourseIds = new Set(
           allFetchedMappings
-            // .filter((m: CourseCategoryMapping) => m.categoryId === bookableCategory?.categoryId)
             .map((m: CourseCategoryMapping) => m.courseId)
         );
 
+        // ✅ FIX: Added a null check for sportName before calling .toLowerCase()
         const filteredTennisCourses = allFetchedCourses.filter(
           (c: Course) =>
             c.isActive &&
+            c.sportName && // Ensure sportName is not null
             c.sportName.toLowerCase() === "tennis" &&
             bookableCourseIds.has(c.id)
         );
@@ -158,8 +157,6 @@ const TennisLandingPage: React.FC = () => {
   const handleBookNow = (item: SelectableItem) => {
     console.log(`Navigating to book ${item.type} with ID ${item.id}`);
     toast.info(`Redirecting to book "${item.name}"...`);
-    // router.push(`/booking?type=${item.type}&id=${item.id}`);
-    console.log("item type is", item.type);
     router.push(`/booking/course/${item.id}`);
   };
 
@@ -175,7 +172,7 @@ const TennisLandingPage: React.FC = () => {
     <>
       <SportsHeroSection
         bgImage="/images/tennis.png"
-        title="Tennis Programs"
+        title="Tennis Academy"
         description="Master the court with our world-class tennis programs, designed for all ages and skill levels, from beginner to high performance."
       />
 
@@ -191,7 +188,10 @@ const TennisLandingPage: React.FC = () => {
                   {courseList.map((course) => (
                     <TennisCourseCard
                       key={course.id}
-                      course={course}
+                      course={{
+                        ...course,
+                        sportName: course.sportName ?? ""
+                      }}
                       onNavigate={handleNavigate}
                       onBookNow={() =>
                         handleBookNow({ ...course, type: "course" })
@@ -262,7 +262,7 @@ const TennisLandingPage: React.FC = () => {
           </Swiper>
         </div>
       </section>
-
+{/* 
       <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto">
           <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-8">
@@ -278,8 +278,8 @@ const TennisLandingPage: React.FC = () => {
                 <Image
                   src={coach.img}
                   alt={coach.name}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{objectFit: 'cover'}}
                   className="group-hover:scale-105 transition-transform duration-300"
                 />
 
@@ -297,7 +297,7 @@ const TennisLandingPage: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-white text-center">
         <div className="max-w-screen-2xl mx-auto">
@@ -312,7 +312,7 @@ const TennisLandingPage: React.FC = () => {
               onClick={handleTrialClick}
               className="text-white px-6 py-3 transition"
             >
-              Book a Free Trial
+              Book Now
             </Button>
           </div>
         </div>
@@ -324,7 +324,7 @@ const TennisLandingPage: React.FC = () => {
           data={ABOUT_FAQS}
         />
       </section>
-      <section className="bg-white py-4 sm:py-8 md:py-12 px-6 lg:px-16">
+      {/* <section className="bg-white py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto space-y-5 sm:space-y-10">
           {CAMP_DETAILS.map((item, index) => (
             <div key={index}>
@@ -337,8 +337,8 @@ const TennisLandingPage: React.FC = () => {
             </div>
           ))}
         </div>
-      </section>
-      </>
+      </section> */}
+    </>
   );
 };
 

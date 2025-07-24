@@ -151,7 +151,7 @@ const Inquiry: React.FC = () => {
           type="text"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          placeholder="+91 98765 43210"
+          placeholder="+1 123-456-7890"
         />
       </div>
 

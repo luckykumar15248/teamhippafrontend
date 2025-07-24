@@ -17,13 +17,13 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-
       <TennisProgram />
-
       <section className="relative w-full h-96 bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-[url('/images/exclusive-deal.jpg')] bg-cover bg-center">
         <div className="absolute inset-0 bg-black/30 z-0" />
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
-          <p className="text-base sm:text-lg font-bold text-[#b0db72] mb-3">Join us</p>
+          <p className="text-base sm:text-lg font-bold text-[#b0db72] mb-3">
+            Join us
+          </p>
           <h2 className="text-4xl sm:text-5xl font-semibold text-white mb-4">
             Start Your Tennis Journey Today with an Exclusive Deal!
           </h2>
@@ -46,36 +46,40 @@ export default function HomePage() {
               JOIN THE <span className="text-[#b0db72]">ACADEMY</span>
             </h2>
             <p className="text-base sm:text-lg text-gray-600 font-normal mb-8 max-w-md">
-              Don&apos;t miss this chance to level up your game. Feel free to{" "}
+              Don&apos;t miss this chance to level up your game. Feel free to
+              &nbsp;
               <Link
-                href="#"
+               href="tel:+1234567890"
                 className="text-[#b0db72] hover:underline font-medium"
               >
-                Call us now
-              </Link>{" "}
-              or visit our website{" "}
-              <Link
-                href="#"
-                className="text-[#b0db72] hover:underline font-medium"
-              >
-                book your spot
+                Call us now &nbsp;
               </Link>
-              today!
+              or visit our website &nbsp;
+              <Link
+                href="/course-categories"
+                className="text-[#b0db72] hover:underline font-medium"
+              >
+                Book Your Spot
+              </Link>
+              &nbsp; today!
             </p>
 
             <div className="flex items-center bg-green-100 p-4 rounded-lg mb-8 shadow-sm">
               <span className="text-lg text-[#b0db72] font-bold">
-                NEW MEMBER <span className="text-xl">15% OFF</span>
+                NEW MEMBER{" "}
+                <span className="text-xl capitalize">
+                  15% off your first class
+                </span>
               </span>
             </div>
 
-            <Button
-              onClick={() => "Button clicked"}
-              className="text-white px-4 py-2 rounded w-fit text-sm font-normal flex gap-2 items-center"
+            <Link
+              href="tel:+1234567890"
+              className="text-white px-4 py-2 bg-[#b0db72] hover:bg-[#64a506] rounded w-fit text-sm font-normal flex gap-2 items-center"
             >
               <PhoneIcon />
               CALL US NOW
-            </Button>
+            </Link>
           </div>
 
           <div className="flex-1 relative min-h-[300px] lg:min-h-full">
@@ -107,7 +111,7 @@ export default function HomePage() {
           </p>
           <p className="text-base sm:text-lg font-normal text-white">
             <Link
-              href="#"
+              href="/login"
               className="text-blue-600 hover:underline font-medium"
             >
               Sign in

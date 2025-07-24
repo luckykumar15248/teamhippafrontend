@@ -10,10 +10,14 @@ import { useState } from "react";
 import { SLIDES_IMG } from "@/untils/constant";
 import { Button } from "@/app/components/Button";
 import "./styles.css";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-
+  const handelBookNow = () => {
+    router.push("/course-categories");
+  };
   return (
     <>
       <section className="px-0 py-7">
@@ -51,7 +55,7 @@ export default function HeroSection() {
                   <h3 className="text-3xl font-bold mb-2">{slide.heading}</h3>
                   <p className="text-lg font-medium mb-4">{slide.subtext}</p>
                   <Button
-                    onClick={() => "Button clicked"}
+                    onClick={handelBookNow}
                     className="text-white px-4 py-2 rounded w-fit"
                   >
                     {slide.buttonText}

@@ -5,27 +5,26 @@ import React, { useState } from "react";
 import { MenuIcon } from "../Icons/MenuIcon";
 import Image from "next/image";
 import { UserIcon } from "../Icons";
-import { Button } from "../Button";
 import MobileMenu from "../MobileMenu";
-import LoginPage from "../login";
-
+import { useRouter } from "next/navigation";
 
 const Header: React.FC = () => {
+  const router = useRouter();
+
   const isLoggedIn = false;
-  const [isLogin, setLogin] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const LoginClick = () => {
-    setLogin((prev) => !prev);
+    router.push("/login");
   };
-
-    const toggleMobileMenu = () => {
+  const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
   return (
-   <header className="bg-gray-100 shadow-md sticky top-0 z-20 py-3 px-6 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto">
+    <header className="bg-gray-100 shadow-md sticky top-0 z-20 py-3 px-6 lg:px-16">
+      <div className="max-w-screen-2xl mx-auto">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <Link href="/">
@@ -40,7 +39,7 @@ const Header: React.FC = () => {
           </div>
 
           {/* Desktop Navigation */}
-            <nav className="hidden xl:flex space-x-6 items-center">
+          <nav className="hidden xl:flex space-x-6 items-center">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
@@ -53,7 +52,7 @@ const Header: React.FC = () => {
           </nav>
 
           {/* Auth Links / User Profile */}
-            <div className="hidden xl:flex items-center space-x-4">
+          <div className="hidden xl:flex items-center space-x-4">
             {isLoggedIn ? (
               <Link
                 href="/profile"
@@ -63,39 +62,35 @@ const Header: React.FC = () => {
               </Link>
             ) : (
               <>
-                <Button
-                  onClick={LoginClick}
+                <Link
+                  href="/login"
                   className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
                 >
                   <UserIcon className="text-white" />
                   Login/Register
-                </Button>
+                </Link>
               </>
             )}
           </div>
 
           {/* Mobile Menu Button (functional example would require state and a click handler) */}
-            <div className="xl:hidden flex items-center">
-            <button
-                onClick={toggleMobileMenu}
-              >
-                <MenuIcon className="cursor-pointer min-h-6 min-w-6"/>
-              </button>
+          <div className="xl:hidden flex items-center">
+            <button onClick={toggleMobileMenu}>
+              <MenuIcon className="cursor-pointer min-h-6 min-w-6" />
+            </button>
           </div>
         </div>
       </div>
-      
-      {/*Menu Side-Bar*/}
-        {isMobileMenuOpen && (
-          <MobileMenu
-            isMobileMenuOpen={isMobileMenuOpen}
-            toggleMobileMenu={toggleMobileMenu}
-            isLoggedIn={isLoggedIn}
-            LoginClick={LoginClick}
-          />
-        )}
 
-      {isLogin && <LoginPage onClose={() => setLogin(false)} />}
+      {/*Menu Side-Bar*/}
+      {isMobileMenuOpen && (
+        <MobileMenu
+          isMobileMenuOpen={isMobileMenuOpen}
+          toggleMobileMenu={toggleMobileMenu}
+          isLoggedIn={isLoggedIn}
+          LoginClick={LoginClick}
+        />
+      )}
     </header>
   );
 };
