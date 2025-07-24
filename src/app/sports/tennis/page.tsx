@@ -29,7 +29,7 @@ import { Button } from "@/app/components/Button";
 interface Course {
   id: number;
   name: string;
-  sportName: string;
+  sportName: string | null; // Allow sportName to be null
   shortDescription: string;
   basePriceInfo: string;
   description: string;
@@ -91,13 +91,14 @@ const TennisLandingPage: React.FC = () => {
 
         const bookableCourseIds = new Set(
           allFetchedMappings
-            // .filter((m: CourseCategoryMapping) => m.categoryId === bookableCategory?.categoryId)
             .map((m: CourseCategoryMapping) => m.courseId)
         );
 
+        // ✅ FIX: Added a null check for sportName before calling .toLowerCase()
         const filteredTennisCourses = allFetchedCourses.filter(
           (c: Course) =>
             c.isActive &&
+            c.sportName && // Ensure sportName is not null
             c.sportName.toLowerCase() === "tennis" &&
             bookableCourseIds.has(c.id)
         );
@@ -158,8 +159,6 @@ const TennisLandingPage: React.FC = () => {
   const handleBookNow = (item: SelectableItem) => {
     console.log(`Navigating to book ${item.type} with ID ${item.id}`);
     toast.info(`Redirecting to book "${item.name}"...`);
-    // router.push(`/booking?type=${item.type}&id=${item.id}`);
-    console.log("item type is", item.type);
     router.push(`/booking/course/${item.id}`);
   };
 
@@ -191,7 +190,10 @@ const TennisLandingPage: React.FC = () => {
                   {courseList.map((course) => (
                     <TennisCourseCard
                       key={course.id}
-                      course={course}
+                      course={{
+                        ...course,
+                        sportName: course.sportName ?? ""
+                      }}
                       onNavigate={handleNavigate}
                       onBookNow={() =>
                         handleBookNow({ ...course, type: "course" })
@@ -278,8 +280,8 @@ const TennisLandingPage: React.FC = () => {
                 <Image
                   src={coach.img}
                   alt={coach.name}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{objectFit: 'cover'}}
                   className="group-hover:scale-105 transition-transform duration-300"
                 />
 
@@ -338,7 +340,7 @@ const TennisLandingPage: React.FC = () => {
           ))}
         </div>
       </section>
-      </>
+    </>
   );
 };
 
