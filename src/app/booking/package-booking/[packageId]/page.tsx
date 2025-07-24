@@ -48,7 +48,7 @@ interface UserProfile {
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8091';
 
 // --- SVG Icons ---
-const PlusCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" /></svg>;
+// const PlusCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" /></svg>;
 const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
 
 // --- Main Page Component ---
@@ -133,7 +133,7 @@ const PackageBookingPage: React.FC = () => {
     }, [params.packageId]);
     
     // --- Helper Functions ---
-    const addParticipant = () => setParticipants([...participants, { id: Date.now(), firstName: '', lastName: '', dateOfBirth: '', gender: 'Prefer not to say', skillLevel: 'Beginner', medicalNotes: '' }]);
+    // const addParticipant = () => setParticipants([...participants, { id: Date.now(), firstName: '', lastName: '', dateOfBirth: '', gender: 'Prefer not to say', skillLevel: 'Beginner', medicalNotes: '' }]);
     
     const removeParticipant = (id: number) => { 
         if (participants.length > 1) {
@@ -392,12 +392,12 @@ const PackageBookingPage: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
-                            <button 
+                            {/* <button 
                                 onClick={addParticipant} 
                                 className="mt-4 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800"
                             >
                                 <PlusCircleIcon/> Add Another Participant
-                            </button>
+                            </button> */}
                         </section>
                         
                         {/* Schedule Selection Section */}

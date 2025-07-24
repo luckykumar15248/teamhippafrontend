@@ -1,13 +1,10 @@
 import {
   FacebookIcon,
-  TwitterIcon,
   InstaIcon,
-  LinkedInIcon,
 } from "@/app/components/Icons";
 
 export const NAV_LINKS = [
-  { href: "/sports", label: "Sports" },
-  { href: "/course-categories", label: "Courses" },
+  { href: "/course-categories", label: "Book Now" },
   { href: "/sports/tennis", label: "Tennis" },
   { href: "/sports/pickleball", label: "Pickleball" },
   { href: "/packages", label: "Packages" },
@@ -32,16 +29,6 @@ export const SOCIAL_LINKS = [
     name: "Instagram",
     href: "https://www.instagram.com/teamhippa_az/",
     icon: <InstaIcon className="text-black hover:text-[#b0db72]" />,
-  },
-  {
-    name: "Twitter",
-    href: "#",
-    icon: <TwitterIcon className="text-black hover:text-[#b0db72]" />,
-  },
-  {
-    name: "LinkedIn",
-    href: "#",
-    icon: <LinkedInIcon className="text-black hover:text-[#b0db72]" />,
   },
 ];
 
@@ -103,7 +90,6 @@ export const ABOUT_FAQS = [
 ];
 
 export const SERVICES = [
-  "Tennis Coach",
   "Junior Tennis Classes",
   "Adult Tennis Lessons",
   "High-Performance Coaching",
