@@ -392,12 +392,13 @@ const PackageBookingPage: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
-                            <button 
+                            
+                             <button 
                                 onClick={addParticipant} 
                                 className="mt-4 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800"
                             >
                                 <PlusCircleIcon/> Add Another Participant
-                            </button>
+                            </button> 
                         </section>
                         
                         {/* Schedule Selection Section */}
