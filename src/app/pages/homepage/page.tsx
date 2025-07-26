@@ -12,8 +12,14 @@ import Link from "next/link";
 import Inquiry from "@/app/components/Inquiry-form";
 import { TennisProgram } from "@/app/components/TennisPrograms";
 import HeroSection from "@/app/components/HeroSection";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+   const router = useRouter();
+
+  const handelJoinClicked = () => {
+    router.push("/contact")}
+
   return (
     <>
       <HeroSection />
@@ -28,7 +34,7 @@ export default function HomePage() {
             Start Your Tennis Journey Today with an Exclusive Deal!
           </h2>
           <Button
-            onClick={() => "Button clicked"}
+            onClick={handelJoinClicked}
             className="text-white px-4 py-2 rounded w-fit text-sm font-normal"
           >
             Join Now
@@ -95,11 +101,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <FAQ
         title="The fastest growing Tennis Academy"
         subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
         data={ABOUT_FAQS}
       />
+      
       <section className="min-h-screen bg-gray-100 flex flex-col items-center">
         <div className="w-full bg-[#b0db72] pt-6 md:pt-12 pb-12 md:pb-42 px-6 lg:px-16 text-center shadow-lg">
           <h2 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-3">

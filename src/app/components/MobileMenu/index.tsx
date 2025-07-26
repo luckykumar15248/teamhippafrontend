@@ -52,11 +52,11 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           <hr className="my-2 border-gray-300" />
           {isLoggedIn ? (
             <Link
-              href="/profile"
-              className="text-black hover:hover:text-[#b0db72] px-3 py-2 rounded-md text-base font-medium transition-colors duration-150"
+              href="/dashboard"
+              className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150 w-full justify-center"
               onClick={toggleMobileMenu}
             >
-              Profile
+               Dashboard
             </Link>
           ) : (
             <Button

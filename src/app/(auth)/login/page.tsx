@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -9,6 +9,7 @@ import { Button } from "@/app/components/Button";
 import Input from "@/app/components/Input";
 import Image from "next/image";
 import { AppleIcon, GoogleIcon } from "@/app/components/Icons";
+import { AuthContext } from "@/app/context/AuthContext";
 
 // Define a type for the user data to be parsed from localStorage
 
@@ -18,6 +19,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { setIsLoggedIn } = useContext(AuthContext);
+
   
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -48,7 +51,7 @@ const LoginPage = () => {
         if (token && user) {
           localStorage.setItem("authToken", token);
           localStorage.setItem("userData", JSON.stringify(user));
-
+          setIsLoggedIn(true);
           switch (user.roleName) {
             case "ADMIN":
               router.push("/dashboard");

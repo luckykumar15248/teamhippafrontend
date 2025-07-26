@@ -1,17 +1,18 @@
 "use client";
 import { NAV_LINKS } from "@/untils/constant";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { MenuIcon } from "../Icons/MenuIcon";
 import Image from "next/image";
 import { UserIcon } from "../Icons";
 import MobileMenu from "../MobileMenu";
 import { useRouter } from "next/navigation";
+import { AuthContext } from "@/app/context/AuthContext";
 
 const Header: React.FC = () => {
   const router = useRouter();
 
-  const isLoggedIn = false;
+  const { isLoggedIn } = useContext(AuthContext);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -55,10 +56,10 @@ const Header: React.FC = () => {
           <div className="hidden xl:flex items-center space-x-4">
             {isLoggedIn ? (
               <Link
-                href="/profile"
-                className="text-black hover:hover:text-[#b0db72] px-3 py-2 rounded-md text-base font-medium transition-colors duration-150"
+                href="/dashboard"
+                className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
               >
-                Profile
+                Dashboard
               </Link>
             ) : (
               <>

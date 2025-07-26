@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { AuthContext } from "@/app/context/AuthContext";
 
 interface UserProfile {
   id: number;
@@ -75,6 +76,8 @@ const getAuthHeaders = () => {
 const DashboardHomePage: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { setIsLoggedIn } = useContext(AuthContext);
+  
   const router = useRouter();
 
   const fetchData = useCallback(
@@ -122,7 +125,8 @@ const DashboardHomePage: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     toast.success("You have been logged out.");
-    router.push("/");
+    setIsLoggedIn(false);
+    router.push("/login");
   };
 
   if (isLoading || !user) {
