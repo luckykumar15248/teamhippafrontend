@@ -1,5 +1,5 @@
 // File: app/api/upload/route.ts
-/*
+
 import { NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import path from 'path';
@@ -35,8 +35,8 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}*/
-
+}
+/*
 // File: app/api/upload/route.ts
 
 import { put } from '@vercel/blob';
@@ -81,4 +81,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+}*/
