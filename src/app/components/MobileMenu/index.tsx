@@ -11,6 +11,7 @@ type MobileMenuProps = {
   isMobileMenuOpen: boolean;
   toggleMobileMenu: () => void;
   isLoggedIn: boolean;
+  user: { roleName: string } | null;
   LoginClick: () => void;
 };
 
@@ -18,8 +19,17 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   isMobileMenuOpen,
   toggleMobileMenu,
   isLoggedIn,
+  user,
   LoginClick,
 }) => {
+
+  const dashboardPath =
+    user?.roleName === "ADMIN"
+      ? "/dashboard"
+      : user?.roleName === "VISITOR_REGISTERED"
+      ? "/my-account"
+      : "/dashboard";
+  
   return (
     <>
       <div
@@ -52,12 +62,11 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           <hr className="my-2 border-gray-300" />
           {isLoggedIn ? (
             <Link
-              href="/profile"
-              className="text-black hover:hover:text-[#b0db72] px-3 py-2 rounded-md text-base font-medium transition-colors duration-150"
-              onClick={toggleMobileMenu}
-            >
-              Profile
-            </Link>
+                href={dashboardPath} 
+                className="flex gap-2 justify-center sm:justify-normal items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
+              >
+                Dashboard
+              </Link>
           ) : (
             <Button
               onClick={() => {

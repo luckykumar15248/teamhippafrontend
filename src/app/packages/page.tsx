@@ -32,7 +32,7 @@ const PackagesPage: React.FC = () => {
   const router = useRouter();
 
   const handleTrialClick = () => {
-    router.push("/contact");
+    router.push("/course-categories");
   };
 
   useEffect(() => {
@@ -180,7 +180,8 @@ const PackagesPage: React.FC = () => {
           </div>
         </div>
       </section>
-      <section className="bg-white py-4 sm:py-8 md:py-12">
+
+      {/* <section className="bg-white py-4 sm:py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">Meet Our Coaches</h2>
           <p className="text-lg text-gray-600 mb-10">
@@ -196,7 +197,7 @@ const PackagesPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Schedule + CTA */}
       <section className="py-16 px-4 bg-gray-50 text-center">
@@ -212,7 +213,7 @@ const PackagesPage: React.FC = () => {
               onClick={handleTrialClick}
               className="text-white px-6 py-3 transition"
             >
-              Book a Free Trial
+              Book Now
             </Button>
           </div>
         </div>

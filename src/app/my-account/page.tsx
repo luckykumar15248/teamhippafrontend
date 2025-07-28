@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthContext } from '../context/AuthContext';
 
 // --- Type Definitions ---
 interface ParticipantDetails {
@@ -126,6 +127,7 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => 
 
 // --- Main Dashboard Component ---
 const UserDashboardPage: React.FC = () => {
+      const { setIsLoggedIn } = useContext(AuthContext);
     const [user, setUser] = useState<UserProfile | null>(null);
     const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
     
@@ -217,7 +219,8 @@ const UserDashboardPage: React.FC = () => {
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         toast.success("You have been logged out.");
-        router.push('/');
+        setIsLoggedIn(false);
+        router.push("/login");
     };
 
     if (isLoading || !user) {

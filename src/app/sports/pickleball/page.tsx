@@ -246,7 +246,7 @@ const PickleballLandingPage: React.FC = () => {
         </div>
       </section>
       <section className="bg-gray-100  text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto flex flex-col-reverse  md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
+        <div className="max-w-screen-2xl mx-auto flex flex-col-reverse md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
             <img
               src="/images/offerings.jpg"

@@ -58,8 +58,10 @@ const Footer: React.FC = () => {
             <h3 className="text-lg font-bold text-[#b0db72] mb-4">
               Get In Touch
             </h3>
-            <p className="text-base font-medium text-white mb-2">
-              Rose Mofford Sports Complex 9833 N 25th Ave Phoenix, AZ 85021
+            <p className="text-base font-medium text-white leading-7 mb-2">
+              Rose Mofford Sports Complex <br />
+              9833 N 25th Ave <br />
+              Phoenix, AZ 85021 <br />
               United States
             </p>
             <span className="flex items-center gap-3 mb-2">
@@ -72,9 +74,12 @@ const Footer: React.FC = () => {
               </Link>
             </span>
             <span className="flex items-center gap-3 mb-4">
-             <PhoneIcon />
-              <Link href="tel:+1 602-341-3361" className="text-base font-medium text-white hover:text-[#b0db72]">
-              +1 602-341-3361
+              <PhoneIcon />
+              <Link
+                href="tel:+1 602-341-3361"
+                className="text-base font-medium text-white hover:text-[#b0db72]"
+              >
+                +1 602-341-3361
               </Link>
             </span>
 
