@@ -107,7 +107,6 @@ const LoginPage = () => {
           </div>
         </div>
 
-
          <div className="p-10 w-full md:w-1/2">
           <div>
             <h2 className="text-3xl font-semibold text-[#b0db72]">

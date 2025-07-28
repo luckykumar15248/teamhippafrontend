@@ -11,14 +11,21 @@ import { AuthContext } from "@/app/context/AuthContext";
 
 const Header: React.FC = () => {
   const router = useRouter();
-
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, user } = useContext(AuthContext);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Dynamically set the dashboard URL based on user role
+  const dashboardPath = user?.roleName === "ADMIN"
+    ? "/dashboard"
+    : user?.roleName === "VISITOR_REGISTERED"
+    ? "/my-account"
+    : "/dashboard";
 
   const LoginClick = () => {
     router.push("/login");
   };
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
@@ -27,6 +34,7 @@ const Header: React.FC = () => {
     <header className="bg-gray-100 shadow-md sticky top-0 z-20 py-3 px-6 lg:px-16">
       <div className="max-w-screen-2xl mx-auto">
         <div className="flex items-center justify-between h-16">
+          {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
@@ -56,25 +64,23 @@ const Header: React.FC = () => {
           <div className="hidden xl:flex items-center space-x-4">
             {isLoggedIn ? (
               <Link
-                href="/dashboard"
+                href={dashboardPath} 
                 className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
               >
                 Dashboard
               </Link>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
-                >
-                  <UserIcon className="text-white" />
-                  Login/Register
-                </Link>
-              </>
+              <Link
+                href="/login"
+                className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
+              >
+                <UserIcon className="text-white" />
+                Login/Register
+              </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button (functional example would require state and a click handler) */}
+          {/* Mobile Menu Button */}
           <div className="xl:hidden flex items-center">
             <button onClick={toggleMobileMenu}>
               <MenuIcon className="cursor-pointer min-h-6 min-w-6" />
@@ -83,12 +89,13 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/*Menu Side-Bar*/}
+      {/* Mobile Menu Side-Bar */}
       {isMobileMenuOpen && (
         <MobileMenu
           isMobileMenuOpen={isMobileMenuOpen}
           toggleMobileMenu={toggleMobileMenu}
           isLoggedIn={isLoggedIn}
+          user={user} 
           LoginClick={LoginClick}
         />
       )}
