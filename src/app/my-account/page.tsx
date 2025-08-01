@@ -141,7 +141,7 @@ const UserDashboardPage: React.FC = () => {
     const ITEMS_PER_PAGE = 5;
 
     const router = useRouter();
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8091';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://44.228.109.196:8080';
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setCurrentPage(0);
@@ -169,7 +169,8 @@ const UserDashboardPage: React.FC = () => {
                 axios.get(`${apiUrl}/api/users/bookings/upcoming`, { headers }),
                 axios.get(`${apiUrl}/api/users/bookings/past`, { headers })
             ]);
-
+            console.log("pastRes",pastRes.data );
+             console.log("upcomingRes",pastRes.data );
             setAllUpcomingBookings(upcomingRes.data || []);
             setAllPastBookings(pastRes.data || []);
 
