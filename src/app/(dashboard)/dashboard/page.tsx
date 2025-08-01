@@ -30,7 +30,7 @@ const adminDashboardLinks = [
     icon: "🏠",
   },
   {
-    href: "/",
+    href: "/admin/bookings",
     label: "Booking Management",
     description: "bookings, booking_items, booking_item_dates",
     icon: "👤",
@@ -57,6 +57,13 @@ const adminDashboardLinks = [
     href: "/",
     label: "Website Content",
     description: "seo_metadata, menu_items, page_dynamic_images",
+    icon: "👤",
+  },
+
+   {
+    href: "/admin/waitlist",
+    label: "waitlist",
+    description: "waitlist,Tennis, Pickerball",
     icon: "👤",
   },
 ];

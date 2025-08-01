@@ -23,6 +23,8 @@ import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
 import "./styles.css";
 import { Button } from "@/app/components/Button";
+import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
+
 
 interface Course {
   id: number;
@@ -52,6 +54,7 @@ type SelectableItem = {
   name: string;
   type: string;
 };
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const TennisLandingPage: React.FC = () => {
   const [tennisCourses, setTennisCourses] = useState<Course[]>([]);
@@ -59,6 +62,7 @@ const TennisLandingPage: React.FC = () => {
   const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   const handleTrialClick = () => {
     router.push("/contact");
@@ -324,6 +328,35 @@ const TennisLandingPage: React.FC = () => {
           data={ABOUT_FAQS}
         />
       </section>
+      <div className="text-center py-12">
+                <h2 className="text-3xl font-bold">Interested in Joining?</h2>
+                <p className="text-gray-600 mt-2">Our spots fill up fast. Join the waitlist to be notified of openings!</p>
+                <button
+                    onClick={() => setIsWaitlistOpen(true)}
+                    className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg"
+                >
+                    Join Waitlist
+                </button>
+            </div>
+
+            {/* --- The Modal --- */}
+            {isWaitlistOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    {/* Modal content container */}
+                    <div className="relative max-w-lg w-full">
+                        {/* The WaitlistForm component from your Canvas */}
+                        <WaitlistForm sportName="Tennis" />
+                        
+                        {/* Close button for the modal */}
+                        <button
+                            onClick={() => setIsWaitlistOpen(false)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                </div>
+            )}
       {/* <section className="bg-white py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto space-y-5 sm:space-y-10">
           {CAMP_DETAILS.map((item, index) => (

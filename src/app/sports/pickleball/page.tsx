@@ -15,6 +15,7 @@ import {
   OFFER_ITEMS,
 } from "@/untils/constant";
 import FAQ from "@/app/components/FAQ";
+import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
 
 // --- Type Definitions ---
 interface Course {
@@ -55,6 +56,7 @@ const PickleballLandingPage: React.FC = () => {
   const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+     const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -367,8 +369,40 @@ const PickleballLandingPage: React.FC = () => {
         subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
         data={ABOUT_FAQS}
       />
+
+       <div className="text-center py-12">
+                <h2 className="text-3xl font-bold">Interested in Joining?</h2>
+                <p className="text-gray-600 mt-2">Our spots fill up fast. Join the waitlist to be notified of openings!</p>
+                <button
+                    onClick={() => setIsWaitlistOpen(true)}
+                    className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg"
+                >
+                    Join Waitlist
+                </button>
+            </div>
+
+            {/* --- The Modal --- */}
+            {isWaitlistOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    {/* Modal content container */}
+                    <div className="relative max-w-lg w-full">
+                        {/* The WaitlistForm component from your Canvas */}
+                        <WaitlistForm sportName="Pickleball" />
+                        
+                        {/* Close button for the modal */}
+                        <button
+                            onClick={() => setIsWaitlistOpen(false)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                </div>
+            )}
     </>
   );
+
+ 
 };
 
 export default PickleballLandingPage;
