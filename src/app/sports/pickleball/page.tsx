@@ -16,6 +16,9 @@ import {
 } from "@/untils/constant";
 import FAQ from "@/app/components/FAQ";
 import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
+import { Waitlist } from "@/app/components/WaitList";
+import Link from "next/link";
+import { Button } from "@/app/components/Button";
 
 // --- Type Definitions ---
 interface Course {
@@ -56,7 +59,7 @@ const PickleballLandingPage: React.FC = () => {
   const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-     const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,8 +82,7 @@ const PickleballLandingPage: React.FC = () => {
           console.warn("'Available for Booking' category not found.");
 
         const bookableCourseIds = new Set(
-          allFetchedMappings
-            .map((m: CourseCategoryMapping) => m.courseId)
+          allFetchedMappings.map((m: CourseCategoryMapping) => m.courseId)
         );
 
         // Ensure sportName is a string and filter out courses with null sportName
@@ -206,6 +208,7 @@ const PickleballLandingPage: React.FC = () => {
           )}
         </div>
       </section>
+
       <section className="bg-gray-100 text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div className="flex flex-col space-y-6">
@@ -282,6 +285,14 @@ const PickleballLandingPage: React.FC = () => {
               <li>
                 Online Platform to engage with the local pickleball community,
                 schedule matches, ranking system for Team Hippa members
+              </li>
+              <li>
+                <strong>Online Community & Local Rankings:</strong>Connect,
+                schedule matches, log scores
+              </li>
+              <li>
+                <strong>PPA/DUPR Ratings:</strong>Earn an official pickleball
+                rating for tournaments
               </li>
             </ul>
           </div>
@@ -370,39 +381,34 @@ const PickleballLandingPage: React.FC = () => {
         data={ABOUT_FAQS}
       />
 
-       <div className="text-center py-12">
-                <h2 className="text-3xl font-bold">Interested in Joining?</h2>
-                <p className="text-gray-600 mt-2">Our spots fill up fast. Join the waitlist to be notified of openings!</p>
-                <button
-                    onClick={() => setIsWaitlistOpen(true)}
-                    className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg"
-                >
-                    Join Waitlist
-                </button>
-            </div>
-
-            {/* --- The Modal --- */}
-            {isWaitlistOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    {/* Modal content container */}
-                    <div className="relative max-w-lg w-full">
-                        {/* The WaitlistForm component from your Canvas */}
-                        <WaitlistForm sportName="Pickleball" />
-                        
-                        {/* Close button for the modal */}
-                        <button
-                            onClick={() => setIsWaitlistOpen(false)}
-                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-                        >
-                            &times;
-                        </button>
-                    </div>
-                </div>
-            )}
+      <Waitlist
+        title="Interested in Joining?"
+        subtitle=" Our spots fill up fast. Join the waitlist to be notified of openings!"
+        onOpenWaitlist={() => setIsWaitlistOpen(true)}
+      />
+        <section className="py-4 sm:py-8 px-6 lg:px-16 text-center">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="mt-4 flex justify-center">
+            <Link
+              href="/images/Rule-book-Website.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open PDF in a new tab"
+            >
+              <Button>Class policies / Rule Book</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+      {/* --- The Modal --- */}
+      {isWaitlistOpen && (
+        <WaitlistForm
+          sportName="Tennis"
+          onClose={() => setIsWaitlistOpen(false)}
+        />
+      )}
     </>
   );
-
- 
 };
 
 export default PickleballLandingPage;
