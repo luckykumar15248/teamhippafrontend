@@ -122,14 +122,6 @@ export const OFFER_ITEMS = [
     description: "Compete weekly and track progress",
   },
   {
-    title: "Online Community & Local Rankings",
-    description: "Connect, schedule matches, log scores",
-  },
-  {
-    title: "PPA/DUPR Ratings",
-    description: "Earn an official pickleball rating for tournaments",
-  },
-  {
     title: "Social Events",
     description: "Mixers, “Play & Pizza” nights, and community tournaments",
   },

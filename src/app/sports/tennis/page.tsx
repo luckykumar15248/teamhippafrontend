@@ -11,10 +11,7 @@ import "swiper/css/pagination";
 import TennisCourseCard from "@/app/components/TennisCourseCard";
 import SportsHeroSection from "@/app/components/SportsHeroSection";
 import FAQ from "@/app/components/FAQ";
-import {
-  ABOUT_FAQS,
-  PROGRAMS,
-} from "@/untils/constant";
+import { ABOUT_FAQS, PROGRAMS } from "@/untils/constant";
 import Image from "next/image";
 import { TennisProgram } from "@/app/components/TennisPrograms";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -24,7 +21,8 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "./styles.css";
 import { Button } from "@/app/components/Button";
 import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
-
+import { Waitlist } from "@/app/components/WaitList";
+import Link from "next/link";
 
 interface Course {
   id: number;
@@ -62,7 +60,7 @@ const TennisLandingPage: React.FC = () => {
   const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   const handleTrialClick = () => {
     router.push("/contact");
@@ -75,9 +73,7 @@ const TennisLandingPage: React.FC = () => {
         const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
           axios.get(`${apiUrl}/api/public_api/courses`),
           axios.get(`${apiUrl}/api/public/categories`),
-          axios.get(
-            `${apiUrl}/api/public/course-category-mappings`
-          ),
+          axios.get(`${apiUrl}/api/public/course-category-mappings`),
         ]);
 
         const allFetchedCourses = coursesRes.data || [];
@@ -92,8 +88,7 @@ const TennisLandingPage: React.FC = () => {
         }
 
         const bookableCourseIds = new Set(
-          allFetchedMappings
-            .map((m: CourseCategoryMapping) => m.courseId)
+          allFetchedMappings.map((m: CourseCategoryMapping) => m.courseId)
         );
 
         // ✅ FIX: Added a null check for sportName before calling .toLowerCase()
@@ -194,7 +189,7 @@ const TennisLandingPage: React.FC = () => {
                       key={course.id}
                       course={{
                         ...course,
-                        sportName: course.sportName ?? ""
+                        sportName: course.sportName ?? "",
                       }}
                       onNavigate={handleNavigate}
                       onBookNow={() =>
@@ -217,6 +212,24 @@ const TennisLandingPage: React.FC = () => {
           )}
         </div>
       </section>
+
+      {/* <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 text-center bg-[url('/images/wait-list.png')] bg-center bg-no-repeat bg-cover">
+        <div className="max-w-screen-2xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black mb-4 capitalize">
+            Interested in Joining?
+          </h2>
+          <p className="text-base sm:text-lg text-white font-normal mb-3">
+            Our spots fill up fast. Join the waitlist to be notified of
+            openings!
+          </p>
+          <div className="mt-4 flex justify-center">
+            <Button onClick={() => setIsWaitlistOpen(true)}>
+              Join Waitlist
+            </Button>
+          </div>
+        </div>
+      </section> */}
+
       <TennisProgram />
 
       <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-white">
@@ -266,7 +279,7 @@ const TennisLandingPage: React.FC = () => {
           </Swiper>
         </div>
       </section>
-{/* 
+      {/* 
       <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto">
           <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-8">
@@ -328,35 +341,27 @@ const TennisLandingPage: React.FC = () => {
           data={ABOUT_FAQS}
         />
       </section>
-      <div className="text-center py-12">
-                <h2 className="text-3xl font-bold">Interested in Joining?</h2>
-                <p className="text-gray-600 mt-2">Our spots fill up fast. Join the waitlist to be notified of openings!</p>
-                <button
-                    onClick={() => setIsWaitlistOpen(true)}
-                    className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg"
-                >
-                    Join Waitlist
-                </button>
-            </div>
+      <Waitlist
+        title="Interested in Joining?"
+        subtitle=" Our spots fill up fast. Join the waitlist to be notified of openings!"
+        onOpenWaitlist={() => setIsWaitlistOpen(true)}
+      />
+      <section className="py-4 sm:py-8 px-6 lg:px-16 text-center">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="mt-4 flex justify-center">
+            <Link
+              href="/images/Rule-book-Website.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open PDF in a new tab"
+            >
+              <Button>Class policies / Rule Book</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+      {/* --- The Modal --- */}
 
-            {/* --- The Modal --- */}
-            {isWaitlistOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    {/* Modal content container */}
-                    <div className="relative max-w-lg w-full">
-                        {/* The WaitlistForm component from your Canvas */}
-                        <WaitlistForm sportName="Tennis" />
-                        
-                        {/* Close button for the modal */}
-                        <button
-                            onClick={() => setIsWaitlistOpen(false)}
-                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-                        >
-                            &times;
-                        </button>
-                    </div>
-                </div>
-            )}
       {/* <section className="bg-white py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto space-y-5 sm:space-y-10">
           {CAMP_DETAILS.map((item, index) => (
@@ -371,6 +376,12 @@ const TennisLandingPage: React.FC = () => {
           ))}
         </div>
       </section> */}
+      {isWaitlistOpen && (
+        <WaitlistForm
+          sportName="Tennis"
+          onClose={() => setIsWaitlistOpen(false)}
+        />
+      )}
     </>
   );
 };

@@ -157,21 +157,21 @@ const PackagesPage: React.FC = () => {
           <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-6 text-left">
             <div className="p-4">
-              <h4 className="text-xl font-semibold mb-2">Browse Packages</h4>
+              <h4 className="text-xl font-semibold mb-2">Browse Packages and Courses</h4>
               <p className="text-gray-600">
                 Explore various training bundles designed for different skill
                 levels.
               </p>
             </div>
             <div className="p-4">
-              <h4 className="text-xl font-semibold mb-2">Book a Trial</h4>
+              <h4 className="text-xl font-semibold mb-2">Enroll and Purchase Package</h4>
               <p className="text-gray-600">
                 Get a feel for our training sessions with a no-obligation free
                 trial.
               </p>
             </div>
             <div className="p-4">
-              <h4 className="text-xl font-semibold mb-2">Enroll & Start</h4>
+              <h4 className="text-xl font-semibold mb-2">Book into the class, and your attendance is confirmed</h4>
               <p className="text-gray-600">
                 Choose your schedule and begin your tennis journey with our
                 expert coaches.
