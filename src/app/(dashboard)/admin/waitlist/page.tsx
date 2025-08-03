@@ -1,6 +1,3 @@
-// File: app/(dashboard)/admin/waitlist/page.tsx
-// A complete admin page to view, filter, and manage waitlist entries with full functionality.
-
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
@@ -113,7 +110,7 @@ const AdminWaitlistPage: React.FC = () => {
       const response = await axios.get(`${apiUrl}/api/admin/waitlist`, { headers });
       const sortedData = response.data.sort((a: WaitlistEntry, b: WaitlistEntry) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
       setAllEntries(sortedData);
-    } catch (error) {
+    } catch {
       toast.error('Failed to fetch waitlist entries.');
     } finally {
       setIsLoading(false);
@@ -172,7 +169,7 @@ const AdminWaitlistPage: React.FC = () => {
       toast.success(`Status updated to ${status}.`);
       fetchWaitlistEntries();
       setSelectedIds(new Set());
-    } catch (err) {
+    } catch {
       toast.error('Failed to update status.');
     }
   };
@@ -210,7 +207,7 @@ const AdminWaitlistPage: React.FC = () => {
         toast.success(`Email sent to ${selected.length} user(s).`);
         setEmailModalOpen(false);
         updateStatus(Array.from(selectedIds), 'CONTACTED');
-    } catch (err) {
+    } catch {
         toast.error('Failed to send one or more emails.');
     }
   };
@@ -224,7 +221,7 @@ const AdminWaitlistPage: React.FC = () => {
         toast.success("Remarks saved.");
         fetchWaitlistEntries();
         setViewModalOpen(false);
-    } catch (error) {
+    } catch {
         toast.error("Failed to save remarks.");
     }
   };
