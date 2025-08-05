@@ -8,7 +8,6 @@ export const NAV_LINKS = [
   { href: "/sports/tennis", label: "Tennis" },
   { href: "/sports/pickleball", label: "Pickleball" },
   { href: "/packages", label: "Packages" },
-  { href: "/passes", label: "Passes" },
   { href: "/about-us", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ];
@@ -70,12 +69,12 @@ export const ABOUT_FAQS = [
   {
     question: "Do I need to bring my own equipment?",
     answer:
-      "If you have your own racket, great! If not, we can provide one for you during lessons. We also recommend wearing comfortable athletic attire and tennis shoes.",
+      "If you have your own racket, great! If not, let us know, we may be able to provide you one.",
   },
   {
     question: "How long are the lessons and training sessions?",
     answer:
-      "Most of our regular lessons and coaching sessions are 120 minutes long and for beginners, it is 60 minutes long.",
+      "Most of our lessons and classes are 1 hour long, with certain classes being up to 2h.",
   },
   {
     question: "Are the classes suitable for beginners?",
@@ -177,25 +176,25 @@ export const PROGRAMS = [
   },
   {
     title: "Junior Tennis Classes",
-    img: "/images/tennis-journey.jpeg",
+    img: "/images/junior.jpg",
     description:
       "Fun, engaging lessons for young players! Build strong foundations, make friends, and spark a lifelong love for tennis with us.",
   },
   {
     title: "Adult Tennis Lessons",
-    img: "/images/tennis-journey.jpeg",
+    img: "/images/adult.jpg",
     description:
       "Stay active and improve your game! Tailored lessons help you master techniques, build confidence, and enjoy every moment on the court.",
   },
   {
     title: "High-Performance Coaching",
-    img: "/images/tennis-journey.jpeg",
+    img: "/images/high-performance.jpg",
     description:
       "Push your limits with advanced drills and strategies. Designed for competitive players who are serious about taking their game further.",
   },
   {
     title: "Private Instruction",
-    img: "/images/tennis-journey.jpeg",
+    img: "/images/instruction.jpg",
     description:
       "Achieve your goals faster with personalized coaching. One-on-one sessions ensure focused training tailored to your unique strengths and needs.",
   },

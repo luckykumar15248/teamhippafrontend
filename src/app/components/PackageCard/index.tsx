@@ -36,7 +36,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate }) => {
                 <h3 className="text-xl font-semibold text-black line-clamp-1">{pkg.name}</h3>
                 <p className="mt-2 text-base sm:text-lg text-gray-600 font-normal line-clamp-2">{pkg.shortDescription}</p>
                 <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
-                    <span className="text-lg font-bold text-black">₹{pkg.price.toFixed(2)}</span>
+                    <span className="text-lg font-bold text-black">${pkg.price.toFixed(2)}</span>
                     <Button
                         onClick={() => {
                             onNavigate(pkg.id);
