@@ -32,7 +32,7 @@ const TennisCourseCard: React.FC<CourseCardProps> = ({
   // const imageUrls = course.imagePaths || [];
 
 const isLocal = process.env.NODE_ENV === "development";
-const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL || "";
+const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
 const imageUrls = (course.imagePaths || []).map((path) => {
   if (!path) return "";
@@ -44,8 +44,8 @@ const imageUrls = (course.imagePaths || []).map((path) => {
 
   // Production या अन्य environment में backend URL के साथ जोड़ें
   if (path.startsWith("http")) return path;
-  if (path.startsWith("/")) return `${frontendUrl}${path}`;
-  return `${frontendUrl}/${path}`;
+  if (path.startsWith("/")) return `${backendUrl}${path}`;
+  return `${backendUrl}/${path}`;
 });
 
   const [activeIndex, setActiveIndex] = useState(0);

@@ -19,6 +19,7 @@ interface PackageCardProps {
 }
 
 const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate }) => {
+    
     return (
         <section 
             className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300"
