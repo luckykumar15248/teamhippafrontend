@@ -227,7 +227,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </p>
             <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
               <span className="text-lg font-bold text-black">
-            {course.basePriceInfo || "Contact for Price"}
+            ${course.basePriceInfo || "Contact for Price"}
           </span>
               <div className="flex justify-between gap-2">
             <Button

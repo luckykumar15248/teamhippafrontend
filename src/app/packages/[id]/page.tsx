@@ -167,7 +167,7 @@ const PackageDetailPage: React.FC = () => {
                             <div className="space-y-4">
                                 <div className="flex items-center text-gray-700">
                                     <span className="font-semibold text-lg">Total Price:</span>
-                                    <span className="ml-auto font-bold text-3xl text-[#b0db72]">₹{pkg.price.toFixed(2)}</span>
+                                    <span className="ml-auto font-bold text-3xl text-[#b0db72]">${pkg.price.toFixed(2)}</span>
                                 </div>
                                 <div className="flex items-center text-gray-700 pt-2 border-t">
                                     <CheckCircleIcon />
