@@ -19,6 +19,7 @@ import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
 import { Waitlist } from "@/app/components/WaitList";
 import Link from "next/link";
 import { Button } from "@/app/components/Button";
+import Image from "next/image";
 
 // --- Type Definitions ---
 interface Course {
@@ -253,8 +254,10 @@ const PickleballLandingPage: React.FC = () => {
       <section className="bg-gray-100  text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto flex flex-col-reverse md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
-            <img
+            <Image
               src="/images/offerings.jpg"
+              width={100}
+              height={100}
               alt="coaching"
               className="rounded-lg shadow-lg w-full h-auto object-cover min-h-full"
             />
@@ -322,8 +325,10 @@ const PickleballLandingPage: React.FC = () => {
           </div>
 
           <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
-            <img
+            <Image
               src="/images/importance.jpg"
+              width={100}
+              height={100}
               alt="coaching"
               className="rounded-lg shadow-lg w-full h-auto object-cover min-h-full"
             />
@@ -334,8 +339,10 @@ const PickleballLandingPage: React.FC = () => {
       <section className="bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto flex flex-col-reverse md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
-            <img
+            <Image
               src="/images/coaching.jpeg"
+              width={100}
+              height={100}
               alt="coaching"
               className="rounded-lg shadow-lg w-full h-auto object-cover min-h-full"
             />
@@ -386,7 +393,7 @@ const PickleballLandingPage: React.FC = () => {
         subtitle=" Our spots fill up fast. Join the waitlist to be notified of openings!"
         onOpenWaitlist={() => setIsWaitlistOpen(true)}
       />
-        <section className="py-4 sm:py-8 px-6 lg:px-16 text-center">
+      <section className="py-4 sm:py-8 px-6 lg:px-16 text-center">
         <div className="max-w-screen-2xl mx-auto">
           <div className="mt-4 flex justify-center">
             <Link
