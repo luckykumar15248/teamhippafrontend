@@ -19,6 +19,7 @@ interface PackageCardProps {
 }
 
 const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate }) => {
+    const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL || "";
     
     return (
         <section 
@@ -27,7 +28,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate }) => {
         >
             <div className="relative">
                 <img 
-                    src={pkg.imageUrls?.[0] || '/images/empty-img.jpg'} 
+                    src={`${frontendUrl}${pkg.imageUrls?.[0] || '/images/empty-img.jpg'}`} 
                     alt={pkg.name} 
                     className="h-48 w-full object-cover" 
                 />
