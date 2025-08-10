@@ -65,8 +65,8 @@ const Sidebar: React.FC = () => {
 
   const adminLinks = [
     { href: "/admin/bookings", label: "Manage Bookings", icon: "📚" },
-    { href: "/admin/manage-courses", label: "Manage Courses", icon: "🛠️" },
-    { href: "/admin/manage-users", label: "Manage Users", icon: "👥" },
+    { href: "/admin/booking-calendar", label: "Booking Calender", icon: "🛠️" },
+    { href: "/admin/manage-user-packages", label: "Manage Users Package", icon: "👥" },
     { href: "/admin/analytics", label: "Analytics", icon: "📊" },
     { href: "/admin/waitlist", label: "Waitlist", icon: "📊" },
   ];

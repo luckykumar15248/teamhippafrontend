@@ -1,16 +1,29 @@
 'use client';
-
 import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthContext } from '../context/AuthContext';
+import moment from 'moment';
+
+// --- SVG Icons ---
+const CalendarIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
+const LogoutIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>;
+const ChevronDownIcon = ({ className = "h-5 w-5" }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" /></svg>;
+const PackageIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m0 0v10l8 4" /></svg>;
+const ChevronLeftIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
+const ChevronRightIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>;
 
 // --- Type Definitions ---
 interface ParticipantDetails {
     firstName: string;
     lastName: string;
+}
+
+interface PackageCourse {
+    id: number;
+    name: string;
 }
 
 interface UserBookingDetails {
@@ -22,10 +35,33 @@ interface UserBookingDetails {
     currency: string;
     createdAt: string;
     participants: ParticipantDetails[];
-    courseName?: string;
-    bookedDates?: string[];
-    packageName?: string;
-    includedCourses?: string[];
+    courseName?: string | null;
+    bookedDates?: string[] | null;
+    packageName?: string | null;
+    includedCourses?: PackageCourse[] | null;
+}
+
+interface PurchasedPackage {
+    id: number;
+    packageName: string;
+    expiryDate: string;
+    totalSessions: number;
+    remainingSessions: number;
+    status: 'ACTIVE' | 'EXPIRED' | 'DEPLETED';
+    sessionDetails: {
+        courseName: string;
+        totalSessionsAllotted: number;
+        remainingSessions: number;
+        courseId: number;
+    }[];
+}
+
+interface Notification {
+    id: number;
+    title: string;
+    message: string;
+    createdAt: string;
+    isRead: boolean;
 }
 
 interface UserProfile {
@@ -36,19 +72,7 @@ interface UserProfile {
     roleName: 'USER' | 'ADMIN' | 'VISITOR_REGISTERED';
 }
 
-
-// --- API Helper & SVG Icons ---
-const getAuthHeaders = () => {
-    if (typeof window === 'undefined') return null;
-    const token = localStorage.getItem('authToken');
-    if (!token) return null;
-    return { 'Authorization': `Bearer ${token}` };
-};
-const CalendarIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
-const LogoutIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>;
-const ChevronDownIcon = ({ className = "h-5 w-5" }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" /></svg>;
-
-// --- Booking Card Component (Updated) ---
+// --- Child Components ---
 const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => {
     const [isOpen, setIsOpen] = useState(false);
     const isPackage = booking.bookingType === 'PACKAGE';
@@ -58,6 +82,7 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => 
         switch (status) {
             case 'Confirmed': return 'bg-green-100 text-green-800';
             case 'Completed': return 'bg-blue-100 text-blue-800';
+            case 'Rescheduled': return 'bg-orange-100 text-orange-800';
             default: return 'bg-yellow-100 text-yellow-800';
         }
     };
@@ -76,7 +101,6 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => 
                         <p className="text-xs text-gray-400 mt-1">Booked on: {new Date(booking.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right flex-shrink-0 ml-4">
-                        {/* CORRECTED: Added the booking type display */}
                         <div className={`mb-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getTypeClass(booking.bookingType)}`}>
                             {booking.bookingType}
                         </div>
@@ -106,14 +130,20 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => 
                                 <>
                                     <h4 className="font-semibold text-gray-700 mb-2">Included Courses</h4>
                                     <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                                        {booking.includedCourses?.map(course => <li key={course}>{course}</li>)}
+                                        {booking.includedCourses?.map((course, index) => (
+                                            <li key={`${course.id}-${index}`}>
+                                                {course.name} (ID: {course.id})
+                                            </li>
+                                        ))}
                                     </ul>
                                 </>
                             ) : (
                                 <>
                                     <h4 className="font-semibold text-gray-700 mb-2">Booked Dates</h4>
                                     <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                                        {booking.bookedDates?.map(date => <li key={date}>{new Date(date + 'T00:00:00').toLocaleDateString()}</li>)}
+                                        {booking.bookedDates?.map(date => (
+                                            <li key={date}>{new Date(date + 'T00:00:00').toLocaleDateString()}</li>
+                                        ))}
                                     </ul>
                                 </>
                             )}
@@ -125,14 +155,53 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => 
     );
 };
 
+const PackageCard: React.FC<{ pkg: PurchasedPackage, onSchedule: () => void }> = ({ pkg, onSchedule }) => {
+    const progress = pkg.totalSessions > 0 ? (pkg.remainingSessions / pkg.totalSessions) * 100 : 0;
+    return (
+        <div className="bg-white rounded-lg shadow-md">
+            <div className="p-6">
+                <h3 className="font-bold text-lg text-indigo-700">{pkg.packageName}</h3>
+                <div className="mt-4 space-y-2 text-sm">
+                    <div className="flex justify-between">
+                        <span className="text-gray-600">Status:</span>
+                        <span className="font-semibold text-gray-800">{pkg.status}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="text-gray-600">Expires on:</span>
+                        <span className="font-semibold text-gray-800">{new Date(pkg.expiryDate).toLocaleDateString()}</span>
+                    </div>
+                    <div>
+                        <div className="flex justify-between mb-1">
+                            <span className="text-gray-600">Sessions Remaining:</span>
+                            <span className="font-semibold text-gray-800">{pkg.remainingSessions} / {pkg.totalSessions}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button 
+                onClick={onSchedule}
+                className="w-full bg-indigo-600 text-white py-2 rounded-b-lg hover:bg-indigo-700 disabled:bg-gray-400 transition-colors"
+                disabled={pkg.status !== 'ACTIVE'}
+            >
+                Schedule a Class
+            </button>
+        </div>
+    );
+};
+
 // --- Main Dashboard Component ---
 const UserDashboardPage: React.FC = () => {
-      const { setIsLoggedIn } = useContext(AuthContext);
+    const { setIsLoggedIn } = useContext(AuthContext);
     const [user, setUser] = useState<UserProfile | null>(null);
-    const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+    const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'packages'>('upcoming');
     
     const [allUpcomingBookings, setAllUpcomingBookings] = useState<UserBookingDetails[]>([]);
     const [allPastBookings, setAllPastBookings] = useState<UserBookingDetails[]>([]);
+    const [packages, setPackages] = useState<PurchasedPackage[]>([]);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
     
     const [isLoading, setIsLoading] = useState(true);
     
@@ -140,8 +209,64 @@ const UserDashboardPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const ITEMS_PER_PAGE = 5;
 
+    const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+    const [selectedPackage, setSelectedPackage] = useState<PurchasedPackage | null>(null);
+    const [courseToSchedule, setCourseToSchedule] = useState<number | null>(null);
+    const [availableDates, setAvailableDates] = useState<string[]>([]);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [isCalendarLoading, setIsCalendarLoading] = useState(false);
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+
     const router = useRouter();
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://44.228.109.196:8080';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8091';
+
+    const getAuthHeaders = () => {
+        if (typeof window === 'undefined') return null;
+        const token = localStorage.getItem('authToken');
+        if (!token) return null;
+        return { 'Authorization': `Bearer ${token}` };
+    };
+
+    const fetchData = useCallback(async () => {
+        const headers = getAuthHeaders();
+        if (!headers) { router.push('/login'); return; }
+        
+        setIsLoading(true);
+        try {
+            const [profileRes, upcomingRes, pastRes, packagesRes, notificationsRes] = await Promise.all([
+                axios.get(`${apiUrl}/api/auth/me`, { headers }),
+                axios.get(`${apiUrl}/api/users/bookings/upcoming`, { headers }),
+                axios.get(`${apiUrl}/api/users/bookings/past`, { headers }),
+                axios.get(`${apiUrl}/api/users/my-packages`, { headers }),
+                axios.get(`${apiUrl}/api/users/notifications`, { headers })
+            ]);
+            
+            setUser(profileRes.data);
+            setAllUpcomingBookings(upcomingRes.data || []);
+            setAllPastBookings(pastRes.data || []);
+            setPackages(packagesRes.data || []);
+            setNotifications(notificationsRes.data || []);
+            console.log("packagesRes", packagesRes.data);
+        } catch (error) {
+            toast.error("Could not load all dashboard data.");
+        } finally {
+            setIsLoading(false);
+        }
+    }, [router, apiUrl]);
+
+    useEffect(() => { fetchData(); }, [fetchData]);
+    
+    const handleMarkNotificationAsRead = async (id: number) => {
+        const headers = getAuthHeaders();
+        if (!headers) return;
+        try {
+            await axios.post(`${apiUrl}/api/users/notifications/${id}/mark-read`, {}, { headers });
+            setNotifications(prev => prev.filter(n => n.id !== id));
+            toast.success("Notification dismissed.");
+        } catch {
+            toast.error("Could not dismiss notification.");
+        }
+    };
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setCurrentPage(0);
@@ -153,54 +278,18 @@ const UserDashboardPage: React.FC = () => {
         setFilters({ startDate: '', endDate: '', bookingType: '' });
     };
 
-    const fetchData = useCallback(async () => {
-        const headers = getAuthHeaders();
-        if (!headers) { router.push('/login'); return; }
-        
-        setIsLoading(true);
-        try {
-            if (!user) {
-                const profileRes = await axios.get(`${apiUrl}/api/auth/me`, { headers });
-                console.log("auth response is ---------------->",profileRes.data )
-                setUser(profileRes.data);
-            }
-            
-            const [upcomingRes, pastRes] = await Promise.all([
-                axios.get(`${apiUrl}/api/users/bookings/upcoming`, { headers }),
-                axios.get(`${apiUrl}/api/users/bookings/past`, { headers })
-            ]);
-            console.log("pastRes",pastRes.data );
-             console.log("upcomingRes",pastRes.data );
-            setAllUpcomingBookings(upcomingRes.data || []);
-            setAllPastBookings(pastRes.data || []);
-
-        } catch (error) {
-            toast.error("Could not load your dashboard.");
-            console.error(error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [router, user, apiUrl]);
-
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
-
     const filteredBookings = useMemo(() => {
         const sourceBookings = activeTab === 'upcoming' ? allUpcomingBookings : allPastBookings;
-
         return sourceBookings.filter(booking => {
             const bookingDate = new Date(booking.createdAt);
             const startDate = filters.startDate ? new Date(filters.startDate) : null;
             const endDate = filters.endDate ? new Date(filters.endDate) : null;
-
             if (startDate && bookingDate < startDate) return false;
             if (endDate) {
                 endDate.setHours(23, 59, 59, 999);
                 if (bookingDate > endDate) return false;
             }
             if (filters.bookingType && booking.bookingType !== filters.bookingType) return false;
-
             return true;
         });
     }, [activeTab, allUpcomingBookings, allPastBookings, filters]);
@@ -212,7 +301,7 @@ const UserDashboardPage: React.FC = () => {
 
     const totalPages = Math.ceil(filteredBookings.length / ITEMS_PER_PAGE);
 
-    const handleTabChange = (tab: 'upcoming' | 'past') => {
+    const handleTabChange = (tab: 'upcoming' | 'past' | 'packages') => {
         setCurrentPage(0);
         setActiveTab(tab);
     };
@@ -220,9 +309,84 @@ const UserDashboardPage: React.FC = () => {
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         toast.success("You have been logged out.");
-        setIsLoggedIn(false);
+        if (setIsLoggedIn) {
+            setIsLoggedIn(false);
+        }
         router.push("/login");
     };
+
+    const openScheduleModal = (pkg: PurchasedPackage) => {
+        setSelectedPackage(pkg);
+        setCourseToSchedule(null);
+        setAvailableDates([]);
+        setSelectedDate(null);
+        setIsScheduleModalOpen(true);
+    };
+
+    const handleCourseSelectForScheduling = async (courseIdStr: string) => {
+        const courseId = parseInt(courseIdStr);
+        console.log("Selected course ID:", courseId);
+        
+        if (isNaN(courseId)) {
+            setCourseToSchedule(null);
+            setAvailableDates([]);
+            return;
+        }
+        
+        setCourseToSchedule(courseId);
+        setIsCalendarLoading(true);
+        
+        try {
+            const response = await axios.get(`${apiUrl}/api/public/schedules/course/${courseId}/available-dates`);
+            console.log("Available dates response:", response.data);
+            setAvailableDates(response.data || []);
+        } catch (error) {
+            toast.error("Could not load available dates for this course.");
+            setAvailableDates([]);
+        } finally {
+            setIsCalendarLoading(false);
+        }
+    };
+
+    const handleScheduleSubmit = async () => {
+        if (!selectedPackage || !courseToSchedule || !selectedDate) {
+            toast.error("Please select a course and a date.");
+            return;
+        }
+        
+        const headers = getAuthHeaders();
+        if (!headers) return;
+
+        const requestBody = {
+            purchasedPackageId: selectedPackage.id,
+            courseId: courseToSchedule,
+            bookedDates: [moment(selectedDate).format('YYYY-MM-DD')],
+            participants: [{ firstName: user?.firstName, lastName: user?.lastName }]
+        };
+
+        try {
+            console.log("requestBody", requestBody);
+            await axios.post(`${apiUrl}/api/users/schedule-from-package`, requestBody, { headers });
+            toast.success("Class scheduled successfully!");
+            setIsScheduleModalOpen(false);
+            fetchData(); // Refresh all data
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to schedule class.");
+        }
+    };
+
+    const calendarDays = useMemo(() => {
+        const days: (Date | null)[] = [];
+        const year = currentMonth.getFullYear();
+        const month = currentMonth.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        for (let i = 0; i < firstDay; i++) { days.push(null); }
+        for (let i = 1; i <= daysInMonth; i++) { days.push(new Date(year, month, i)); }
+        
+        return days;
+    }, [currentMonth]);
 
     if (isLoading || !user) {
         return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div></div>;
@@ -235,13 +399,33 @@ const UserDashboardPage: React.FC = () => {
                     <h1 className="text-4xl font-extrabold text-gray-900">Welcome, {user.firstName}!</h1>
                     <p className="mt-2 text-lg text-gray-600">Here&apos;s your personal dashboard.</p>
                 </header>
+
+                {notifications.length > 0 && (
+                    <div className="mb-8 space-y-4">
+                        {notifications.map(notif => (
+                            <div key={notif.id} className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md shadow" role="alert">
+                                <div className="flex">
+                                    <div className="py-1"><svg className="fill-current h-6 w-6 text-yellow-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zM9 5v6h2V5H9zm0 8v2h2v-2H9z"/></svg></div>
+                                    <div>
+                                        <p className="font-bold">{notif.title}</p>
+                                        <p className="text-sm">{notif.message}</p>
+                                    </div>
+                                    <button onClick={() => handleMarkNotificationAsRead(notif.id)} className="ml-auto text-sm font-semibold">Dismiss</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     <aside className="lg:col-span-1">
                         <div className="bg-white rounded-lg shadow p-4 space-y-2 sticky top-24">
-                            <button onClick={() => { /* Logic is handled by main component */ }} className={`w-full flex items-center px-4 py-3 text-left text-sm font-medium rounded-md transition-colors ${activeTab === 'upcoming' || activeTab === 'past' ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-50'}`}>
+                            <button onClick={() => handleTabChange('upcoming')} className={`w-full flex items-center px-4 py-3 text-left text-sm font-medium rounded-md transition-colors ${activeTab === 'upcoming' || activeTab === 'past' ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-50'}`}>
                                 <CalendarIcon /> My Bookings
                             </button>
-                            {/* Add other sidebar items here if needed */}
+                            <button onClick={() => handleTabChange('packages')} className={`w-full flex items-center px-4 py-3 text-left text-sm font-medium rounded-md transition-colors ${activeTab === 'packages' ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-50'}`}>
+                                <PackageIcon /> My Packages
+                            </button>
                             <div className="border-t pt-2 mt-2">
                                 <button onClick={handleLogout} className="w-full flex items-center px-4 py-3 text-left text-sm font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors">
                                     <LogoutIcon /> Logout
@@ -254,48 +438,167 @@ const UserDashboardPage: React.FC = () => {
                             <nav className="-mb-px flex space-x-8" aria-label="Tabs">
                                 <button onClick={() => handleTabChange('upcoming')} className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'upcoming' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>Upcoming</button>
                                 <button onClick={() => handleTabChange('past')} className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'past' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>Past</button>
+                                <button onClick={() => handleTabChange('packages')} className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'packages' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>My Packages</button>
                             </nav>
                         </div>
                         
-                        <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                                <div>
-                                    <label className="text-xs text-gray-500">Start Date</label>
-                                    <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md" />
+                        {activeTab === 'upcoming' || activeTab === 'past' ? (
+                            <>
+                                <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                        <div>
+                                            <label className="text-xs text-gray-500">Start Date</label>
+                                            <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md" />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs text-gray-500">End Date</label>
+                                            <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md" />
+                                        </div>
+                                        <select name="bookingType" value={filters.bookingType} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md">
+                                            <option value="">All Types</option>
+                                            <option value="COURSE">Course</option>
+                                            <option value="PACKAGE">Package</option>
+                                        </select>
+                                        <button onClick={resetFilters} className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md text-sm font-medium col-span-full md:col-span-1">Reset Filters</button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="text-xs text-gray-500">End Date</label>
-                                    <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md" />
+
+                                <div className="space-y-4">
+                                    {isLoading ? <p>Loading bookings...</p> : paginatedBookings.length > 0 ? (
+                                        paginatedBookings.map(booking => <BookingCard key={booking.bookingId} booking={booking} />)
+                                    ) : (
+                                        <p className="text-center text-gray-500 py-8">No bookings found for the selected filters.</p>
+                                    )}
                                 </div>
-                                <select name="bookingType" value={filters.bookingType} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md">
-                                    <option value="">All Types</option>
-                                    <option value="COURSE">Course</option>
-                                    <option value="PACKAGE">Package</option>
-                                </select>
-                                <button onClick={resetFilters} className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md text-sm font-medium col-span-full md:col-span-1">Reset Filters</button>
-                            </div>
-                        </div>
 
-                        <div className="space-y-4">
-                            {isLoading ? <p>Loading bookings...</p> : paginatedBookings.length > 0 ? (
-                                paginatedBookings.map(booking => <BookingCard key={booking.bookingId} booking={booking} />)
-                            ) : (
-                                <p className="text-center text-gray-500 py-8">No bookings found for the selected filters.</p>
-                            )}
-                        </div>
-
-                        {totalPages > 1 && (
-                            <div className="mt-6 flex items-center justify-between">
-                                <button onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 0} className="px-4 py-2 bg-white border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50">Previous</button>
-                                <span className="text-sm text-gray-700">
-                                    Page {currentPage + 1} of {totalPages}
-                                </span>
-                                <button onClick={() => setCurrentPage(p => p + 1)} disabled={currentPage >= totalPages - 1} className="px-4 py-2 bg-white border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50">Next</button>
+                                {totalPages > 1 && (
+                                    <div className="mt-6 flex items-center justify-between">
+                                        <button onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 0} className="px-4 py-2 bg-white border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50">Previous</button>
+                                        <span className="text-sm text-gray-700">Page {currentPage + 1} of {totalPages}</span>
+                                        <button onClick={() => setCurrentPage(p => p + 1)} disabled={currentPage >= totalPages - 1} className="px-4 py-2 bg-white border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50">Next</button>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="space-y-4">
+                                {packages.length > 0 ? (
+                                    packages.map(pkg => <PackageCard key={pkg.id} pkg={pkg} onSchedule={() => openScheduleModal(pkg)} />)
+                                ) : (
+                                    <p className="text-center text-gray-500 py-8 bg-white rounded-lg shadow">You have no active packages.</p>
+                                )}
                             </div>
                         )}
                     </main>
                 </div>
             </div>
+
+            {isScheduleModalOpen && selectedPackage && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
+                        <h3 className="text-xl font-bold mb-4">Schedule a Class from {selectedPackage.packageName}</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label>Select a Course:</label>
+                                <select 
+                                    onChange={(e) => handleCourseSelectForScheduling(e.target.value)}
+                                    className="w-full p-2 border rounded-md mt-1"
+                                >
+                                    <option value="">-- Select a course --</option>
+                                    {selectedPackage.sessionDetails
+                                        .filter(detail => detail.remainingSessions > 0)
+                                        .map(detail => (
+                                            <option key={detail.courseId} value={detail.courseId}>
+                                                {detail.courseName} ({detail.remainingSessions} sessions left)
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                            
+                            {isCalendarLoading ? (
+                                <p>Loading available dates...</p>
+                            ) : courseToSchedule ? (
+                                <div className="space-y-4">
+                                    <div className="bg-white p-4 rounded-md border">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <button 
+                                                onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                                                className="p-2 rounded-full hover:bg-gray-100"
+                                            >
+                                                <ChevronLeftIcon />
+                                            </button>
+                                            <h3 className="text-lg font-semibold">
+                                                {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                                            </h3>
+                                            <button 
+                                                onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                                                className="p-2 rounded-full hover:bg-gray-100"
+                                            >
+                                                <ChevronRightIcon />
+                                            </button>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500">
+                                            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-7 gap-1 mt-2">
+                                            {calendarDays.map((day, index) => {
+                                                if (!day) return <div key={`empty-${index}`} className="border rounded-md h-16"></div>;
+                                                
+                                                const dayString = moment(day).format('YYYY-MM-DD');
+                                                const isAvailable = availableDates.includes(dayString);
+                                                const isSelected = selectedDate && moment(selectedDate).isSame(day, 'day');
+                                                const isFutureOrToday = moment(day).isSameOrAfter(moment(), 'day');
+                                                
+                                                let dayClass = 'bg-gray-100 text-gray-400 cursor-not-allowed';
+                                                if (isAvailable && isFutureOrToday) {
+                                                    dayClass = isSelected 
+                                                        ? 'bg-indigo-600 text-white font-bold' 
+                                                        : 'bg-green-100 hover:bg-green-200 cursor-pointer';
+                                                }
+                                                
+                                                return (
+                                                    <div 
+                                                        key={dayString} 
+                                                        onClick={() => isAvailable && isFutureOrToday && setSelectedDate(day)}
+                                                        className={`p-2 border rounded-md h-16 flex flex-col justify-center items-center text-sm transition-colors ${dayClass}`}
+                                                    >
+                                                        <span>{day.getDate()}</span>
+                                                        {isAvailable && (
+                                                            <span className="text-xs">Available</span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                    
+                                    {selectedDate && (
+                                        <p className="text-center font-medium">
+                                            Selected Date: {moment(selectedDate).format('LL')}
+                                        </p>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="text-center text-gray-500 py-8">
+                                    Please select a course to see available dates
+                                </p>
+                            )}
+                        </div>
+                        <div className="mt-6 flex justify-end gap-4">
+                            <button onClick={() => setIsScheduleModalOpen(false)} className="px-4 py-2 bg-gray-200 rounded-md">Cancel</button>
+                            <button 
+                                onClick={handleScheduleSubmit} 
+                                disabled={!selectedDate}
+                                className="px-4 py-2 bg-green-600 text-white rounded-md disabled:bg-gray-400"
+                            >
+                                Confirm Booking
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
