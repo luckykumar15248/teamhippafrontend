@@ -1,6 +1,3 @@
-// File: app/(dashboard)/admin/calendar/page.tsx
-// This version adds a fully functional reschedule modal.
-
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -11,13 +8,25 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+interface Resource {
+    location: string;
+}
+
+interface BookingAPIResponse {
+    id: number;
+    title: string;
+    start: string;
+    end: string;
+    location: string;
+}
+
 // --- Type Definitions ---
 interface CalendarEvent {
-    id: number; // This is now the DailyAvailability ID
+    id: number;
     title: string;
     start: Date;
     end: Date;
-    resource: any; 
+    resource: Resource; 
 }
 
 interface AdminBookingDetails {
@@ -41,7 +50,6 @@ const getAuthHeaders = () => {
 // --- Main Page Component ---
 const AdminCalendarPage: React.FC = () => {
     const [events, setEvents] = useState<CalendarEvent[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [selectedSlotBookings, setSelectedSlotBookings] = useState<AdminBookingDetails[]>([]);
     const [isDetailsModalOpen, setDetailsModalOpen] = useState(false);
     const [isRescheduleModalOpen, setRescheduleModalOpen] = useState(false);
@@ -54,7 +62,6 @@ const AdminCalendarPage: React.FC = () => {
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
         
-        setIsLoading(true);
         try {
             const params = {
                 start: moment(start).format('YYYY-MM-DD'),
@@ -62,7 +69,7 @@ const AdminCalendarPage: React.FC = () => {
             };
             const response = await axios.get(`${apiUrl}/api/admin/schedule/calendar`, { headers, params });
             
-            const formattedEvents = response.data.map((booking: any) => ({
+            const formattedEvents = response.data.map((booking: BookingAPIResponse) => ({
                 id: booking.id,
                 title: booking.title,
                 start: new Date(booking.start),
@@ -70,11 +77,9 @@ const AdminCalendarPage: React.FC = () => {
                 resource: booking,
             }));
             setEvents(formattedEvents);
-        } catch (error) {
+        } catch {
             toast.error("Could not load calendar bookings.", );
-        } finally {
-            setIsLoading(false);
-        }
+        } 
     }, [router]);
 
     useEffect(() => {
@@ -124,7 +129,7 @@ const AdminCalendarPage: React.FC = () => {
             const startOfMonth = moment(currentView).startOf('month').toDate();
             const endOfMonth = moment(currentView).endOf('month').toDate();
             fetchEvents(startOfMonth, endOfMonth);
-        } catch (error) {
+        } catch {
             toast.error("Failed to reschedule booking. There may not be enough slots available.");
         }
     };
@@ -149,7 +154,7 @@ const AdminCalendarPage: React.FC = () => {
             const startOfMonth = moment(currentView).startOf('month').toDate();
             const endOfMonth = moment(currentView).endOf('month').toDate();
             fetchEvents(startOfMonth, endOfMonth);
-        } catch (error) {
+        } catch {
             toast.error("Failed to cancel booking.");
         }
     };

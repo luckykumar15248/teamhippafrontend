@@ -1,9 +1,6 @@
-// File: app/(dashboard)/admin/manage-user-packages/page.tsx
-// A new, comprehensive page for admins to manage all aspects of user packages.
-
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect} from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -121,7 +118,7 @@ const AdminManageUserPackagesPage: React.FC = () => {
                     params: { query: searchTerm }
                 });
                 setUserSuggestions(response.data);
-            } catch (error) {
+            } catch {
                 console.error("Failed to search for users.");
             }
         }, 300);
@@ -144,7 +141,7 @@ const AdminManageUserPackagesPage: React.FC = () => {
             if (response.data.length === 0) {
                 toast.info("No packages found for this user.");
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to fetch user packages.");
         } finally {
             setIsLoading(false);
@@ -175,7 +172,7 @@ const AdminManageUserPackagesPage: React.FC = () => {
             toast.success("Package updated successfully!");
             setIsEditModalOpen(false);
             handleUserSelect(selectedPackage.user as any); // Refresh search results
-        } catch (error) {
+        } catch {
             toast.error("Failed to update package.");
         }
     };
@@ -193,7 +190,7 @@ const AdminManageUserPackagesPage: React.FC = () => {
             toast.success("Session updated successfully!");
             setEditingSessionId(null);
             handleUserSelect(selectedPackage!.user as any); // Refresh data
-        } catch (error) {
+        } catch {
             toast.error("Failed to update session.");
         }
     };
@@ -213,12 +210,6 @@ const AdminManageUserPackagesPage: React.FC = () => {
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Failed to add course.");
         }
-    };
-
-    const openScheduleModal = (pkg: PurchasedPackageDetails, session: PurchasedSessionDetails) => {
-        setItemToSchedule({ pkg, session });
-        setIsEditModalOpen(false);
-        setIsScheduleModalOpen(true);
     };
     
     const handleScheduleSubmit = async () => {
@@ -245,10 +236,13 @@ const AdminManageUserPackagesPage: React.FC = () => {
             toast.success("Class scheduled successfully for the user!");
             setIsScheduleModalOpen(false);
             handleUserSelect(itemToSchedule.pkg.user as any); // Refresh data
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to schedule class.");
+        }  catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data?.message || "Failed to schedule class.");
+            } else {
+                toast.error("An unknown error occurred.");
+            }
         }
-    };
 
     return (
         <div className="p-4 sm:p-6 lg:p-8">

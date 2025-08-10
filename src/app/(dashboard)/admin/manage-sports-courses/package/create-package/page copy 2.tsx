@@ -18,12 +18,6 @@ interface Course {
   sportName: string;
   description: string;
 }
-
-interface PackageCourseDetail {
-    courseId: number;
-    sessions: number;
-}
-
 interface Package {
   id: number;
   name: string;

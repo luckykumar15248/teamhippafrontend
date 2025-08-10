@@ -247,7 +247,7 @@ const UserDashboardPage: React.FC = () => {
             setPackages(packagesRes.data || []);
             setNotifications(notificationsRes.data || []);
             console.log("packagesRes", packagesRes.data);
-        } catch (error) {
+        } catch {
             toast.error("Could not load all dashboard data.");
         } finally {
             setIsLoading(false);
@@ -340,7 +340,7 @@ const UserDashboardPage: React.FC = () => {
             const response = await axios.get(`${apiUrl}/api/public/schedules/course/${courseId}/available-dates`);
             console.log("Available dates response:", response.data);
             setAvailableDates(response.data || []);
-        } catch (error) {
+        } catch {
             toast.error("Could not load available dates for this course.");
             setAvailableDates([]);
         } finally {
@@ -369,10 +369,15 @@ const UserDashboardPage: React.FC = () => {
             await axios.post(`${apiUrl}/api/users/schedule-from-package`, requestBody, { headers });
             toast.success("Class scheduled successfully!");
             setIsScheduleModalOpen(false);
-            fetchData(); // Refresh all data
-        } catch (error: any) {
+            fetchData(); 
+
+        }catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
             toast.error(error.response?.data?.message || "Failed to schedule class.");
+        } else {
+            toast.error("An unknown error occurred.");
         }
+    }
     };
 
     const calendarDays = useMemo(() => {
