@@ -1,3 +1,4 @@
+// File: app/(dashboard)/admin/manage-user-packages/page.tsx
 'use client';
 
 import React, { useState, useEffect} from 'react';
@@ -207,9 +208,14 @@ const AdminManageUserPackagesPage: React.FC = () => {
             toast.success("Course added to package successfully!");
             setIsAddCourseModalOpen(false);
             handleUserSelect(selectedPackage.user as any); // Refresh data
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to add course.");
+        } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            toast.error(error.response?.data?.message || "Failed to schedule class.");
         }
+         else {
+            toast.error("An unknown error occurred.");
+        }
+    }
     };
 
     const openScheduleModal = (pkg: PurchasedPackageDetails, session: PurchasedSessionDetails) => {
@@ -243,12 +249,9 @@ const AdminManageUserPackagesPage: React.FC = () => {
             await axios.post(`${apiUrl}/api/admin/user-packages/schedule-from-package`, requestBody, { headers });
             toast.success("Class scheduled successfully for the user!");
             setIsScheduleModalOpen(false);
-            handleUserSelect(itemToSchedule.pkg.user as any);
-         } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
+            handleUserSelect(itemToSchedule.pkg.user as any); // Refresh data
+        } catch (error: any) {
             toast.error(error.response?.data?.message || "Failed to schedule class.");
-        } else {
-            toast.error("An unknown error occurred.");
         }
     };
 

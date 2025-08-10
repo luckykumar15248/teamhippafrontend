@@ -207,9 +207,15 @@ const AdminManageUserPackagesPage: React.FC = () => {
             toast.success("Course added to package successfully!");
             setIsAddCourseModalOpen(false);
             handleUserSelect(selectedPackage.user as any); // Refresh data
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to add course.");
+        } 
+       catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            toast.error(error.response?.data?.message || "Failed to schedule class.");
         }
+         else {
+            toast.error("An unknown error occurred.");
+        }
+    }
     };
     
     const handleScheduleSubmit = async () => {
@@ -236,13 +242,10 @@ const AdminManageUserPackagesPage: React.FC = () => {
             toast.success("Class scheduled successfully for the user!");
             setIsScheduleModalOpen(false);
             handleUserSelect(itemToSchedule.pkg.user as any); // Refresh data
-        }  catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
-                toast.error(error.response?.data?.message || "Failed to schedule class.");
-            } else {
-                toast.error("An unknown error occurred.");
-            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to schedule class.");
         }
+    };
 
     return (
         <div className="p-4 sm:p-6 lg:p-8">
