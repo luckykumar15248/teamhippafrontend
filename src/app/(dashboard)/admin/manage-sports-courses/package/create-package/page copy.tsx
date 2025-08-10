@@ -19,11 +19,6 @@ interface Course {
   description: string;
 }
 
-interface PackageCourseDetail {
-    courseId: number;
-    sessions: number;
-}
-
 interface Package {
   id: number;
   name: string;
@@ -31,9 +26,8 @@ interface Package {
   description: string;
   price: number;
   isActive: boolean;
-  totalSessions: number; // NEW
-  validityDays: number; // NEW
-  includedCourses: (Course & { sessions: number })[]; // Updated to include sessions
+  courseIds?: number[];
+  includedCourses: Course[];
   imageUrls: string[];
   createdAt: string;
 }
@@ -75,18 +69,20 @@ const ManagePackagesPage: React.FC = () => {
   const [filteredPackages, setFilteredPackages] = useState<Package[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [editingPackageId, setEditingPackageId] = useState<number | null>(null);
-  
-  // Form State (Updated)
   const [packageName, setPackageName] = useState('');
   const [shortDescription, setShortDescription] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [totalSessions, setTotalSessions] = useState('');
-  const [validityDays, setValidityDays] = useState('');
   const [isActive, setIsActive] = useState(true);
-  const [courseSessions, setCourseSessions] = useState<Map<number, number>>(new Map());
-
-  const [filters, setFilters] = useState<FilterOptions>({ sportId: null, courseId: null, priceMin: null, priceMax: null, status: 'all', searchTerm: '' });
+  const [selectedCourseIds, setSelectedCourseIds] = useState<Set<number>>(new Set());
+  const [filters, setFilters] = useState<FilterOptions>({
+    sportId: null,
+    courseId: null,
+    priceMin: null,
+    priceMax: null,
+    status: 'all',
+    searchTerm: ''
+  });
   const [imageSources, setImageSources] = useState<ImageSource[]>([]);
   const [imageUrlInput, setImageUrlInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -187,52 +183,38 @@ const ManagePackagesPage: React.FC = () => {
     return filteredPackages.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredPackages, currentPage]);
 
-  const handleCourseSessionChange = (courseId: number, sessions: number) => {
-    setCourseSessions(prev => new Map(prev).set(courseId, sessions));
-  };
-
   const handleToggleCourse = (courseId: number) => {
-    setCourseSessions(prev => {
-        const newMap = new Map(prev);
-        if (newMap.has(courseId)) {
-            newMap.delete(courseId);
-        } else {
-            newMap.set(courseId, 1); // Default to 1 session when adding
-        }
-        return newMap;
+    setSelectedCourseIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(courseId)) newSet.delete(courseId); 
+      else newSet.add(courseId);
+      return newSet;
     });
   };
   
   const handleToggleSport = (sportId: number) => {
-    const coursesInSport = allCourses.filter(c => c.sportId === sportId);
-    const allSelected = coursesInSport.every(c => courseSessions.has(c.id));
-    setCourseSessions(prev => {
-        const newMap = new Map(prev);
-        if (allSelected) {
-            coursesInSport.forEach(c => newMap.delete(c.id));
-        } else {
-            coursesInSport.forEach(c => {
-                if (!newMap.has(c.id)) {
-                    newMap.set(c.id, 1);
-                }
-            });
-        }
-        return newMap;
+    const coursesInSport = allCourses.filter(c => c.sportId === sportId).map(c => c.id);
+    const allSelected = coursesInSport.every(id => selectedCourseIds.has(id));
+    setSelectedCourseIds(prev => {
+      const newSet = new Set(prev);
+      if (allSelected) coursesInSport.forEach(id => newSet.delete(id));
+      else coursesInSport.forEach(id => newSet.add(id));
+      return newSet;
     });
   };
 
   const getSportSelectionState = (sportId: number) => {
     const coursesInSportIds = allCourses.filter(c => c.sportId === sportId).map(c => c.id);
     if (coursesInSportIds.length === 0) return { checked: false, indeterminate: false };
-    const selectedCount = coursesInSportIds.filter(id => courseSessions.has(id)).length;
+    const selectedCount = coursesInSportIds.filter(id => selectedCourseIds.has(id)).length;
     if (selectedCount === 0) return { checked: false, indeterminate: false };
     if (selectedCount === coursesInSportIds.length) return { checked: true, indeterminate: false };
     return { checked: false, indeterminate: true };
   };
 
   const selectedCourses = useMemo(() => {
-    return allCourses.filter(course => courseSessions.has(course.id));
-  }, [courseSessions, allCourses]);
+    return allCourses.filter(course => selectedCourseIds.has(course.id));
+  }, [selectedCourseIds, allCourses]);
 
   const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -264,10 +246,8 @@ const ManagePackagesPage: React.FC = () => {
     setShortDescription('');
     setDescription('');
     setPrice('');
-    setTotalSessions('');
-    setValidityDays('');
     setIsActive(true);
-    setCourseSessions(new Map());
+    setSelectedCourseIds(new Set());
     setImageSources([]);
     setImageUrlInput('');
   };
@@ -279,15 +259,11 @@ const ManagePackagesPage: React.FC = () => {
     setShortDescription(pkg.shortDescription || '');
     setDescription(pkg.description || '');
     setPrice(String(pkg.price || ''));
-    setTotalSessions(String(pkg.totalSessions || ''));
-    setValidityDays(String(pkg.validityDays || ''));
     setIsActive(pkg.isActive ?? true);
     
-    const courseSessionMap = new Map<number, number>();
-    pkg.includedCourses?.forEach(course => {
-        courseSessionMap.set(course.id, course.sessions || 1);
-    });
-    setCourseSessions(courseSessionMap);
+    // Get course IDs from includedCourses
+    const courseIds = pkg.includedCourses?.map(course => course.id) || [];
+    setSelectedCourseIds(new Set(courseIds));
     
     setImageSources((pkg.imageUrls || []).map(url => ({ type: 'url', url })));
   };
@@ -314,7 +290,7 @@ const ManagePackagesPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (courseSessions.size === 0) {
+    if (selectedCourseIds.size === 0) {
       toast.error("You must select at least one course for the package.");
       return;
     }
@@ -346,10 +322,8 @@ const ManagePackagesPage: React.FC = () => {
         shortDescription,
         description,
         price: parseFloat(price) || 0,
-        totalSessions: parseInt(totalSessions) || 0,
-        validityDays: parseInt(validityDays) || 0,
         isActive,
-        courses: Array.from(courseSessions.entries()).map(([courseId, sessions]) => ({ courseId, sessions })),
+        courseIds: Array.from(selectedCourseIds),
         imageUrls: finalImageUrls,
       };
 
@@ -432,14 +406,6 @@ const ManagePackagesPage: React.FC = () => {
                   <option value="false">Inactive</option>
                 </select>
               </div>
-              <div>
-                <label htmlFor="totalSessions" className="block text-sm font-medium text-gray-700">Total Sessions</label>
-                <input type="number" id="totalSessions" value={totalSessions} onChange={(e) => setTotalSessions(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 10" />
-              </div>
-              <div>
-                <label htmlFor="validityDays" className="block text-sm font-medium text-gray-700">Validity (in days)</label>
-                <input type="number" id="validityDays" value={validityDays} onChange={(e) => setValidityDays(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 90" />
-              </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">Description</label>
                 <div className="mt-1">
@@ -457,12 +423,7 @@ const ManagePackagesPage: React.FC = () => {
                       {selectedCourses.map(course => (
                         <li key={course.id} className="flex justify-between items-center text-sm">
                           <span className="text-gray-700">{course.name}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">{course.sportName}</span>
-                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                              {courseSessions.get(course.id) || 1} session{courseSessions.get(course.id) !== 1 ? 's' : ''}
-                            </span>
-                          </div>
+                          <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">{course.sportName}</span>
                         </li>
                       ))}
                     </ul>
@@ -471,9 +432,7 @@ const ManagePackagesPage: React.FC = () => {
                   )}
                 </div>
                 <div className="border-t mt-4 pt-4">
-                  <p className="text-lg font-semibold text-gray-800 text-right">
-                    Total Sessions: {Array.from(courseSessions.values()).reduce((sum, sessions) => sum + sessions, 0)}
-                  </p>
+                  <p className="text-lg font-semibold text-gray-800 text-right">Total Courses: {selectedCourses.length}</p>
                 </div>
               </div>
               
@@ -507,7 +466,7 @@ const ManagePackagesPage: React.FC = () => {
           </div>
           
           <div className="mt-8">
-            <h3 className="text-xl font-semibold text-gray-800 border-b pb-4 mb-6">Select Courses & Set Session Limits</h3>
+            <h3 className="text-xl font-semibold text-gray-800 border-b pb-4 mb-6">Select Courses</h3>
             <input 
               type="text" 
               placeholder="Search courses to add..." 
@@ -531,28 +490,17 @@ const ManagePackagesPage: React.FC = () => {
                       />
                       <label className="font-semibold text-gray-700">{sport.name}</label>
                     </div>
-                    <ul className="p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-6">
+                    <ul className="p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                       {sportCourses.map(course => (
-                        <li key={course.id} className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <input 
-                              type="checkbox" 
-                              id={`course-${course.id}`} 
-                              checked={courseSessions.has(course.id)} 
-                              onChange={() => handleToggleCourse(course.id)} 
-                              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" 
-                            />
-                            <label htmlFor={`course-${course.id}`} className="ml-3 text-sm text-gray-600">{course.name}</label>
-                          </div>
-                          {courseSessions.has(course.id) && (
-                            <input
-                              type="number"
-                              value={courseSessions.get(course.id) || 1}
-                              onChange={(e) => handleCourseSessionChange(course.id, parseInt(e.target.value) || 1)}
-                              className="w-16 text-center text-sm p-1 border rounded-md"
-                              min="1"
-                            />
-                          )}
+                        <li key={course.id} className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            id={`course-${course.id}`} 
+                            checked={selectedCourseIds.has(course.id)} 
+                            onChange={() => handleToggleCourse(course.id)} 
+                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" 
+                          />
+                          <label htmlFor={`course-${course.id}`} className="ml-3 text-sm text-gray-600">{course.name}</label>
                         </li>
                       ))}
                     </ul>
@@ -691,7 +639,7 @@ const ManagePackagesPage: React.FC = () => {
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package Name</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Courses</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -710,14 +658,11 @@ const ManagePackagesPage: React.FC = () => {
                         ₹{pkg.price?.toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div>
-                          <span className="font-medium">Sessions:</span> {pkg.totalSessions}
-                        </div>
-                        <div>
-                          <span className="font-medium">Validity:</span> {pkg.validityDays} days
-                        </div>
+                        {pkg.includedCourses?.length || 0} {pkg.includedCourses?.length === 1 ? 'course' : 'courses'}
                         <div className="text-xs text-gray-400 mt-1">
-                          {pkg.includedCourses?.length || 0} {pkg.includedCourses?.length === 1 ? 'course' : 'courses'}
+                          {Array.from(new Set(
+                            pkg.includedCourses?.map(c => c.sportName) || []
+                          )).join(', ')}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
