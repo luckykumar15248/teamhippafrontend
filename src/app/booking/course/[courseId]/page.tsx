@@ -318,7 +318,7 @@ const BookingPage: React.FC = () => {
                                             <div><label className="text-sm font-medium">Last Name</label><input value={p.lastName} onChange={e => handleParticipantChange(index, 'lastName', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3" /></div>
                                             <div><label className="text-sm font-medium">Date of Birth</label><input type="date" value={p.dateOfBirth} onChange={e => handleParticipantChange(index, 'dateOfBirth', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3" /></div>
                                             <div><label className="text-sm block font-medium">Skill Level</label><select value={p.skillLevel} onChange={e => handleParticipantChange(index, 'skillLevel', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
-                                            <div>
+                                            <div className="hidden">
                                                 <label className="text-sm font-medium">Hours Required per Day</label>
                                                 <select value={p.dailyHours || ''} onChange={e => handleParticipantChange(index, 'dailyHours', Number(e.target.value))} className="mt-1 block w-full rounded-md border border-gray-300 p-3">
                                                     <option value="">Select hours</option>
