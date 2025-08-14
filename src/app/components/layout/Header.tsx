@@ -4,23 +4,23 @@ import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { MenuIcon } from "../Icons/MenuIcon";
 import Image from "next/image";
-import { UserIcon } from "../Icons";
+import { LogOutIcon, UserIcon } from "../Icons";
 import MobileMenu from "../MobileMenu";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/app/context/AuthContext";
+import { Button } from "../Button";
 
 const Header: React.FC = () => {
   const router = useRouter();
-  const { isLoggedIn, user } = useContext(AuthContext);
-
+  const { isLoggedIn, user, logout } = useContext(AuthContext);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Dynamically set the dashboard URL based on user role
-  const dashboardPath = user?.roleName === "ADMIN"
-    ? "/dashboard"
-    : user?.roleName === "VISITOR_REGISTERED"
-    ? "/my-account"
-    : "/dashboard";
+  const dashboardPath =
+    user?.roleName === "ADMIN"
+      ? "/dashboard"
+      : user?.roleName === "VISITOR_REGISTERED"
+      ? "/my-account"
+      : "/dashboard";
 
   const LoginClick = () => {
     router.push("/login");
@@ -63,12 +63,21 @@ const Header: React.FC = () => {
           {/* Auth Links / User Profile */}
           <div className="hidden xl:flex items-center space-x-4">
             {isLoggedIn ? (
-              <Link
-                href={dashboardPath} 
-                className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  href={dashboardPath}
+                  className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
+                >
+                  Dashboard
+                </Link>
+                <Button
+                  onClick={logout}
+                  className="flex gap-2 !font-medium !px-4 !py-2"
+                >
+                  <LogOutIcon className="text-white" />
+                  Logout
+                </Button>
+              </>
             ) : (
               <Link
                 href="/login"
@@ -95,8 +104,9 @@ const Header: React.FC = () => {
           isMobileMenuOpen={isMobileMenuOpen}
           toggleMobileMenu={toggleMobileMenu}
           isLoggedIn={isLoggedIn}
-          user={user} 
+          user={user}
           LoginClick={LoginClick}
+          logout={logout}
         />
       )}
     </header>

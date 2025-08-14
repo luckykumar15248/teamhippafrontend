@@ -11,5 +11,4 @@ export * from "./AppleIcon";
 export * from "./AnimateSpinIcon";
 export * from "./UserIcon";
 export * from "./RightArrowIcon";
-
-
+export * from "./LogOutIcon";

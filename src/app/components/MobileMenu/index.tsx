@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import { Button } from "../Button";
-import { UserIcon } from "../Icons";
+import { LogOutIcon, UserIcon } from "../Icons";
 import { NAV_LINKS } from "@/untils/constant";
 import { CloseIcon } from "../Icons/CloseIcon";
 
@@ -13,6 +13,7 @@ type MobileMenuProps = {
   isLoggedIn: boolean;
   user: { roleName: string } | null;
   LoginClick: () => void;
+  logout: () => void;
 };
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
@@ -21,15 +22,15 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   isLoggedIn,
   user,
   LoginClick,
+  logout,
 }) => {
-
   const dashboardPath =
     user?.roleName === "ADMIN"
       ? "/dashboard"
       : user?.roleName === "VISITOR_REGISTERED"
       ? "/my-account"
       : "/dashboard";
-  
+
   return (
     <>
       <div
@@ -61,12 +62,21 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           ))}
           <hr className="my-2 border-gray-300" />
           {isLoggedIn ? (
-            <Link
-                href={dashboardPath} 
-                className="flex gap-2 justify-center sm:justify-normal items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
+            <>
+              <Link
+                href={dashboardPath}
+                className="flex gap-2 justify-center items-center bg-[#b0db72] hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
               >
                 Dashboard
               </Link>
+              <Button
+                onClick={logout}
+                className="w-full flex gap-2 !font-medium !px-4 !py-2"
+              >
+                <LogOutIcon className="text-white" />
+                Logout
+              </Button>
+            </>
           ) : (
             <Button
               onClick={() => {

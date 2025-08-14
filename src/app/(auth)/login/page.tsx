@@ -161,7 +161,7 @@ const LoginPage = () => {
           <Button
             type="submit"
             isLoading={isLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md transition-colors"
+            className="w-full"
           >
             Sign in
           </Button>
