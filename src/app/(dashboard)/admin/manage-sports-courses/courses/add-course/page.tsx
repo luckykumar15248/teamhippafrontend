@@ -143,7 +143,7 @@ const AddNewCoursePage: React.FC = () => {
     });
 
     try {
-      const response = await axios.post('/api/upload', formData);
+      const response = await axios.post('/api-frontend/upload', formData);
       return response.data.paths;
     } catch (error) {
       console.error('Image upload failed:', error);

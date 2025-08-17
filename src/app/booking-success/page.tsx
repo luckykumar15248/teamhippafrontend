@@ -39,7 +39,7 @@ const BookingSuccessContent: React.FC = () => {
     const [error, setError] = useState('');
     const searchParams = useSearchParams();
     const router = useRouter();
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8091';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://teamhippa.com' || 'http://teamhippa.com';
 
     const fetchBookingConfirmation = useCallback(async (bookingId: string, retries = 3) => {
         try {
@@ -49,7 +49,7 @@ const BookingSuccessContent: React.FC = () => {
         } catch (err) {
             const axiosError = err as AxiosError;
             if (axiosError.response?.status === 403 && retries > 0) {
-                setTimeout(() => fetchBookingConfirmation(bookingId, retries - 1), 1500);
+                setTimeout(() => fetchBookingConfirmation(bookingId, retries - 1), 3000);
             } else {
                 setError("Failed to retrieve booking confirmation details. Please check your email for a receipt.");
                 setIsLoading(false);
