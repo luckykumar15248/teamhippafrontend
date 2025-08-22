@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -21,12 +20,10 @@ interface ParticipantDetails {
     firstName: string;
     lastName: string;
 }
-
 interface PackageCourse {
     id: number;
     name: string;
 }
-
 interface UserBookingDetails {
     bookingId: number;
     bookingReference: string;
@@ -41,15 +38,12 @@ interface UserBookingDetails {
     packageName?: string | null;
     includedCourses?: PackageCourse[] | null;
 }
-
 interface CourseSchedule {
     schedule_id: number;
     scheduleName: string;
 }
-
 interface PurchasedPackage {
     id: number;
-    masterPackageId: number; // Required for the renewal redirect
     packageName: string;
     expiryDate: string;
     totalSessions: number;
@@ -62,7 +56,6 @@ interface PurchasedPackage {
         courseId: number;
     }[];
 }
-
 interface Notification {
     id: number;
     title: string;
@@ -70,7 +63,6 @@ interface Notification {
     createdAt: string;
     isRead: boolean;
 }
-
 interface UserProfile {
     id: number;
     firstName: string;
@@ -78,12 +70,16 @@ interface UserProfile {
     email: string;
     roleName: 'USER' | 'ADMIN' | 'VISITOR_REGISTERED';
 }
-
 interface AvailabilitySlot {
     date: string;
     availableSlots: number;
     price: number;
     isBookingOpen: boolean;
+}
+interface GroupedPackage {
+    packageName: string;
+    current: PurchasedPackage;
+    history: PurchasedPackage[];
 }
 
 // --- Child Components ---
@@ -145,7 +141,9 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => 
                                     <h4 className="font-semibold text-gray-700 mb-2">Included Courses</h4>
                                     <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
                                         {booking.includedCourses?.map((course, index) => (
-                                            <li key={`${course.id}-${index}`}>{course.name}</li>
+                                            <li key={`${course.id}-${index}`}>
+                                                {course.name} (ID: {course.id})
+                                            </li>
                                         ))}
                                     </ul>
                                 </>
@@ -167,11 +165,11 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({ booking }) => 
     );
 };
 
-const PackageCard: React.FC<{
-    pkg: PurchasedPackage,
-    onSchedule: (pkg: PurchasedPackage) => void,
-    onRenew: (pkg: PurchasedPackage, packageId: number) => void,
-    isHistory?: boolean
+const PackageCard: React.FC<{ 
+    pkg: PurchasedPackage, 
+    onSchedule: () => void,
+    onRenew: (pkg: PurchasedPackage) => void,
+    isHistory?: boolean 
 }> = ({ pkg, onSchedule, onRenew, isHistory = false }) => {
     const progress = pkg.totalSessions > 0 ? (pkg.remainingSessions / pkg.totalSessions) * 100 : 0;
     const isExpired = new Date(pkg.expiryDate) < new Date(new Date().setHours(0,0,0,0));
@@ -179,46 +177,32 @@ const PackageCard: React.FC<{
 
     if (isHistory) {
         return (
-            <div className="bg-gray-50 p-4 rounded-lg border">
+            <div className="bg-gray-50 p-3 rounded-md border text-sm">
                 <div className="flex justify-between items-center">
                     <div>
-                        <p className="font-semibold text-gray-700">{pkg.packageName}</p>
-                        <p className="text-sm text-gray-500">
-                            {pkg.status === 'EXPIRED' ? `Expired on: ${new Date(pkg.expiryDate).toLocaleDateString()}` : 'Sessions Depleted'}
-                        </p>
+                        <p className="text-gray-500">Expired on: {new Date(pkg.expiryDate).toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-400">Status: {pkg.status}</p>
                     </div>
-                    {/*
-                    <button
-                        onClick={() => onRenew(pkg, pkg.masterPackageId)}
-                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    <button 
+                        onClick={() => onRenew(pkg)}
+                        className="bg-gray-200 text-gray-800 px-3 py-1 rounded text-xs font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={isExpired}
                     >
                         Buy Again
                     </button>
-                    */}
-                </div>
-                <div className="mt-2 pt-2 border-t border-gray-200">
-                    <ul className="text-xs text-gray-600 space-y-1">
-                        {pkg.sessionDetails.map(detail => (
-                            <li key={detail.courseId} className="flex justify-between">
-                                <span>{detail.courseName}</span>
-                                <span>{detail.totalSessionsAllotted - detail.remainingSessions} / {detail.totalSessionsAllotted} used</span>
-                            </li>
-                        ))}
-                    </ul>
                 </div>
             </div>
         );
     }
-   
+    
     return (
         <div className="bg-white rounded-lg shadow-md">
             <div className="p-6">
                 <h3 className="font-bold text-lg text-indigo-700">{pkg.packageName}</h3>
-                <div className="mt-4 space-y-3 text-sm">
+                <div className="mt-4 space-y-2 text-sm">
                     <div className="flex justify-between">
                         <span className="text-gray-600">Status:</span>
-                        <span className={`font-semibold px-2 py-0.5 rounded-full text-xs ${pkg.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>{pkg.status}</span>
+                        <span className={`font-semibold ${isExpired ? 'text-red-600' : 'text-gray-800'}`}>{isExpired ? 'EXPIRED' : pkg.status}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="text-gray-600">Expires on:</span>
@@ -226,39 +210,33 @@ const PackageCard: React.FC<{
                     </div>
                     <div>
                         <div className="flex justify-between mb-1">
-                            <span className="text-gray-600">Total Sessions Remaining:</span>
+                            <span className="text-gray-600">Sessions Remaining:</span>
                             <span className="font-semibold text-gray-800">{pkg.remainingSessions} / {pkg.totalSessions}</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
                             <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
                         </div>
                     </div>
-                    <div className="pt-2">
-                        <p className="font-semibold text-gray-600 mb-1">Session Details:</p>
-                        <ul className="text-xs text-gray-600 space-y-1 pl-2">
-                             {pkg.sessionDetails.map(detail => (
-                                <li key={detail.courseId} className="flex justify-between">
-                                    <span>- {detail.courseName}</span>
-                                    <span>{detail.remainingSessions} / {detail.totalSessionsAllotted} remaining</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
                 </div>
             </div>
-           
+            
             <div className="w-full text-white py-2.5 rounded-b-lg text-center font-semibold">
-                {isDepleted ? (
-                    <button
-                        onClick={() => onRenew(pkg, pkg.masterPackageId)}
+                {isExpired ? (
+                    <div className="bg-gray-400 cursor-not-allowed">
+                        Package Expired
+                    </div>
+                ) : isDepleted ? (
+                    <button 
+                        onClick={() => onRenew(pkg)}
                         className="w-full bg-green-600 hover:bg-green-700 transition-colors"
                     >
                         Renew Package
                     </button>
                 ) : (
-                    <button
-                        onClick={() => onSchedule(pkg)}
-                        className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                    <button 
+                        onClick={onSchedule}
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 transition-colors"
+                        disabled={pkg.status !== 'ACTIVE'}
                     >
                         Schedule a Class
                     </button>
@@ -272,7 +250,7 @@ const PackageCard: React.FC<{
 const UserDashboardPage: React.FC = () => {
     const { setIsLoggedIn } = useContext(AuthContext);
     const [user, setUser] = useState<UserProfile | null>(null);
-    const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'packages'>('packages');
+    const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'packages'>('upcoming');
     const [allUpcomingBookings, setAllUpcomingBookings] = useState<UserBookingDetails[]>([]);
     const [allPastBookings, setAllPastBookings] = useState<UserBookingDetails[]>([]);
     const [packages, setPackages] = useState<PurchasedPackage[]>([]);
@@ -290,32 +268,23 @@ const UserDashboardPage: React.FC = () => {
     const [isCalendarLoading, setIsCalendarLoading] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [courseSchedules, setCourseSchedules] = useState<Record<number, CourseSchedule[]>>({});
-    const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+    const [historyVisible, setHistoryVisible] = useState<Record<string, boolean>>({});
     const router = useRouter();
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://teamhippa.com';
 
-    const categorizedPackages = useMemo(() => {
-        if (!packages) return { active: [], past: [] };
+    const groupedPackages = useMemo(() => {
+        if (!packages) return [];
+        const groups: Record<string, GroupedPackage> = {};
+        const sortedPackages = [...packages].sort((a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime());
 
-        const active: PurchasedPackage[] = [];
-        const past: PurchasedPackage[] = [];
-        const today = new Date(new Date().setHours(0,0,0,0));
-
-        for (const pkg of packages) {
-            const isExpired = new Date(pkg.expiryDate) < today;
-            const hasSessions = pkg.remainingSessions > 0;
-
-            if (!isExpired && hasSessions) {
-                active.push(pkg);
+        for (const pkg of sortedPackages) {
+            if (!groups[pkg.packageName]) {
+                groups[pkg.packageName] = { packageName: pkg.packageName, current: pkg, history: [] };
             } else {
-                past.push(pkg);
+                groups[pkg.packageName].history.push(pkg);
             }
         }
-       
-        active.sort((a, b) => new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime());
-        past.sort((a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime());
-
-        return { active, past };
+        return Object.values(groups);
     }, [packages]);
 
     const getAuthHeaders = () => {
@@ -328,7 +297,7 @@ const UserDashboardPage: React.FC = () => {
     const fetchData = useCallback(async () => {
         const headers = getAuthHeaders();
         if (!headers) { router.push('/login'); return; }
-       
+        
         setIsLoading(true);
         try {
             const [profileRes, upcomingRes, pastRes, packagesRes, notificationsRes] = await Promise.all([
@@ -338,7 +307,7 @@ const UserDashboardPage: React.FC = () => {
                 axios.get(`${apiUrl}/api/users/my-all-packages`, { headers }),
                 axios.get(`${apiUrl}/api/users/notifications`, { headers })
             ]);
-           
+            
             setUser(profileRes.data);
             setAllUpcomingBookings(upcomingRes.data || []);
             setAllPastBookings(pastRes.data || []);
@@ -352,7 +321,7 @@ const UserDashboardPage: React.FC = () => {
     }, [router, apiUrl]);
 
     useEffect(() => { fetchData(); }, [fetchData]);
-   
+    
     const fetchCourseSchedules = useCallback(async (courseId: number) => {
         try {
             const response = await axios.get(`${apiUrl}/api/public/course-schedules/course/${courseId}`);
@@ -440,7 +409,7 @@ const UserDashboardPage: React.FC = () => {
             return;
         }
         setCourseToSchedule(courseId);
-       
+        
         if (!courseSchedules[courseId]) {
             const schedules = await fetchCourseSchedules(courseId);
             setCourseSchedules(prev => ({ ...prev, [courseId]: schedules }));
@@ -470,8 +439,8 @@ const UserDashboardPage: React.FC = () => {
         try {
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth() + 1;
-            const response = await axios.get(`${apiUrl}/api/public/booking-data/availability/schedule/${scheduleId}`, {
-                params: { year, month }
+            const response = await axios.get(`${apiUrl}/api/public/booking-data/availability/schedule/${scheduleId}`, { 
+                params: { year, month } 
             });
             setAvailableDates(response.data || []);
         } catch {
@@ -487,7 +456,7 @@ const UserDashboardPage: React.FC = () => {
             toast.error("Please select a course and a date.");
             return;
         }
-       
+        
         const headers = getAuthHeaders();
         if (!headers) return;
 
@@ -513,23 +482,41 @@ const UserDashboardPage: React.FC = () => {
         }
     };
 
-    const handleRenewPackage = (pkg: PurchasedPackage, packageId: number) => {
-        console.log("pkg is", pkg);
+    const handleRenewPackage = async (pkg: PurchasedPackage) => {
+        const headers = getAuthHeaders();
+        if (!headers) {
+            router.push('/login');
+            return;
+        }
+
         const actionText = pkg.status === 'DEPLETED' ? 'renew' : 'buy again';
-        const isConfirmed = window.confirm(`Are you sure you want to ${actionText} the "${pkg.packageName}" package?`);
-       
-        if (isConfirmed) {
-            if (!packageId) {
-                toast.error("Cannot find original package product. Please contact support.");
-                return;
+        const isConfirmed = window.confirm(`Are you sure you want to ${actionText} the "${pkg.packageName}" package? You will be redirected to payment.`);
+        if (!isConfirmed) return;
+
+        try {
+            toast.info("Preparing your new package...");
+           /* const response = await axios.post(`${apiUrl}/api/public/package-bookings/renew`, 
+                { purchasedPackageId: pkg.id }, 
+                { headers }
+            );
+            
+            const { bookingId, token } = response.data;
+            toast.success("Redirecting to payment...");
+            router.push(`/renew-package?id=${pkg.id}`);*/
+            toast.success("Redirecting to payment...");
+            router.push(`/booking/package-booking/${pkg.id}`);
+
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data?.message || `Could not start ${actionText} process.`);
+            } else {
+                toast.error(`An unknown error occurred during the ${actionText} process.`);
             }
-            toast.success("Redirecting to booking page...");
-            router.push(`/booking/package-booking/${packageId}`);
         }
     };
-   
+    
     const toggleHistory = (packageName: string) => {
-        setIsHistoryVisible(prev => !prev);
+        setHistoryVisible(prev => ({ ...prev, [packageName]: !prev[packageName] }));
     };
 
     const calendarDays = useMemo(() => {
@@ -538,10 +525,10 @@ const UserDashboardPage: React.FC = () => {
         const month = currentMonth.getMonth();
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-       
+        
         for (let i = 0; i < firstDay; i++) { days.push(null); }
         for (let i = 1; i <= daysInMonth; i++) { days.push(new Date(year, month, i)); }
-       
+        
         return days;
     }, [currentMonth]);
 
@@ -564,7 +551,7 @@ const UserDashboardPage: React.FC = () => {
     if (isLoading || !user) {
         return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div></div>;
     }
-   
+    
     return (
         <div className="bg-gray-100 min-h-screen">
             <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -614,7 +601,7 @@ const UserDashboardPage: React.FC = () => {
                                 <button onClick={() => handleTabChange('packages')} className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'packages' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>My Packages</button>
                             </nav>
                         </div>
-                       
+                        
                         {(activeTab === 'upcoming' || activeTab === 'past') && (
                             <>
                                 <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
@@ -653,47 +640,43 @@ const UserDashboardPage: React.FC = () => {
                                 )}
                             </>
                         )}
-                       
+                        
                         {activeTab === 'packages' && (
-                             <div>
-                                <h2 className="text-2xl font-bold text-gray-800 mb-4">Active Packages</h2>
-                                <div className="space-y-4">
-                                    {categorizedPackages.active.length > 0 ? (
-                                        categorizedPackages.active.map(pkg => (
-                                            <PackageCard
-                                                key={pkg.id}
-                                                pkg={pkg}
-                                                onSchedule={openScheduleModal}
+                             <div className="space-y-6">
+                                {groupedPackages.length > 0 ? (
+                                    groupedPackages.map(group => (
+                                        <div key={group.current.id} className="bg-white rounded-lg shadow">
+                                            <PackageCard 
+                                                pkg={group.current} 
+                                                onSchedule={() => openScheduleModal(group.current)}
                                                 onRenew={handleRenewPackage}
                                             />
-                                        ))
-                                    ) : (
-                                        <p className="text-center text-gray-500 py-8 bg-white rounded-lg shadow">You have no active packages to use.</p>
-                                    )}
-                                </div>
-
-                                {categorizedPackages.past.length > 0 && (
-                                    <div className="mt-12">
-                                        <div className="border-t pt-8">
-                                            <button onClick={() => setIsHistoryVisible(prev => !prev)} className="text-lg font-semibold text-indigo-600 flex items-center w-full justify-between">
-                                                <span>Purchase History</span>
-                                                <ChevronDownIcon className={`h-5 w-5 transform transition-transform ${isHistoryVisible ? 'rotate-180' : ''}`} />
-                                            </button>
-                                            {isHistoryVisible && (
-                                                <div className="mt-4 space-y-3">
-                                                    {categorizedPackages.past.map(histPkg => (
-                                                        <PackageCard
-                                                            key={histPkg.id}
-                                                            pkg={histPkg}
-                                                            onRenew={handleRenewPackage}
-                                                            onSchedule={openScheduleModal}
-                                                            isHistory={true}
-                                                        />
-                                                    ))}
+                                            
+                                            {group.history.length > 0 && (
+                                                <div className="p-4 border-t border-gray-200">
+                                                    <button onClick={() => toggleHistory(group.packageName)} className="text-sm font-semibold text-indigo-600 flex items-center w-full justify-between">
+                                                        <span>View Purchase History ({group.history.length})</span>
+                                                        <ChevronDownIcon className={`h-4 w-4 transform transition-transform ${historyVisible[group.packageName] ? 'rotate-180' : ''}`} />
+                                                    </button>
+                                                    {historyVisible[group.packageName] && (
+                                                        <div className="mt-4 space-y-2">
+                                                            {group.history.map(histPkg => (
+                                                                <PackageCard 
+                                                                    key={histPkg.id}
+                                                                    pkg={histPkg}
+                                                                    onRenew={handleRenewPackage}
+                                                                    onSchedule={() => {}}
+                                                                    isHistory={true}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
+                                    ))
+                                ) : (
+                                    <p className="text-center text-gray-500 py-8 bg-white rounded-lg shadow">You have no active packages.</p>
                                 )}
                             </div>
                         )}
@@ -708,7 +691,7 @@ const UserDashboardPage: React.FC = () => {
                         <div className="space-y-4">
                             <div>
                                 <label>Select a Course:</label>
-                                <select
+                                <select 
                                     onChange={(e) => handleCourseSelectForScheduling(e.target.value)}
                                     className="w-full p-2 border rounded-md mt-1"
                                 >
@@ -723,7 +706,7 @@ const UserDashboardPage: React.FC = () => {
                                     }
                                 </select>
                             </div>
-                           
+                            
                             {courseToSchedule && courseSchedules[courseToSchedule]?.length > 0 && (
                                 <div>
                                     <label>Select a Schedule:</label>
@@ -751,7 +734,7 @@ const UserDashboardPage: React.FC = () => {
                                 <div className="space-y-4">
                                     <div className="bg-white p-4 rounded-md border">
                                         <div className="flex items-center justify-between mb-4">
-                                            <button
+                                            <button 
                                                 onClick={handlePrevMonth}
                                                 className="p-2 rounded-full hover:bg-gray-100"
                                             >
@@ -760,40 +743,40 @@ const UserDashboardPage: React.FC = () => {
                                             <h3 className="text-lg font-semibold">
                                                 {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
                                             </h3>
-                                            <button
+                                            <button 
                                                 onClick={handleNextMonth}
                                                 className="p-2 rounded-full hover:bg-gray-100"
                                             >
                                                 <ChevronRightIcon />
                                             </button>
                                         </div>
-                                       
+                                        
                                         <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500">
                                             <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
                                         </div>
-                                       
+                                        
                                         <div className="grid grid-cols-7 gap-1 mt-2">
                                             {calendarDays.map((day, index) => {
                                                 if (!day) return <div key={`empty-${index}`} className="border rounded-md h-16"></div>;
-                                               
+                                                
                                                 const dayString = moment(day).format('YYYY-MM-DD');
                                                 const slot = availableDates.find(d => d.date === dayString);
                                                 const isSelected = selectedDate === dayString;
                                                 const isAvailable = slot && slot.isBookingOpen && slot.availableSlots > 0;
                                                 const isFutureOrToday = day >= new Date(new Date().setHours(0, 0, 0, 0));
-                                               
+                                                
                                                 let dayClass = 'bg-gray-100 text-gray-400 cursor-not-allowed';
                                                 if (isAvailable && isFutureOrToday) {
-                                                    dayClass = isSelected
-                                                        ? 'bg-indigo-600 text-white font-bold'
+                                                    dayClass = isSelected 
+                                                        ? 'bg-indigo-600 text-white font-bold' 
                                                         : 'bg-green-100 hover:bg-green-200 cursor-pointer';
                                                 } else if (slot) {
                                                     dayClass = 'bg-red-100 text-red-400 line-through cursor-not-allowed';
                                                 }
-                                               
+                                                
                                                 return (
-                                                    <div
-                                                        key={dayString}
+                                                    <div 
+                                                        key={dayString} 
                                                         onClick={() => {
                                                             if (isAvailable && isFutureOrToday) {
                                                                 setSelectedDate(dayString);
@@ -812,7 +795,7 @@ const UserDashboardPage: React.FC = () => {
                                             })}
                                         </div>
                                     </div>
-                                   
+                                    
                                     {selectedDate && (
                                         <p className="text-center font-medium">
                                             Selected Date: {moment(selectedDate).format('LL')}
@@ -821,7 +804,7 @@ const UserDashboardPage: React.FC = () => {
                                 </div>
                             ) : (
                                 <p className="text-center text-gray-500 py-8">
-                                    {courseToSchedule
+                                    {courseToSchedule 
                                         ? "No schedules available for the selected course"
                                         : "Please select a course to see available schedules"}
                                 </p>
@@ -829,8 +812,8 @@ const UserDashboardPage: React.FC = () => {
                         </div>
                         <div className="mt-6 flex justify-end gap-4">
                             <button onClick={() => setIsScheduleModalOpen(false)} className="px-4 py-2 bg-gray-200 rounded-md">Cancel</button>
-                            <button
-                                onClick={handleScheduleSubmit}
+                            <button 
+                                onClick={handleScheduleSubmit} 
                                 disabled={!selectedDate}
                                 className="px-4 py-2 bg-green-600 text-white rounded-md disabled:bg-gray-400"
                             >
