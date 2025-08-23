@@ -9,15 +9,11 @@ export default function Contact() {
   return (
     <>
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-[#b0db72] to-[#3a702b]  py-20 px-4 text-center">
-          <div className="max-w-screen-xl  mx-auto">
+        <section className="bg-gradient-to-r from-[#b0db72] to-[#3a702b] py-20 px-4 text-center">
+          <div className="max-w-screen-xl mx-auto">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
               Contact Us
             </h1>
-            {/* <p className="max-w-2xl mx-auto text-lg text-white">
-              We are a passionate team dedicated to shaping tennis experiences
-              that inspire, train, and transform players at every level.
-            </p> */}
              <p className="max-w-2xl mx-auto text-lg text-white leading-relaxed">
             Questions, bug reports, feedback, feature requests — we’re here for
             it all?

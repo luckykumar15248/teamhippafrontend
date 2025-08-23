@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/app/context/AuthContext";
+import { Button } from "@/app/components/Button";
+import { CalenderIcon, CommunicationIcon, PackageManagmentIcon, PromotionIcon, SportsIcon, UserPackageIcon, WaitlistIcon, WebContentIcon } from "@/app/components/Icons";
 
 interface UserProfile {
   id: number;
@@ -21,50 +23,50 @@ const adminDashboardLinks = [
     label: "User Management",
     description:
       "users, roles, user_admission_info, student_academic_records",
-    icon: "📅",
+    icon: <UserPackageIcon className="text-black min-w-5 min-h-5"/>,
   },
   {
     href: "/admin/manage-sports-courses",
     label: "Sports & Courses Management",
     description: "sports, courses, sport_images, course_images",
-    icon: "🏠",
+    icon: <SportsIcon className="text-black min-w-5 min-h-5"/>,
   },
   {
     href: "/admin/bookings",
     label: "Booking Management",
     description: "bookings, booking_items, booking_item_dates",
-    icon: "👤",
+    icon: <CalenderIcon className="text-black min-w-5 min-h-5"/>,
   },
   {
     href: "/admin/manage-sports-courses/package/create-package",
     label: "Package Management",
     description: "packages, package_courses, package_offering_periods",
-    icon: "👤",
+    icon: <PackageManagmentIcon className="text-black min-w-5 min-h-5"/>,
   },
   {
     href: "/admin/promotions-management",
     label: "Promotions Management",
     description: "coupons, pass_templates, generated_passes",
-    icon: "👤",
+    icon: <PromotionIcon className="text-black min-w-5 min-h-5"/>
   },
   {
     href: "/admin/inquiries",
     label: "Communications",
     description: "announcements and inquiries",
-    icon: "👤",
+    icon: <CommunicationIcon className="text-black min-w-5 min-h-5"/>,
   },
   {
     href: "/",
     label: "Website Content",
     description: "seo_metadata, menu_items, page_dynamic_images",
-    icon: "👤",
+    icon: <WebContentIcon className="text-black min-w-5 min-h-5"/>,
   },
 
    {
     href: "/admin/waitlist",
     label: "waitlist",
     description: "waitlist,Tennis, Pickerball",
-    icon: "👤",
+    icon: <WaitlistIcon className="text-black min-w-5 min-h-5"/>,
   },
 ];
 
@@ -150,27 +152,26 @@ const DashboardHomePage: React.FC = () => {
         <h2 className="text-2xl font-semibold text-gray-800">
           Dashboard Overview
         </h2>
-        <button
+        <Button
           onClick={handleLogout}
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
         >
           Logout
-        </button>
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {adminDashboardLinks.map((link, index) => (
           <div
             key={index}
             className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
           >
-            <Link href={link.href} className="text-indigo-600 hover:underline">
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <span>{link.icon}</span>
+            <Link href={link.href} className="text-green-600 flex items-start gap-2">
+              <span>{link.icon}</span>
+              <h3 className="text-lg font-bold flex items-center gap-2">               
                 {link.label}
               </h3>
             </Link>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-base font-medium text-gray-700 mt-1">
               {link.description}
             </p>
           </div>
@@ -178,21 +179,22 @@ const DashboardHomePage: React.FC = () => {
       </div>
 
       <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+        <h3 className="text-xl font-semibold text-green-600 mb-4">
           Recent Activity
         </h3>
         <ul>
-          <li className="border-b py-2 text-sm text-gray-700">
+          <li className="border-b py-2 text-base text-left font-medium text-gray-700">
             You booked &quot;Advanced Swimming&quot; for June 10th.
           </li>
-          <li className="border-b py-2 text-sm text-gray-700">
+          <li className="border-b py-2 text-base text-left font-medium text-gray-700">
             Your &quot;Beginner Yoga&quot; pass was redeemed.
           </li>
-          <li className="py-2 text-sm text-gray-700">
+          <li className="py-2 text-base text-left font-medium text-gray-700">
             Account successfully verified. Welcome!
           </li>
         </ul>
       </div>
+
     </div>
   );
 };
