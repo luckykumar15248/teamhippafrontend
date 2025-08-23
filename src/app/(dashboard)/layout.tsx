@@ -1,10 +1,22 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { default as NextLink } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
+import {
+  AnalyticIcon,
+  BookingIcon,
+  CalenderIcon,
+  HomeIcon,
+  LogOutIcon,
+  MenuIcon,
+  UserPackageIcon,
+  WaitlistIcon,
+} from "../components/Icons";
+import { Button } from "../components/Button";
+import { CloseIcon } from "../components/Icons/CloseIcon";
+import Link from "next/link";
 
 // A more realistic auth hook that reads from localStorage.
 const useAuth = () => {
@@ -56,19 +68,50 @@ const useAuth = () => {
   return { isAuthenticated, user, isLoading, logout };
 };
 
+interface SidebarProps {
+  className?: string;
+  onClose?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
+} 
 // --- Sidebar Component ---
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<SidebarProps> = ({ className, onClose }) => {
   const { user, logout } = useAuth();
   const pathname = usePathname();
 
-  const commonLinks = [{ href: "/dashboard", label: "Dashboard", icon: "🏠" }];
+  const commonLinks = [
+    {
+      href: "/dashboard",
+      label: "Dashboard",
+      icon: <HomeIcon />,
+    },
+  ];
 
   const adminLinks = [
-    { href: "/admin/bookings", label: "Manage Bookings", icon: "📚" },
-    { href: "/admin/booking-calendar", label: "Booking Calender", icon: "🛠️" },
-    { href: "/admin/manage-user-packages", label: "Manage Users Package", icon: "👥" },
-    { href: "/admin/analytics", label: "Analytics", icon: "📊" },
-    { href: "/admin/waitlist", label: "Waitlist", icon: "📊" },
+    {
+      href: "/admin/bookings",
+      label: "Manage Bookings",
+      icon: <BookingIcon />,
+    },
+    {
+      href: "/admin/booking-calendar",
+      label: "Booking Calender",
+      icon: <CalenderIcon />,
+    },
+    {
+      href: "/admin/manage-user-packages",
+      label: "Manage Users Package",
+      icon: <UserPackageIcon />,
+    },
+    {
+      href: "/admin/analytics",
+      label: "Analytics",
+      icon: <AnalyticIcon />
+    },
+    {
+      href: "/admin/waitlist",
+      label: "Waitlist",
+      icon: <WaitlistIcon />,
+    },
   ];
 
   const userLinks = [
@@ -82,37 +125,39 @@ const Sidebar: React.FC = () => {
       : [...commonLinks, ...userLinks];
 
   return (
-    <aside className="w-64 bg-gray-800 text-gray-200 flex-shrink-0 hidden md:flex md:flex-col">
-      <div className="p-4 text-2xl font-bold text-white border-b border-gray-700">
-        <NextLink href="/">TeamHippa</NextLink>
+    // <aside className="w-64 bg-slate text-gray-200 flex-shrink-0 hidden md:flex md:flex-col">
+    <aside className={`w-64 bg-slate text-gray-200 flex flex-col justify-between ${className}`}>
+      <div className="p-4 text-2xl font-bold text-white border-b border-gray-700 flex justify-between items-center">
+        <Link href="/">TeamHippa</Link>
+        <CloseIcon
+         onClick={onClose}
+         className="block lg:hidden cursor-pointer"
+         />
       </div>
       <nav className="mt-4 flex-1">
         <ul>
           {linksToShow.map((link) => (
             <li key={link.href}>
-              <NextLink
+              <Link
                 href={link.href}
-                className={`flex items-center px-4 py-3 text-sm hover:bg-gray-700 transition-colors duration-150 ${
+                className={`flex !items-center px-4 py-3 text-sm hover:bg-green-700 transition-colors duration-150 ${
                   pathname.startsWith(link.href)
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-green-700 text-white"
                     : ""
                 }`}
               >
                 <span className="mr-3 text-lg">{link.icon}</span>
                 {link.label}
-              </NextLink>
+              </Link>
             </li>
           ))}
         </ul>
       </nav>
       <div className="p-4 border-t border-gray-700">
-        <button
-          onClick={logout}
-          className="flex items-center w-full px-4 py-3 text-sm text-left text-red-400 hover:bg-red-500 hover:text-white rounded-md transition-colors duration-150"
-        >
-          <span className="mr-3 text-lg">🚪</span>
+        <Button onClick={logout} className="w-full flex justify-start gap-2 bg-transparent">
+          <LogOutIcon />
           Logout
-        </button>
+        </Button>
       </div>
     </aside>
   );
@@ -128,7 +173,10 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [isAuthorized, setIsAuthorized] = useState(false); // NEW state to control rendering
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const handelAdmin = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   useEffect(() => {
     if (isLoading) {
       return; // Don't do anything until authentication check is complete
@@ -164,31 +212,17 @@ export default function DashboardLayout({
   }
 
   return (
+    <>
     <div className="flex h-screen bg-gray-100">
-      <Sidebar />
+      <Sidebar className="hidden lg:block"/>
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm z-10">
+        <header className="bg-white shadow-sm z-10 block lg:hidden">
           <div className="container mx-auto px-6 py-4 flex justify-between items-center">
             <h1 className="text-xl font-semibold text-gray-700">
               Welcome back, {user?.name || "User"}!
             </h1>
             <div className="md:hidden">
-              <button className="p-2 text-gray-600 hover:text-gray-800">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
-              </button>
+              <MenuIcon onClick={handelAdmin} />
             </div>
           </div>
         </header>
@@ -197,5 +231,18 @@ export default function DashboardLayout({
         </main>
       </div>
     </div>
+     {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+          
+        >          
+         <Sidebar
+          onClose={() => setIsSidebarOpen(false)}
+          onClick={(e) => e.stopPropagation()}
+          className="block lg:hidden z-50 w-full sm:w-96 h-screen transition-transform ease-in-out duration-400 transform"/>
+      </div>
+      )}
+      </>
   );
 }
