@@ -84,7 +84,7 @@ export default function PrivacyPolicy() {
               When you log in, we will also set up several cookies to save your
               login information and your screen display choices. Login cookies
               last for two days, and screen options cookies last for a year. If
-              you select "Remember Me", your login will persist for two weeks.
+              you select &quot;Remember Me&quot;, your login will persist for two weeks.
               If you log out of your account, the login cookies will be removed.
             </p>
             <p className="text-base sm:text-lg text-gray-600 font-normal">
