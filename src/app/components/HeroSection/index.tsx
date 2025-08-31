@@ -49,7 +49,7 @@ export default function HeroSection() {
                   alt={`Slide ${i + 1}`}
                   width={1200}
                   height={550}
-                  className="w-full h-[550px] object-fill rounded-4xl"
+                  className="w-full h-[400px] sm:h-[550px] object-cover sm:object-fill rounded-4xl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent p-6 text-white flex flex-col justify-center">
                   <h3 className="text-3xl font-bold mb-2">{slide.heading}</h3>
