@@ -8,27 +8,22 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-interface Resource {
-    location: string;
-}
-
+// --- Type Definitions ---
 interface BookingAPIResponse {
     id: number;
     title: string;
     start: string;
     end: string;
-    location: string;
+    allDay: boolean;
 }
-
-// --- Type Definitions ---
 interface CalendarEvent {
     id: number;
     title: string;
     start: Date;
     end: Date;
-    resource: Resource; 
+    allDay?: boolean;
+    resource: BookingAPIResponse; 
 }
-
 interface AdminBookingDetails {
     bookingId: number;
     bookingReference: string;
@@ -57,6 +52,7 @@ const AdminCalendarPage: React.FC = () => {
     const [newDate, setNewDate] = useState('');
     const [cancellationReason, setCancellationReason] = useState('');
     const router = useRouter();
+    const [moreEvents, setMoreEvents] = useState<{ date: Date; events: CalendarEvent[] } | null>(null);
 
     const fetchEvents = useCallback(async (start: Date, end: Date) => {
         const headers = getAuthHeaders();
@@ -74,11 +70,12 @@ const AdminCalendarPage: React.FC = () => {
                 title: booking.title,
                 start: new Date(booking.start),
                 end: new Date(booking.end),
+                allDay: booking.allDay,
                 resource: booking,
             }));
             setEvents(formattedEvents);
         } catch {
-            toast.error("Could not load calendar bookings.", );
+            toast.error("Could not load calendar bookings.");
         } 
     }, [router]);
 
@@ -89,6 +86,9 @@ const AdminCalendarPage: React.FC = () => {
     }, [fetchEvents]);
 
     const handleSelectEvent = async (event: CalendarEvent) => {
+        // Don't open the modal for our custom daily total events
+        if (event.id < 0) return;
+
         const headers = getAuthHeaders();
         if (!headers) return;
 
@@ -103,7 +103,7 @@ const AdminCalendarPage: React.FC = () => {
 
     const openRescheduleModal = (booking: AdminBookingDetails) => {
         setBookingToReschedule(booking);
-        setDetailsModalOpen(false); // Close the details modal
+        setDetailsModalOpen(false);
         setRescheduleModalOpen(true);
     };
 
@@ -124,7 +124,7 @@ const AdminCalendarPage: React.FC = () => {
             setRescheduleModalOpen(false);
             setBookingToReschedule(null);
             setNewDate('');
-            // Refresh the calendar events
+            
             const currentView = new Date();
             const startOfMonth = moment(currentView).startOf('month').toDate();
             const endOfMonth = moment(currentView).endOf('month').toDate();
@@ -149,7 +149,7 @@ const AdminCalendarPage: React.FC = () => {
             );
             toast.success("Booking has been cancelled and user notified.");
             setDetailsModalOpen(false);
-            // Refresh the calendar events
+            
             const currentView = new Date();
             const startOfMonth = moment(currentView).startOf('month').toDate();
             const endOfMonth = moment(currentView).endOf('month').toDate();
@@ -166,12 +166,13 @@ const AdminCalendarPage: React.FC = () => {
                 <p className="mt-1 text-sm text-gray-600">View, reschedule, and cancel classes at a glance.</p>
             </header>
             
-            <div style={{ height: '70vh' }}>
+            <div style={{ height: '70vh', position: 'relative' }}>
                 <Calendar
                     localizer={localizer}
                     events={events}
                     startAccessor="start"
                     endAccessor="end"
+                    allDayAccessor="allDay"
                     style={{ height: '100%' }}
                     onSelectEvent={handleSelectEvent}
                     onRangeChange={(range: Date[] | { start: Date; end: Date }) => {
@@ -179,52 +180,90 @@ const AdminCalendarPage: React.FC = () => {
                         const end = Array.isArray(range) ? range[range.length - 1] : range.end;
                         fetchEvents(start, end);
                     }}
+                    onShowMore={(events, date) => {
+                        setMoreEvents({ events, date });
+                    }}
+                    popup
                 />
             </div>
 
+            {/* Modal for showing more events */}
+            {moreEvents && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                        <h3 className="text-xl font-bold mb-4">
+                            Events for {moment(moreEvents.date).format('MMMM Do, YYYY')}
+                        </h3>
+                        <div className="space-y-2 max-h-80 overflow-y-auto">
+                            {moreEvents.events.map(event => (
+                                <button 
+                                    key={event.id} 
+                                    onClick={() => {
+                                        handleSelectEvent(event);
+                                        setMoreEvents(null);
+                                    }}
+                                    className="w-full text-left p-2 bg-gray-100 rounded-md text-sm hover:bg-indigo-100 hover:text-indigo-800"
+                                >
+                                    {event.title}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="mt-6 flex justify-end">
+                            <button onClick={() => setMoreEvents(null)} className="px-4 py-2 bg-gray-200 rounded-md">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Details Modal */}
-            {isDetailsModalOpen && selectedSlotBookings.length > 0 && (
+            {isDetailsModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                         <h3 className="text-xl font-bold mb-4">Class Details</h3>
-                        <div className="space-y-6">
-                            {selectedSlotBookings.map(booking => (
-                                <div key={booking.bookingId} className="border p-4 rounded-md">
-                                    <p><strong>Booking Ref:</strong> {booking.bookingReference}</p>
-                                    <p><strong>Customer:</strong> {booking.customerName} ({booking.customerEmail})</p>
-                                    <p><strong>Status:</strong> {booking.bookingStatus}</p>
-                                    <div>
-                                        <h4 className="font-semibold mt-2">Participants ({booking.participants.length}):</h4>
-                                        <ul className="list-disc list-inside text-sm">
-                                            {booking.participants.map((p, i) => <li key={i}>{p.firstName} {p.lastName}</li>)}
-                                        </ul>
-                                    </div>
-                                    <div className="mt-4">
-                                        <label className="text-xs">Cancellation Reason:</label>
-                                        <input 
-                                            type="text"
-                                            onChange={e => setCancellationReason(e.target.value)}
-                                            className="w-full p-1 border rounded-md mt-1 text-sm"
-                                            placeholder="Reason for this specific cancellation..."
-                                        />
-                                        <div className="mt-2 flex gap-2">
-                                            <button 
-                                                onClick={() => openRescheduleModal(booking)} 
-                                                className="px-3 py-1 bg-blue-600 text-white rounded-md text-xs"
-                                            >
-                                                Reschedule
-                                            </button>
-                                            <button 
-                                                onClick={() => handleCancelSingleBooking(booking.bookingId)} 
-                                                className="px-3 py-1 bg-red-600 text-white rounded-md text-xs"
-                                            >
-                                                Cancel This Booking
-                                            </button>
+                        {selectedSlotBookings.length > 0 ? (
+                            <div className="space-y-6">
+                                {selectedSlotBookings.map(booking => (
+                                    <div key={booking.bookingId} className="border p-4 rounded-md">
+                                        <p><strong>Booking Ref:</strong> {booking.bookingReference}</p>
+                                        <p><strong>Customer:</strong> {booking.customerName} ({booking.customerEmail})</p>
+                                        <p><strong>Status:</strong> {booking.bookingStatus}</p>
+                                        <div>
+                                            <h4 className="font-semibold mt-2">Participants ({booking.participants.length}):</h4>
+                                            <ul className="list-disc list-inside text-sm">
+                                                {booking.participants.map((p, i) => <li key={i}>{p.firstName} {p.lastName}</li>)}
+                                            </ul>
+                                        </div>
+                                        <div className="mt-4">
+                                            <label className="text-xs">Cancellation Reason:</label>
+                                            <input 
+                                                type="text"
+                                                onChange={e => setCancellationReason(e.target.value)}
+                                                className="w-full p-1 border rounded-md mt-1 text-sm"
+                                                placeholder="Reason for this specific cancellation..."
+                                            />
+                                            <div className="mt-2 flex gap-2">
+                                                <button 
+                                                    onClick={() => openRescheduleModal(booking)} 
+                                                    className="px-3 py-1 bg-blue-600 text-white rounded-md text-xs"
+                                                >
+                                                    Reschedule
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleCancelSingleBooking(booking.bookingId)} 
+                                                    className="px-3 py-1 bg-red-600 text-white rounded-md text-xs"
+                                                >
+                                                    Cancel This Booking
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-center text-gray-600 py-8">No specific booking details found for this slot.</p>
+                        )}
                         <div className="mt-6 flex justify-end">
                             <button onClick={() => setDetailsModalOpen(false)} className="px-4 py-2 bg-gray-200 rounded-md">Close</button>
                         </div>

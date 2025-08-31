@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -21,14 +22,13 @@ interface Package {
   imageUrls: string[];
   isActive: boolean;
 }
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8091';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // --- Main Page Component ---
+
 const PackagesPage: React.FC = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [locations] = useState<string[]>(['Gilbert', 'Phoenix']); // Your locations
-  const [selectedLocation, setSelectedLocation] = useState<string>('Gilbert'); // Default location
   const router = useRouter();
 
   const handleTrialClick = () => {
@@ -39,27 +39,32 @@ const PackagesPage: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Updated API call to fetch packages based on the selected location
-        const response = await axios.get(`${apiUrl}/api/public/packages/packages-by-location`, {
-            params: {
-                location: selectedLocation,
-            }
-        });
-        setPackages(response.data || []);
+        const response = await axios.get(
+          `${apiUrl}/api/admin/packages`
+        );
+
+        setPackages((response.data || []).filter((p: Package) => p.isActive));
       } catch (error) {
         console.error("Failed to fetch packages:", error);
         toast.error("Could not load our packages. Please try again later.");
-        setPackages([]); // Clear packages on error
       } finally {
         setIsLoading(false);
       }
     };
     fetchData();
-  }, [selectedLocation]); // Re-fetch data when selectedLocation changes
+  }, []);
 
   const handleNavigate = (packageId: number) => {
     router.push(`/packages/${packageId}`);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -69,31 +74,7 @@ const PackagesPage: React.FC = () => {
         description="Discover value-packed bundles that combine our best courses to accelerate your skills."
       />
       <div className="space-y-12 container mx-auto sm:px-6 lg:px-8 py-4 sm:py-8 md:py-12">
-        
-        {/* --- LOCATION FILTER TABS --- */}
-        <div className="mb-8 flex justify-center border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8" aria-label="Locations">
-                {locations.map((location) => (
-                    <button
-                        key={location}
-                        onClick={() => setSelectedLocation(location)}
-                        className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg ${
-                            selectedLocation === location
-                            ? 'border-indigo-500 text-indigo-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                        }`}
-                    >
-                        {location}
-                    </button>
-                ))}
-            </nav>
-        </div>
-
-        {isLoading ? (
-             <div className="flex justify-center items-center h-64">
-               <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
-             </div>
-        ) : packages.length > 0 ? (
+        {packages.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {packages.map((pkg) => (
               <PackageCard key={pkg.id} pkg={pkg} onNavigate={handleNavigate} />
@@ -102,15 +83,14 @@ const PackagesPage: React.FC = () => {
         ) : (
           <div className="text-center py-16 bg-white rounded-lg shadow">
             <h3 className="text-xl font-semibold text-gray-700">
-              No Packages Currently Available for {selectedLocation}
+              No Packages Currently Available
             </h3>
             <p className="mt-2 text-gray-500">
-              Please check back soon or select another location.
+              Please check back soon for our special offers!
             </p>
           </div>
         )}
       </div>
-      
       <section className="bg-gray-50 py-4 sm:py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-4">
@@ -147,7 +127,6 @@ const PackagesPage: React.FC = () => {
           </div>
         </div>
       </section>
-
       <section className="bg-white py-4 sm:py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">Success Stories</h2>
@@ -173,7 +152,6 @@ const PackagesPage: React.FC = () => {
           </div>
         </div>
       </section>
-      
       <section className="bg-gray-50 py-4 sm:py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">How It Works</h2>
@@ -203,7 +181,26 @@ const PackagesPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 px-4 bg-white text-center">
+      {/* <section className="bg-white py-4 sm:py-8 md:py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">Meet Our Coaches</h2>
+          <p className="text-lg text-gray-600 mb-10">
+            World-class experience, real mentorship, and personalized attention.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-gray-100 p-6 rounded-lg shadow">
+              <img src="/images/coaching.jpeg" alt="Coach A" className="mb-4" />
+              <h4 className="text-xl font-semibold">Coach Ankit</h4>
+              <p className="text-gray-600">
+                10+ years coaching experience. Former state-level champion.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section> */}
+
+      {/* Schedule + CTA */}
+      <section className="py-16 px-4 bg-gray-50 text-center">
         <div className="max-w-3xl mx-auto">
           <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-4">
             Flexible Training Schedules
@@ -221,7 +218,6 @@ const PackagesPage: React.FC = () => {
           </div>
         </div>
       </section>
-
       <FAQ
         title="The fastest growing Tennis Academy"
         subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."

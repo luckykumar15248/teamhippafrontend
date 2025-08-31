@@ -30,12 +30,11 @@ interface AdminBookingDetails {
     sesecureAccessToken: string;
     customerName: string;
     customerEmail: string;
-    customerPhone?: string;
     bookingStatus: string;
     paymentStatus: string;
-    totalAmount: number | null;
-    discountAmount: number | null;
-    finalAmount: number | null;
+    totalAmount: number;
+    discountAmount: number;
+    finalAmount: number;
     createdAt: string;
     participants: AdminParticipantDetails[];
     paymentTransactions: AdminPaymentTransaction[];
@@ -106,13 +105,12 @@ const BookingRow: React.FC<{
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     <div>{booking.customerName}</div>
                     <div className="text-xs text-gray-500">{booking.customerEmail}</div>
-                    <div className="text-xs text-gray-500">{booking.customerPhone || 'No Phone'}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{booking.itemName}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{new Date(booking.createdAt).toLocaleDateString()}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800">${booking.totalAmount ? booking.totalAmount.toFixed(2) : '0.00'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">${booking.discountAmount ? booking.discountAmount.toFixed(2) : '0.00'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">${(booking.finalAmount ?? 0).toFixed(2)}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800">${booking.totalAmount.toFixed(2)}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">${booking.discountAmount.toFixed(2)}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">${booking.finalAmount.toFixed(2)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {isEditing ? (
                         <div className="flex items-center gap-2">
@@ -274,8 +272,8 @@ const AdminAllBookingsPage: React.FC = () => {
             pending: bookings.filter(b => b.bookingStatus === 'Awaiting Payment').length,
             cancelled: bookings.filter(b => b.bookingStatus?.includes('Cancelled')).length,
             completed: bookings.filter(b => b.bookingStatus === 'Completed').length,
-            totalRevenue: bookings.reduce((sum, booking) => sum + (booking.paymentStatus === 'Paid' ? (booking.finalAmount ?? 0) : 0), 0),
-            totalDiscounts: bookings.reduce((sum, booking) => sum + (booking.discountAmount ?? 0), 0)
+            totalRevenue: bookings.reduce((sum, booking) => sum + (booking.paymentStatus === 'Paid' ? booking.finalAmount : 0), 0),
+            totalDiscounts: bookings.reduce((sum, booking) => sum + booking.discountAmount, 0)
         };
     }, [bookings]);
 
