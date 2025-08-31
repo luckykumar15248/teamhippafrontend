@@ -28,6 +28,7 @@ interface Package {
   isActive: boolean;
   totalSessions: number; // NEW
   validityDays: number; // NEW
+  packageLocation: string; // NEW
   includedCourses: (Course & { sessions: number })[]; // Updated to include sessions
   imageUrls: string[];
   createdAt: string;
@@ -77,7 +78,8 @@ const ManagePackagesPage: React.FC = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [totalSessions, setTotalSessions] = useState('');
-  const [validityDays, setValidityDays] = useState('');
+  const [validityDays, setValidityDays] = useState(''); 
+  const [packageLocation, setPackageLocation] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [courseSessions, setCourseSessions] = useState<Map<number, number>>(new Map());
 
@@ -261,6 +263,7 @@ const ManagePackagesPage: React.FC = () => {
     setPrice('');
     setTotalSessions('');
     setValidityDays('');
+    setPackageLocation('');
     setIsActive(true);
     setCourseSessions(new Map());
     setImageSources([]);
@@ -276,6 +279,7 @@ const ManagePackagesPage: React.FC = () => {
     setPrice(String(pkg.price || ''));
     setTotalSessions(String(pkg.totalSessions || ''));
     setValidityDays(String(pkg.validityDays || ''));
+    setPackageLocation(String(pkg.packageLocation || ''));
     setIsActive(pkg.isActive ?? true);
     
     const courseSessionMap = new Map<number, number>();
@@ -343,6 +347,7 @@ const ManagePackagesPage: React.FC = () => {
         price: parseFloat(price) || 0,
         totalSessions: parseInt(totalSessions) || 0,
         validityDays: parseInt(validityDays) || 0,
+        packageLocation,
         isActive,
         courses: Array.from(courseSessions.entries()).map(([courseId, sessions]) => ({ courseId, sessions })),
         imageUrls: finalImageUrls,
@@ -355,7 +360,7 @@ const ManagePackagesPage: React.FC = () => {
         ? `${apiUrl}/api/admin/packages/${editingPackageId}` 
         : `${apiUrl}/api/admin/packages`;
       const method = editingPackageId ? 'put' : 'post';
-
+      console.log("Package location", packageData);
       const response = await axios[method](endpoint, packageData, { headers });
 
       if (response.data?.success) {
@@ -435,6 +440,12 @@ const ManagePackagesPage: React.FC = () => {
                 <label htmlFor="validityDays" className="block text-sm font-medium text-gray-700">Validity (in days)</label>
                 <input type="number" id="validityDays" value={validityDays} onChange={(e) => setValidityDays(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., 90" />
               </div>
+              
+              <div>
+                <label htmlFor="packageLocation" className="block text-sm font-medium text-gray-700">Package Location</label>
+                <input type="text" id="packageLocation" value={packageLocation} onChange={(e) => setPackageLocation(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Package Location" />
+              </div>
+
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">Description</label>
                 <div className="mt-1">

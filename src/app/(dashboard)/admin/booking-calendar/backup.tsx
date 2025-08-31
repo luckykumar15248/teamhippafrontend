@@ -15,14 +15,14 @@ interface Resource {
 interface BookingAPIResponse {
     id: number;
     title: string;
-    start: string; 
+    start: string;
     end: string;
-    location: string; 
+    location: string;
 }
 
 // --- Type Definitions ---
 interface CalendarEvent {
-    id: number; // This is now the DailyAvailability ID
+    id: number;
     title: string;
     start: Date;
     end: Date;
@@ -78,7 +78,7 @@ const AdminCalendarPage: React.FC = () => {
             }));
             setEvents(formattedEvents);
         } catch {
-            toast.error("Could not load calendar bookings.");
+            toast.error("Could not load calendar bookings.", );
         } 
     }, [router]);
 

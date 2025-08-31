@@ -1,5 +1,4 @@
 "use client";
-
 import React, {
   useState,
   useEffect,
@@ -113,12 +112,10 @@ interface ParticipantDetails {
   firstName: string;
   lastName: string;
 }
-
 interface PackageCourse {
   id: number;
   name: string;
 }
-
 interface UserBookingDetails {
   bookingId: number;
   bookingReference: string;
@@ -133,15 +130,12 @@ interface UserBookingDetails {
   packageName?: string | null;
   includedCourses?: PackageCourse[] | null;
 }
-
 interface CourseSchedule {
   schedule_id: number;
   scheduleName: string;
 }
-
 interface PurchasedPackage {
   id: number;
-  masterPackageId: number; // Required for the renewal redirect
   packageName: string;
   expiryDate: string;
   totalSessions: number;
@@ -154,7 +148,6 @@ interface PurchasedPackage {
     courseId: number;
   }[];
 }
-
 interface Notification {
   id: number;
   title: string;
@@ -162,7 +155,6 @@ interface Notification {
   createdAt: string;
   isRead: boolean;
 }
-
 interface UserProfile {
   id: number;
   firstName: string;
@@ -170,12 +162,16 @@ interface UserProfile {
   email: string;
   roleName: "USER" | "ADMIN" | "VISITOR_REGISTERED";
 }
-
 interface AvailabilitySlot {
   date: string;
   availableSlots: number;
   price: number;
   isBookingOpen: boolean;
+}
+interface GroupedPackage {
+  packageName: string;
+  current: PurchasedPackage;
+  history: PurchasedPackage[];
 }
 
 // --- Child Components ---
@@ -272,7 +268,9 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({
                   </h4>
                   <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
                     {booking.includedCourses?.map((course, index) => (
-                      <li key={`${course.id}-${index}`}>{course.name}</li>
+                      <li key={`${course.id}-${index}`}>
+                        {course.name} (ID: {course.id})
+                      </li>
                     ))}
                   </ul>
                 </>
@@ -300,50 +298,35 @@ const BookingCard: React.FC<{ booking: UserBookingDetails }> = ({
 
 const PackageCard: React.FC<{
   pkg: PurchasedPackage;
-  onSchedule: (pkg: PurchasedPackage) => void;
-  onRenew: (pkg: PurchasedPackage, packageId: number) => void;
+  onSchedule: () => void;
+  onRenew: (pkg: PurchasedPackage) => void;
   isHistory?: boolean;
 }> = ({ pkg, onSchedule, onRenew, isHistory = false }) => {
   const progress =
     pkg.totalSessions > 0
       ? (pkg.remainingSessions / pkg.totalSessions) * 100
       : 0;
-  //const isExpired =     new Date(pkg.expiryDate) < new Date(new Date().setHours(0, 0, 0, 0));
+  const isExpired =
+    new Date(pkg.expiryDate) < new Date(new Date().setHours(0, 0, 0, 0));
   const isDepleted = pkg.remainingSessions === 0;
 
   if (isHistory) {
     return (
-      <div className="bg-gray-50 p-4 rounded-lg border">
+      <div className="bg-gray-50 p-3 rounded-md border text-sm">
         <div className="flex justify-between items-center">
           <div>
-            <p className="font-semibold text-gray-700">{pkg.packageName}</p>
-            <p className="text-sm text-gray-500">
-              {pkg.status === "EXPIRED"
-                ? `Expired on: ${new Date(pkg.expiryDate).toLocaleDateString()}`
-                : "Sessions Depleted"}
+            <p className="text-gray-500">
+              Expired on: {new Date(pkg.expiryDate).toLocaleDateString()}
             </p>
+            <p className="text-xs text-gray-400">Status: {pkg.status}</p>
           </div>
-          {/*}
           <button
-            onClick={() => onRenew(pkg, pkg.masterPackageId)}
-            className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => onRenew(pkg)}
+            className="bg-gray-200 text-gray-800 px-3 py-1 rounded text-xs font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isExpired}
           >
             Buy Again
-          </button>*/}
-        </div>
-        <div className="mt-2 pt-2 border-t border-gray-200">
-          <ul className="text-xs text-gray-600 space-y-1">
-            {pkg.sessionDetails.map((detail) => (
-              <li key={detail.courseId} className="flex justify-between">
-                <span>{detail.courseName}</span>
-                <span>
-                  {detail.totalSessionsAllotted - detail.remainingSessions} /{" "}
-                  {detail.totalSessionsAllotted} used
-                </span>
-              </li>
-            ))}
-          </ul>
+          </button>
         </div>
       </div>
     );
@@ -353,17 +336,15 @@ const PackageCard: React.FC<{
     <div className="bg-white rounded-lg shadow-md">
       <div className="p-6">
         <h3 className="font-bold text-lg text-indigo-700">{pkg.packageName}</h3>
-        <div className="mt-4 space-y-3 text-sm">
+        <div className="mt-4 space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Status:</span>
             <span
-              className={`font-semibold px-2 py-0.5 rounded-full text-xs ${
-                pkg.status === "ACTIVE"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-yellow-100 text-yellow-800"
+              className={`font-semibold ${
+                isExpired ? "text-red-600" : "text-gray-800"
               }`}
             >
-              {pkg.status}
+              {isExpired ? "EXPIRED" : pkg.status}
             </span>
           </div>
           <div className="flex justify-between">
@@ -374,7 +355,7 @@ const PackageCard: React.FC<{
           </div>
           <div>
             <div className="flex justify-between mb-1">
-              <span className="text-gray-600">Total Sessions Remaining:</span>
+              <span className="text-gray-600">Sessions Remaining:</span>
               <span className="font-semibold text-gray-800">
                 {pkg.remainingSessions} / {pkg.totalSessions}
               </span>
@@ -386,35 +367,24 @@ const PackageCard: React.FC<{
               ></div>
             </div>
           </div>
-          <div className="pt-2">
-            <p className="font-semibold text-gray-600 mb-1">Session Details:</p>
-            <ul className="text-xs text-gray-600 space-y-1 pl-2">
-              {pkg.sessionDetails.map((detail) => (
-                <li key={detail.courseId} className="flex justify-between">
-                  <span>- {detail.courseName}</span>
-                  <span>
-                    {detail.remainingSessions} / {detail.totalSessionsAllotted}{" "}
-                    remaining
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
 
       <div className="w-full text-white py-2.5 rounded-b-lg text-center font-semibold">
-        {isDepleted ? (
+        {isExpired ? (
+          <div className="bg-gray-400 cursor-not-allowed">Package Expired</div>
+        ) : isDepleted ? (
           <button
-            onClick={() => onRenew(pkg, pkg.masterPackageId)}
+            onClick={() => onRenew(pkg)}
             className="w-full bg-green-600 hover:bg-green-700 transition-colors"
           >
             Renew Package
           </button>
         ) : (
           <button
-            onClick={() => onSchedule(pkg)}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors"
+            onClick={onSchedule}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 transition-colors"
+            disabled={pkg.status !== "ACTIVE"}
           >
             Schedule a Class
           </button>
@@ -429,7 +399,7 @@ const UserDashboardPage: React.FC = () => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "packages">(
-    "packages"
+    "upcoming"
   );
   const [allUpcomingBookings, setAllUpcomingBookings] = useState<
     UserBookingDetails[]
@@ -461,38 +431,32 @@ const UserDashboardPage: React.FC = () => {
   const [courseSchedules, setCourseSchedules] = useState<
     Record<number, CourseSchedule[]>
   >({});
-  const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+  const [historyVisible, setHistoryVisible] = useState<Record<string, boolean>>(
+    {}
+  );
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://teamhippa.com";
 
-  const categorizedPackages = useMemo(() => {
-    if (!packages) return { active: [], past: [] };
-
-    const active: PurchasedPackage[] = [];
-    const past: PurchasedPackage[] = [];
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
-
-    for (const pkg of packages) {
-      const isExpired = new Date(pkg.expiryDate) < today;
-      const hasSessions = pkg.remainingSessions > 0;
-
-      if (!isExpired && hasSessions) {
-        active.push(pkg);
-      } else {
-        past.push(pkg);
-      }
-    }
-
-    active.sort(
-      (a, b) =>
-        new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()
-    );
-    past.sort(
+  const groupedPackages = useMemo(() => {
+    if (!packages) return [];
+    const groups: Record<string, GroupedPackage> = {};
+    const sortedPackages = [...packages].sort(
       (a, b) =>
         new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime()
     );
 
-    return { active, past };
+    for (const pkg of sortedPackages) {
+      if (!groups[pkg.packageName]) {
+        groups[pkg.packageName] = {
+          packageName: pkg.packageName,
+          current: pkg,
+          history: [],
+        };
+      } else {
+        groups[pkg.packageName].history.push(pkg);
+      }
+    }
+    return Object.values(groups);
   }, [packages]);
 
   const getAuthHeaders = () => {
@@ -723,22 +687,50 @@ const UserDashboardPage: React.FC = () => {
     }
   };
 
-  const handleRenewPackage = (pkg: PurchasedPackage, packageId: number) => {
+  const handleRenewPackage = async (pkg: PurchasedPackage) => {
+    const headers = getAuthHeaders();
+    if (!headers) {
+      router.push("/login");
+      return;
+    }
+
     const actionText = pkg.status === "DEPLETED" ? "renew" : "buy again";
     const isConfirmed = window.confirm(
-      `Are you sure you want to ${actionText} the "${pkg.packageName}" package?`
+      `Are you sure you want to ${actionText} the "${pkg.packageName}" package? You will be redirected to payment.`
     );
+    if (!isConfirmed) return;
 
-    if (isConfirmed) {
-      if (!packageId) {
+    try {
+      toast.info("Preparing your new package...");
+      /* const response = await axios.post(`${apiUrl}/api/public/package-bookings/renew`, 
+                { purchasedPackageId: pkg.id }, 
+                { headers }
+            );
+            
+            const { bookingId, token } = response.data;
+            toast.success("Redirecting to payment...");
+            router.push(`/renew-package?id=${pkg.id}`);*/
+      toast.success("Redirecting to payment...");
+      router.push(`/booking/package-booking/${pkg.id}`);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
         toast.error(
-          "Cannot find original package product. Please contact support."
+          error.response?.data?.message ||
+            `Could not start ${actionText} process.`
         );
-        return;
+      } else {
+        toast.error(
+          `An unknown error occurred during the ${actionText} process.`
+        );
       }
-      toast.success("Redirecting to booking page...");
-      router.push(`/booking/package-booking/${packageId}`);
     }
+  };
+
+  const toggleHistory = (packageName: string) => {
+    setHistoryVisible((prev) => ({
+      ...prev,
+      [packageName]: !prev[packageName],
+    }));
   };
 
   const calendarDays = useMemo(() => {
@@ -989,56 +981,57 @@ const UserDashboardPage: React.FC = () => {
             )}
 
             {activeTab === "packages" && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Active Packages
-                </h2>
-                <div className="space-y-4">
-                  {categorizedPackages.active.length > 0 ? (
-                    categorizedPackages.active.map((pkg) => (
+              <div className="space-y-6">
+                {groupedPackages.length > 0 ? (
+                  groupedPackages.map((group) => (
+                    <div
+                      key={group.current.id}
+                      className="bg-white rounded-lg shadow"
+                    >
                       <PackageCard
-                        key={pkg.id}
-                        pkg={pkg}
-                        onSchedule={openScheduleModal}
+                        pkg={group.current}
+                        onSchedule={() => openScheduleModal(group.current)}
                         onRenew={handleRenewPackage}
                       />
-                    ))
-                  ) : (
-                    <p className="text-center text-gray-500 py-8 bg-white rounded-lg shadow">
-                      You have no active packages to use.
-                    </p>
-                  )}
-                </div>
 
-                {categorizedPackages.past.length > 0 && (
-                  <div className="mt-12">
-                    <div className="border-t pt-8">
-                      <button
-                        onClick={() => setIsHistoryVisible((prev) => !prev)}
-                        className="text-lg font-semibold text-indigo-600 flex items-center w-full justify-between"
-                      >
-                        <span>Purchase History</span>
-                        <ChevronDownIcon
-                          className={`h-5 w-5 transform transition-transform ${
-                            isHistoryVisible ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
-                      {isHistoryVisible && (
-                        <div className="mt-4 space-y-3">
-                          {categorizedPackages.past.map((histPkg) => (
-                            <PackageCard
-                              key={histPkg.id}
-                              pkg={histPkg}
-                              onRenew={handleRenewPackage}
-                              onSchedule={openScheduleModal}
-                              isHistory={true}
+                      {group.history.length > 0 && (
+                        <div className="p-4 border-t border-gray-200">
+                          <button
+                            onClick={() => toggleHistory(group.packageName)}
+                            className="text-sm font-semibold text-indigo-600 flex items-center w-full justify-between"
+                          >
+                            <span>
+                              View Purchase History ({group.history.length})
+                            </span>
+                            <ChevronDownIcon
+                              className={`h-4 w-4 transform transition-transform ${
+                                historyVisible[group.packageName]
+                                  ? "rotate-180"
+                                  : ""
+                              }`}
                             />
-                          ))}
+                          </button>
+                          {historyVisible[group.packageName] && (
+                            <div className="mt-4 space-y-2">
+                              {group.history.map((histPkg) => (
+                                <PackageCard
+                                  key={histPkg.id}
+                                  pkg={histPkg}
+                                  onRenew={handleRenewPackage}
+                                  onSchedule={() => {}}
+                                  isHistory={true}
+                                />
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
-                  </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 py-8 bg-white rounded-lg shadow">
+                    You have no active packages.
+                  </p>
                 )}
               </div>
             )}
