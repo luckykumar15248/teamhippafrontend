@@ -1,9 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, ChangeEvent, FormEvent, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent, FormEvent } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+
+// For Next.js, it's best to import CSS files in your root layout.tsx file.
+// Please add the following line to your app/layout.tsx:
+// import 'react-toastify/dist/ReactToastify.css';
 
 // --- Type Definitions ---
 interface GalleryItem {
@@ -48,20 +52,8 @@ const UploadIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 
 const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>;
 const DeleteIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>;
 const PlusIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>;
-const VideoIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9A2.25 2.25 0 004.5 18.75z" /></svg>;
-const ExpandIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" /></svg>;
-const CloseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>;
+const VideoIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9A2.25 2.25 0 004.5 18.75z" /></svg>;
 
-// --- Helper function to get proper image URLs ---
-const getImageUrl = (url: string | undefined) => {
-  if (!url) return '';
-  
-  // If URL is already absolute, return as-is
-  if (url.startsWith('http')) return url;
-  
-  // If URL is relative, prepend API URL
-  return `${apiUrl}${url.startsWith('/') ? url : '/' + url}`;
-};
 
 // --- Main Page Component ---
 const AdminGalleryPage: React.FC = () => {
@@ -85,14 +77,6 @@ const AdminGalleryPage: React.FC = () => {
                 axios.get(`${apiUrl}/api/admin/gallery/categories`, { headers }), 
                 axios.get(`${apiUrl}/api/admin/gallery/tags`, { headers }) 
             ]);
-            
-            // Debug: Check what the API returns
-            console.log('Gallery items response:', itemsRes.data);
-            if (itemsRes.data && itemsRes.data.length > 0) {
-              console.log('First item media URL:', getImageUrl(itemsRes.data[0].mediaUrl));
-              console.log('First item thumbnail URL:', getImageUrl(itemsRes.data[0].thumbnailUrl));
-            }
-            
             setGalleryItems(itemsRes.data || []);
             setCategories(catsRes.data || []);
             setTags(tagsRes.data || []);
@@ -129,8 +113,8 @@ const AdminGalleryPage: React.FC = () => {
     return (
         <>
             <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} />
-            <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
-                <header className="mb-8">
+            <div className="p-4 sm:p-6 lg:p-8">
+                <header className="mb-8 flex justify-between items-center">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">Gallery Management</h1>
                         <p className="mt-1 text-sm text-gray-600">Upload, edit, and organize your media.</p>
@@ -146,7 +130,7 @@ const AdminGalleryPage: React.FC = () => {
                 </div>
 
                 <div>
-                    {activeTab === 'items' && <GalleryGrid items={galleryItems} categories={categories} onEdit={(item) => { setEditingItem(item); setItemModalOpen(true); }} onDelete={handleDeleteItem} onAdd={() => { setEditingItem(null); setItemModalOpen(true); }} />}
+                    {activeTab === 'items' && <GalleryPage items={galleryItems} onEdit={(item) => { setEditingItem(item); setItemModalOpen(true); }} onDelete={handleDeleteItem} onAdd={() => { setEditingItem(null); setItemModalOpen(true); }} />}
                     {activeTab === 'categories' && <CategoryManager initialCategories={categories} refreshData={fetchData} />}
                     {activeTab === 'tags' && <TagManager initialTags={tags} refreshData={fetchData} />}
                 </div>
@@ -166,297 +150,111 @@ const AdminGalleryPage: React.FC = () => {
     );
 };
 
-// --- Media Lightbox Component ---
-const Lightbox: React.FC<{ item: GalleryItem; onClose: () => void }> = ({ item, onClose }) => {
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-[100]" onClick={onClose}>
-            <button onClick={onClose} className="absolute top-4 right-4 text-white hover:text-gray-300 z-[110]">
-                <CloseIcon />
-            </button>
-            <div className="relative max-w-4xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
-                {item.mediaType === 'IMAGE' ? (
-                    <img 
-                      src={getImageUrl(item.mediaUrl)} 
-                      alt={item.altText || item.title} 
-                      className="w-full h-full object-contain rounded-lg"
-                      onError={(e) => {
-                        console.error('Failed to load image in lightbox:', e);
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                ) : (
-                    <video 
-                      src={getImageUrl(item.mediaUrl)} 
-                      controls 
-                      autoPlay 
-                      className="w-full h-full object-contain rounded-lg"
-                      onError={(e) => {
-                        console.error('Failed to load video in lightbox:', e);
-                      }}
-                    >
-                        Your browser does not support the video tag.
-                    </video>
-                )}
-            </div>
-        </div>
-    );
-};
-
-// --- Pagination Component ---
-const Pagination: React.FC<{ currentPage: number; totalPages: number; onPageChange: (page: number) => void; }> = ({ currentPage, totalPages, onPageChange }) => {
-    if (totalPages <= 1) return null;
-
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-    }
-
-    return (
-        <nav className="flex items-center justify-center space-x-2 mt-8">
-            <button
-                onClick={() => onPageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1 rounded-md bg-white border border-gray-300 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
-            >
-                Previous
-            </button>
-            {pageNumbers.map(number => (
-                <button
-                    key={number}
-                    onClick={() => onPageChange(number)}
-                    className={`px-3 py-1 rounded-md text-sm font-medium ${
-                        currentPage === number 
-                        ? 'bg-indigo-600 text-white border border-indigo-600' 
-                        : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
-                    }`}
-                >
-                    {number}
-                </button>
-            ))}
-            <button
-                onClick={() => onPageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 rounded-md bg-white border border-gray-300 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
-            >
-                Next
-            </button>
-        </nav>
-    );
-};
-
-// --- Gallery Grid Component ---
-const GalleryGrid: React.FC<{
-    items: GalleryItem[];
-    categories: Category[];
-    onEdit: (item: GalleryItem) => void;
-    onDelete: (itemId: number) => void;
+// --- Simplified Gallery Page Component ---
+const GalleryPage: React.FC<{
+    items: GalleryItem[],
+    onEdit: (item: GalleryItem) => void,
+    onDelete: (itemId: number) => void,
     onAdd: () => void;
-}> = ({ items, categories, onEdit, onDelete, onAdd }) => {
-    
-    // --- State for new features ---
-    const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
-    const [filters, setFilters] = useState({ categoryId: '', mediaType: '', status: '' });
-    const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 9;
-
-    // --- Memoized filtering logic ---
-    const filteredItems = useMemo(() => {
-        return items
-            .filter(item => {
-                const categoryMatch = !filters.categoryId || item.category?.id === parseInt(filters.categoryId);
-                const mediaTypeMatch = !filters.mediaType || item.mediaType === filters.mediaType;
-                const statusMatch = !filters.status || (filters.status === 'active' ? item.isActive : !item.isActive);
-                return categoryMatch && mediaTypeMatch && statusMatch;
-            })
-            .sort((a, b) => (a.displayOrder ?? 999) - (b.displayOrder ?? 999)); // Sort by display order
-    }, [items, filters]);
-
-    // --- Memoized pagination logic ---
-    const paginatedItems = useMemo(() => {
-        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-        return filteredItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-    }, [filteredItems, currentPage]);
-
-    const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
-
-    // --- Reset to page 1 when filters change ---
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [filters]);
-
-    const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    };
-
+}> = ({ items, onEdit, onDelete, onAdd }) => {
     return (
         <div>
-            {lightboxItem && <Lightbox item={lightboxItem} onClose={() => setLightboxItem(null)} />}
-
-            {/* --- Header with Filters and Upload Button --- */}
-            <div className="bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div className="flex flex-wrap items-center gap-3">
-                    <select name="categoryId" value={filters.categoryId} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-                        <option value="">All Categories</option>
-                        {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-                    </select>
-                    <select name="mediaType" value={filters.mediaType} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-                        <option value="">All Media Types</option>
-                        <option value="IMAGE">Image</option>
-                        <option value="VIDEO">Video</option>
-                    </select>
-                     <select name="status" value={filters.status} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-                        <option value="">All Statuses</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <button onClick={onAdd} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg flex items-center w-full sm:w-auto justify-center">
+            <div className="flex justify-end mb-4">
+                 <button onClick={onAdd} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
                     <UploadIcon /> Upload New Item
                 </button>
             </div>
             
-            {/* --- Gallery Grid --- */}
-            {paginatedItems.length === 0 ? (
-                <div className="text-center text-gray-500 py-16 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-xl font-semibold">No Items Found</h3>
-                    <p className="mt-2">Try adjusting your filters or upload a new item.</p>
-                </div>
+            {items.length === 0 ? (
+                <p className="text-center text-gray-500 py-8">No gallery items found. Click "Upload New Item" to get started.</p>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {paginatedItems.map(item => (
-                        <GalleryItemCard 
-                          key={item.id} 
-                          item={item} 
-                          onEdit={onEdit} 
-                          onDelete={onDelete}
-                          onView={setLightboxItem}
-                        />
+                    {items.map(item => (
+                        <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            {/* Media display */}
+                            <div className="relative h-48 bg-gray-800">
+                                {item.mediaType === 'VIDEO' ? (
+                                    <video 
+                                        src={item.thumbnailUrl || item.mediaUrl} 
+                                        muted 
+                                        playsInline 
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <img 
+                                        src={item.thumbnailUrl || item.mediaUrl} 
+                                        alt={item.altText || item.title} 
+                                        className="w-full h-full object-cover"
+                                    />
+                                )}
+                                
+                                {/* Video indicator */}
+                                {item.mediaType === 'VIDEO' && (
+                                    <div className="absolute top-2 right-2 bg-black bg-opacity-60 rounded-full p-1">
+                                        <VideoIcon />
+                                    </div>
+                                )}
+                                
+                                {/* Status badges */}
+                                <div className="absolute top-2 left-2 flex flex-col gap-1">
+                                    {!item.isActive && (
+                                        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">Inactive</span>
+                                    )}
+                                    {item.isFeatured && (
+                                        <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Featured</span>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {/* Content */}
+                            <div className="p-4">
+                                <h3 className="font-semibold text-lg mb-1 truncate">{item.title}</h3>
+                                <p className="text-gray-600 text-sm mb-2 line-clamp-2">{item.description}</p>
+                                
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                    {item.category && (
+                                        <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                                            {item.category.name}
+                                        </span>
+                                    )}
+                                    {item.tags?.map(tag => (
+                                        <span key={tag.id} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                                            #{tag.name}
+                                        </span>
+                                    ))}
+                                </div>
+                                
+                                {/* Action buttons */}
+                                <div className="flex justify-between items-center mt-3">
+                                    <div className="text-xs text-gray-500">
+                                        Order: {item.displayOrder || 0}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button 
+                                            onClick={() => onEdit(item)} 
+                                            className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center"
+                                        >
+                                            <EditIcon />
+                                            <span className="ml-1 text-sm">Edit</span>
+                                        </button>
+                                        <button 
+                                            onClick={() => onDelete(item.id)} 
+                                            className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex items-center"
+                                        >
+                                            <DeleteIcon />
+                                            <span className="ml-1 text-sm">Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     ))}
                 </div>
             )}
-            
-            {/* --- Pagination Controls --- */}
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
     );
 };
 
-// --- Gallery Item Card Component ---
-const GalleryItemCard: React.FC<{
-    item: GalleryItem;
-    onEdit: (item: GalleryItem) => void;
-    onDelete: (itemId: number) => void;
-    onView: (item: GalleryItem) => void;
-}> = ({ item, onEdit, onDelete, onView }) => {
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const [imageError, setImageError] = useState(false);
-    
-    // Get proper image URL
-    const imageUrl = getImageUrl(item.thumbnailUrl || (item.mediaType === 'IMAGE' ? item.mediaUrl : ''));
-    
-    // Debug: Log image URL for troubleshooting
-    useEffect(() => {
-        console.log(`Item ${item.id} image URL:`, imageUrl);
-    }, [item.id, imageUrl]);
-
-    return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 group transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
-            {/* Media display */}
-            <button onClick={() => onView(item)} className="relative h-52 w-full block bg-gray-900 focus:outline-none">
-                {item.mediaType === 'IMAGE' ? (
-                    <>
-                        <img 
-                            src={imageUrl} 
-                            alt={item.altText || item.title} 
-                            className={`w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-60 ${imageLoaded ? '' : 'hidden'}`}
-                            onLoad={() => {
-                                console.log(`Image loaded successfully: ${imageUrl}`);
-                                setImageLoaded(true);
-                                setImageError(false);
-                            }}
-                            onError={(e) => {
-                                console.error(`Failed to load image: ${imageUrl}`);
-                                setImageError(true);
-                                setImageLoaded(false);
-                            }}
-                        />
-                        {!imageLoaded && !imageError && (
-                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-                            </div>
-                        )}
-                        {imageError && (
-                            <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
-                                <span>Failed to load image</span>
-                            </div>
-                        )}
-                    </>
-                ) : (
-                    // Video thumbnail display
-                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                        <VideoIcon />
-                    </div>
-                )}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-all duration-300">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        {item.mediaType === 'VIDEO' ? <VideoIcon /> : <ExpandIcon />}
-                    </div>
-                </div>
-                {/* Video indicator */}
-                {item.mediaType === 'VIDEO' && (
-                    <div className="absolute top-2 right-2 bg-black bg-opacity-60 rounded-full p-1.5">
-                        <VideoIcon />
-                    </div>
-                )}
-                {/* Status badges */}
-                <div className="absolute top-2 left-2 flex flex-col gap-1.5">
-                    {!item.isActive && (
-                        <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Inactive</span>
-                    )}
-                    {item.isFeatured && (
-                        <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Featured</span>
-                    )}
-                </div>
-            </button>
-            
-            {/* Content */}
-            <div className="p-4">
-                <h3 className="font-semibold text-lg mb-1 truncate" title={item.title}>{item.title}</h3>
-                <p className="text-gray-600 text-sm mb-3 h-10 line-clamp-2">{item.description}</p>
-                
-                <div className="flex flex-wrap gap-1.5 mb-4 h-5 overflow-hidden">
-                    {item.category && (
-                        <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                            {item.category.name}
-                        </span>
-                    )}
-                    {item.tags?.slice(0, 2).map(tag => (
-                        <span key={tag.id} className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                            #{tag.name}
-                        </span>
-                    ))}
-                </div>
-                
-                {/* Action buttons */}
-                <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                    <div className="text-xs text-gray-500">
-                        Order: {item.displayOrder || 'N/A'}
-                    </div>
-                    <div className="flex gap-2">
-                        <button onClick={() => onEdit(item)} className="p-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-blue-100 hover:text-blue-700" title="Edit">
-                            <EditIcon />
-                        </button>
-                        <button onClick={() => onDelete(item.id)} className="p-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-red-100 hover:text-red-700" title="Delete">
-                            <DeleteIcon />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// --- [UNCHANGED] Category Manager and Modal ---
 const CategoryManager: React.FC<{ initialCategories: Category[], refreshData: () => void }> = ({ initialCategories, refreshData }) => {
     const [categories, setCategories] = useState(initialCategories);
     const [isCatModalOpen, setCatModalOpen] = useState(false);
@@ -535,7 +333,7 @@ const CategoryModal: React.FC<{ isOpen: boolean, onClose: () => void, onSave: (d
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <h3 className="text-lg font-bold">{categoryToEdit ? 'Edit' : 'Add'} Category</h3>
                     <input type="text" placeholder="Name" value={name} onChange={e => setName(e.target.value)} required className="w-full p-2 border rounded" />
-                    <input type="text" placeholder="Slug (e.g., 'summer-camp')" value={slug} onChange={(e) => setSlug(e.target.value)} required className="w-full p-2 border rounded" />
+                    <input type="text" placeholder="Slug (e.g., 'summer-camp')" value={slug} onChange={e => setSlug(e.target.value)} required className="w-full p-2 border rounded" />
                     <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded"></textarea>
                     <div className="flex justify-end gap-2"><button type="button" onClick={onClose} className="bg-gray-200 px-4 py-2 rounded">Cancel</button><button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">Save</button></div>
                 </form>
@@ -544,7 +342,6 @@ const CategoryModal: React.FC<{ isOpen: boolean, onClose: () => void, onSave: (d
     );
 };
 
-// --- [UNCHANGED] Tag Manager and Modal ---
 const TagManager: React.FC<{ initialTags: Tag[], refreshData: () => void }> = ({ initialTags, refreshData }) => {
     const [tags, setTags] = useState(initialTags);
     const [isTagModalOpen, setTagModalOpen] = useState(false);
@@ -629,7 +426,6 @@ const TagModal: React.FC<{ isOpen: boolean, onClose: () => void, onSave: (data: 
     );
 };
 
-// --- [SLIGHTLY MODIFIED] Upload/Edit Modal ---
 const UploadEditModal: React.FC<{
     isOpen: boolean;
     onClose: () => void;
@@ -639,7 +435,7 @@ const UploadEditModal: React.FC<{
     onSuccess: () => void;
 }> = ({ isOpen, onClose, itemToEdit, categories, tags, onSuccess }) => {
     const [file, setFile] = useState<File | null>(null);
-    const [preview, setPreview] = useState<string | null>(itemToEdit ? getImageUrl(itemToEdit.thumbnailUrl || itemToEdit.mediaUrl) : null);
+    const [preview, setPreview] = useState<string | null>(itemToEdit?.thumbnailUrl || itemToEdit?.mediaUrl || null);
     const [title, setTitle] = useState(itemToEdit?.title || '');
     const [description, setDescription] = useState(itemToEdit?.description || '');
     const [altText, setAltText] = useState(itemToEdit?.altText || '');
@@ -683,31 +479,29 @@ const UploadEditModal: React.FC<{
 
         const formData = new FormData();
         const details = { title, description, altText, displayOrder, mediaType, categoryId: categoryId ? parseInt(categoryId) : null, tagIds: Array.from(selectedTags), isActive, isFeatured };
+
+        formData.append("details", new Blob([JSON.stringify(details)], { type: "application/json" }));
         
-        // Note: For PUT requests, many backends prefer application/json.
-        // If your backend expects multipart/form-data for updates with files, this logic is correct.
-        // If it expects JSON for metadata-only updates, a different approach is needed.
-        // This code assumes the PUT endpoint can handle metadata-only updates via JSON.
+        if (file) {
+            formData.append("file", file);
+        }
         
         setIsUploading(true);
         setUploadProgress(0);
 
         try {
+            const config = {
+                headers: { ...headers, "Content-Type": "multipart/form-data" },
+                onUploadProgress: (progressEvent: any) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(percentCompleted);
+                }
+            };
+
             if (itemToEdit) {
-                 // For editing, we assume metadata is updated as JSON. File updates would need a separate mechanism.
                 await axios.put(`${apiUrl}/api/admin/gallery/${itemToEdit.id}`, details, { headers });
                 toast.success("Item updated successfully.");
-            } else if (file) {
-                formData.append("details", new Blob([JSON.stringify(details)], { type: "application/json" }));
-                formData.append("file", file);
-
-                const config = {
-                    headers: { ...headers, "Content-Type": "multipart/form-data" },
-                    onUploadProgress: (progressEvent: any) => {
-                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        setUploadProgress(percentCompleted);
-                    }
-                };
+            } else {
                 await axios.post(`${apiUrl}/api/admin/gallery`, formData, config);
                 toast.success("Item uploaded successfully.");
             }
@@ -731,7 +525,6 @@ const UploadEditModal: React.FC<{
                     <div>
                         <label className="block text-sm font-medium">Media File</label>
                         {!itemToEdit && <input type="file" required onChange={handleFileChange} className="mt-1 w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />}
-                        {itemToEdit && <p className="text-sm text-gray-500 mt-1">File upload is not available when editing. To change the file, please delete this item and upload a new one.</p>}
                         {preview && (
                             <div className="mt-2">
                                 {mediaType === 'VIDEO' ? 
@@ -759,7 +552,7 @@ const UploadEditModal: React.FC<{
                         </div>
                         <div>
                             <label className="block text-sm font-medium">Media Type</label>
-                            <select value={mediaType} onChange={(e) => setMediaType(e.target.value as any)} className="w-full p-2 border rounded-md bg-gray-100" disabled>
+                            <select value={mediaType} onChange={(e) => setMediaType(e.target.value as any)} className="w-full p-2 border rounded-md">
                                 <option value="IMAGE">Image</option>
                                 <option value="VIDEO">Video</option>
                             </select>
@@ -782,7 +575,7 @@ const UploadEditModal: React.FC<{
                     </div>
                      <div>
                         <label className="block text-sm font-medium">Tags</label>
-                        <div className="mt-2 flex flex-wrap gap-2 p-2 border rounded-md max-h-28 overflow-y-auto">
+                        <div className="mt-2 flex flex-wrap gap-2">
                             {tags.map(tag => (
                                 <button key={tag.id} type="button" onClick={() => handleTagChange(tag.id)} className={`px-3 py-1 text-sm rounded-full ${selectedTags.has(tag.id) ? 'bg-indigo-600 text-white' : 'bg-gray-200'}`}>
                                     {tag.name}
