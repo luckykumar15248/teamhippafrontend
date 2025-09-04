@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { TennisProgram } from "@/app/components/TennisPrograms";
-
+/*
 const teamMembers = [
   {
     name: "Jane Doe",
@@ -25,7 +25,7 @@ const teamMembers = [
     role: "CTO",
     image: "/images/our-story.png",
   },
-];
+];*/
 
 export default function About() {
   const [activeTab, setActiveTab] = useState("history");
