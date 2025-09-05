@@ -17,18 +17,402 @@ import "swiper/css/pagination";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 import FAQ from "../components/FAQ";
+// File: app/courses/page.tsx
+
+import React, { useState, useEffect, useMemo } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "./styles.css";
+
+// --- Type Definitions (Updated to match API response) ---
+interface Course {
+  id: number;
+  name: string;
+  sportName: string;
+  sportId: number;
+  shortDescription: string;
+  basePriceInfo: string;
+  description: string;
+  imagePaths: string[];
+  isActive: boolean;
+  duration: string;
+}
+
+interface Package {
+  id: number;
+  name: string;
+  shortDescription: string;
+  description: string;
+  price: number;
+  imageUrls: string[];
+  isActive: boolean;
+}
+
+interface Category {
+  categoryId: number;
+  categoryName: string;
+  isPubliclyVisible: boolean;
+  displayOrder: number;
+}
+
+interface CourseCategoryMapping {
+  courseId: number;
+  categoryId: number;
+}
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const frontendServerUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL;
+type SelectableItem = (Course | Package) & { type: "course" | "package" };
+
+// --- SVG Icons ---
+const XIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+// --- Details Modal Component ---
+interface DetailsModalProps {
+  item: SelectableItem | null;
+  onClose: () => void;
+  onBookNow: (item: SelectableItem) => void;
+}
+
+const DetailsModal: React.FC<DetailsModalProps> = ({
+  item,
+  onClose,
+  onBookNow,
+}) => {
+  if (!item) return null;
+
+  const animationClasses =
+    "transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale";
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
+      <div
+        className={`bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col ${animationClasses}`}
+      >
+        <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+          <h2 className="text-2xl font-bold text-gray-900">{item.name}</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-800"
+          >
+            <XIcon />
+          </button>
+        </div>
+        <div className="p-6 overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Image Gallery */}
+            <div>
+              <img
+                src={
+                  "imagePaths" in item
+                    ? item.imagePaths?.[0] ||
+                      "https://placehold.co/600x400/a7a2ff/333333?text=TeamHippa"
+                    : item.imageUrls?.[0] ||
+                      "https://placehold.co/600x400/a7a2ff/333333?text=TeamHippa"
+                }
+                alt={item.name}
+                className="w-full h-64 object-cover rounded-lg mb-4 shadow"
+              />
+              <div className="grid grid-cols-4 gap-2">
+                {("imagePaths" in item ? item.imagePaths : item.imageUrls)
+                  ?.slice(1, 5)
+                  .map((url, index) => (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`${item.name} ${index + 2}`}
+                      className="w-full h-20 object-cover rounded-md"
+                    />
+                  ))}
+              </div>
+            </div>
+            {/* Details */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-start">
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    item.type === "package"
+                      ? "bg-purple-100 text-purple-800"
+                      : "bg-blue-100 text-blue-800"
+                  }`}
+                >
+                  {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                </span>
+                <span className="text-2xl font-bold text-gray-800">
+                  {item.type === "course"
+                    ? (item as Course).basePriceInfo
+                    : `₹${(item as Package).price.toFixed(2)}`}
+                </span>
+              </div>
+              <div
+                className="prose prose-sm max-w-none text-gray-600"
+                dangerouslySetInnerHTML={{ __html: item.description }}
+              />
+              {"duration" in item && (
+                <div className="text-sm text-gray-500">
+                  <strong>Duration:</strong> {item.duration}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="p-6 bg-gray-50 border-t sticky bottom-0">
+          <button
+            onClick={() => onBookNow(item)}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          >
+            Book Now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Course Card Component ---
+interface CourseCardProps {
+  course: Course;
+  onBookNow: (courseId: number) => void;
+  onViewDetails: (course: Course) => void;
+}
+
+const CourseCard: React.FC<CourseCardProps> = ({
+  course,
+  onBookNow,
+  onViewDetails,
+}) => {
+  const imageUrls = course.imagePaths || [];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  return (
+    <section className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300">
+      <div className="relative group">
+        <Swiper
+          modules={[Pagination]}
+          pagination={{ clickable: true }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+          className="h-48 w-full main-swiper"
+        >
+          {(imageUrls.length > 0
+            ? imageUrls
+            : ["https://placehold.co/600x400/a7a2ff/333333?text=TeamHippa"]
+          ).map((url, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={url}
+                alt={course.name}
+                className="h-48 w-full object-cover"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Slide count display */}
+        <span className="text-xs text-white mt-1 text-center bg-black/70 flex justify-center items-center w-fit rounded-full py-1 px-4 absolute right-6 bottom-6 z-10">
+          {activeIndex + 1} / {imageUrls.length > 0 ? imageUrls.length : 1}
+        </span>
+      </div>
+
+      <div className="p-6 flex-grow flex flex-col">
+            <h3 className="text-xl font-semibold text-black line-clamp-1">
+          {course.name}
+        </h3>
+            <p className="mt-2 text-base sm:text-lg text-gray-600 font-normal line-clamp-2">
+          {course.shortDescription}
+        </p>
+            <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
+              <span className="text-lg font-bold text-black">
+            ${course.basePriceInfo || "Contact for Price"}
+          </span>
+              <div className="flex justify-between gap-2">
+            <Button
+              onClick={() => onViewDetails(course)}
+                  className="!text-[#b0db72] hover:!text-white bg-transparent border border-[#b0db72] w-full whitespace-nowrap"
+            >
+              View Details
+            </Button>
+            <Button
+              onClick={() => onBookNow(course.id)}
+                  className="text-white px-4 py-2 rounded w-full whitespace-nowrap"
+            >
+              Book Now
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 
 const TennisGilbert: React.FC = () => {
+   const [courses, setCourses] = useState<Course[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<SelectableItem | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
+          axios.get(`${apiUrl}/api/public_api/courses`),
+          axios.get(`${apiUrl}/api/public/categories`),
+          axios.get(`${apiUrl}/api/public/course-category-mappings`
+          ),
+        ]);
+
+        const bookableCategory = (categoriesRes.data || []).find(
+          (cat: Category) => cat.categoryName === "Available for Booking"
+        );
+        if (!bookableCategory) {
+          console.warn("'Available for Booking' category not found.");
+        }
+/*
+        const bookableCourseIds = new Set(
+          (mappingsRes.data || [])
+            .filter(
+              (m: CourseCategoryMapping) =>
+                m.categoryId === bookableCategory?.categoryId
+            )
+            .map((m: CourseCategoryMapping) => m.courseId)
+        );*/
+
+      const transformedCourses = (coursesRes.data || []).map(
+  (course: Course) => ({
+    ...course,
+    imagePaths: (course.imagePaths || []).map((path) =>
+      path.startsWith("http") ? path : `${frontendServerUrl}${path}`
+    ),
+  })
+);
+
+setCourses(transformedCourses);
+
+const visibleCategories = (categoriesRes.data || []).filter(
+  (c: Category) => c.isPubliclyVisible
+);
+setCategories(visibleCategories);
+setMappings(mappingsRes.data || []);
+
+if (visibleCategories.length > 0) {
+  setSelectedCategoryId(visibleCategories[0].categoryId);
+}
+
+
+
+
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        toast.error("Could not load our offerings. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const groupedCourses = useMemo(() => {
+    const courseMap = new Map(courses.map((c) => [c.id, c]));
+    const groups: {
+      [categoryName: string]: { courses: Course[]; order: number };
+    } = {};
+
+    mappings.forEach((mapping) => {
+      const category = categories.find(
+        (c) => c.categoryId === mapping.categoryId
+      );
+      const course = courseMap.get(mapping.courseId);
+
+      if (category && course) {
+        if (!groups[category.categoryName]) {
+          groups[category.categoryName] = {
+            courses: [],
+            order: category.displayOrder,
+          };
+        }
+        if (
+          !groups[category.categoryName].courses.some((c) => c.id === course.id)
+        ) {
+          groups[category.categoryName].courses.push(course);
+        }
+      }
+    });
+
+    const allGroupedCourses = Object.entries(groups).sort(
+      ([, groupA], [, groupB]) => groupA.order - groupB.order
+    );
+
+    if (selectedCategoryId) {
+      const selectedCategoryName = categories.find(
+        (c) => c.categoryId === selectedCategoryId
+      )?.categoryName;
+      return allGroupedCourses.filter(
+        ([categoryName]) => categoryName === selectedCategoryName
+      );
+    }
+
+    return allGroupedCourses;
+  }, [courses, categories, mappings, selectedCategoryId]);
+
+  /*  const handleViewDetails = (item: SelectableItem) => {
+        setSelectedItem(item);
+        router.push(`/course-categories/${item}`);
+        console.log("item is",item );
+    };*/
+
+  const handleViewDetails = (course: Course) => {
+    router.push(`/course-categories/courses/${course.id}`);
+  };
+
+  const handleBookNow = (item: SelectableItem) => {
+    console.log(`Navigating to book ${item.type} with ID ${item.id}`);
+    toast.info(`Redirecting to book "${item.name}"...`);
+    // router.push(`/booking?type=${item.type}&id=${item.id}`);
+    console.log("item type is", item.type);
+    router.push(`/booking/course/${item.id}`);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
   const handleClick = () => {
     router.push("/register");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handelJoinClicked = () => {
-    router.push("/course-categories");
+    router.push("/course-categories");  
   };
   return (
     <>
@@ -39,19 +423,67 @@ const TennisGilbert: React.FC = () => {
         showCallButton
       />
 
-      {/* <section className="bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16 text-center">
-        <div className="max-w-screen-2xl mx-auto">
-          <h2 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black mb-4 capitalize">
-            Book our Summer camp at teamhippa Academy for your junior!
-          </h2>
-          <p className="text-base sm:text-lg text-black font-normal mb-3">
-            Join us at the Teamhippa Academy for an exceptional tennis training
-            experience! Whether you’re an adult or a child, and regardless of
-            your current skill level, our camps offer a premier opportunity to
-            improve your game.
-          </p>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="space-y-16">
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
+            <button
+              onClick={() => setSelectedCategoryId(null)}
+              className={`px-4 py-2 text-sm font-semibold rounded-full shadow-sm transition-colors ${
+                selectedCategoryId === null
+  ? "bg-green-600 text-white"
+  : "bg-white text-gray-700 hover:bg-gray-100"
+
+              }`}
+            >
+              All Courses
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.categoryId}
+                onClick={() => setSelectedCategoryId(cat.categoryId)}
+                className={`px-4 py-2 text-sm font-semibold rounded-full shadow-sm transition-colors ${
+                  selectedCategoryId === cat.categoryId
+                    ? "bg-green-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                {cat.categoryName}
+              </button>
+            ))}
+          </div>
+
+          {groupedCourses.map(([categoryName, { courses: courseList }]) => (
+            <section key={categoryName}>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                {categoryName}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {courseList.map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    course={course}
+                    onViewDetails={() => handleViewDetails({ ...course })}
+                    onBookNow={() =>
+                      handleBookNow({ ...course, type: "course" })
+                    }
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+          {groupedCourses.length === 0 && !isLoading && (
+            <div className="text-center py-16 bg-white rounded-lg shadow">
+              <h3 className="text-xl font-semibold text-gray-700">
+                No Courses Available
+              </h3>
+              <p className="mt-2 text-gray-500">
+                No courses were found for the selected category. Please try
+                another one or view all courses.
+              </p>
+            </div>
+          )}
         </div>
-      </section> */}
+      </section>
       <section className="relative bg-gradient-to-r from-[#b0db72] to-[#3a702b] py-12 sm:py-16 md:py-20 px-6 lg:px-16 text-center text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/20" />
 
@@ -317,47 +749,7 @@ const TennisGilbert: React.FC = () => {
         subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
         data={GILBERT_FAQS}
       />
-      {/* <section className="bg-green-100 py-12 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-          <div>
-            <h2 className="text-green-700 font-bold uppercase text-lg mb-3">
-              Why the European Coaching Philosophy Builds Champions
-            </h2>
-            <p className="text-gray-700 font-semibold mb-4">
-              Europe has produced some of the best tennis players on the plant. But what differs european tennis from american?
-            </p>
-
-            <p className="text-gray-700 mb-4 leading-relaxed">
-              Regarding producing world-class tennis players, Europe has consistently led the way. From Rafael Nadal to Novak Djokovic, the continent has developed elite athletes known for their technical precision, mental toughness, and strategic play. But what exactly makes the European tennis coaching philosophy so effective — and why are we bringing it to our new tennis academy in Gilbert, Arizona?
-            </p>
-
-            <p className="text-gray-700 mb-4 leading-relaxed">
-              At its core, European coaching emphasizes long-term player development over short-term results. Instead of pushing players into early competition, coaches focus on foundational skills — footwork, consistency, shot selection — and gradually build from there. One of the defining characteristics of this approach is the strong coach-player relationship, often formed by working with one dedicated coach over multiple years. This continuity allows coaches to deeply understand each athlete’s needs and guide their progression with precision. The outcome? Technically sound, mentally prepared players who thrive at high-performance levels.
-            </p>
-
-            <p className="text-gray-700 mb-4 leading-relaxed">
-              Another hallmark of European-style junior tennis training is a structured but flexible training model. Group sizes tend to be smaller, allowing for individualized attention, and coaches act as long-term mentors, not just instructors. At our tennis academy in Gilbert, we embrace this mindset by designing sessions based on a player’s age, experience, and goals. Rather than rigid schedules, we offer flexible training packages so athletes — and parents — can choose when and how often to train. This freedom supports consistency and avoids burnout, especially for busy families.
-            </p>
-
-            <p className="text-gray-700 leading-relaxed">
-              Mental development is equally important. The European coaching model emphasizes emotional maturity, focus, and internal motivation. Through match-style drills, guided pressure situations, and strategic game play, players build the skills needed to compete confidently and independently. It’s an approach that develops not only great players, but strong individuals.
-            </p>
-            <p className="text-gray-700 leading-relaxed">
-                At Team Hippa, we bring this proven system to our high-performance tennis programs in Arizona. With deep roots in European methodology and years of experience in junior tennis development, our mission is to offer players the tools, environment, and coaching they need to reach their full potential. Just as importantly, we’re creating a family-oriented, competitive atmosphere where both players and parents feel they’re part of something meaningful. That’s why we chose the name Team Hippa — because growth happens best when it’s shared.
-            </p>
-          </div>
-
-          <div className="flex justify-center">
-            <Image
-              src="/images/tennis-journey.jpeg"
-              alt="Coach Training"
-              width={500}
-              height={600}
-              className="rounded-lg shadow-lg object-cover"
-            />
-          </div>
-        </div>
-      </section> */}
+    
       <section className="bg-gradient-to-b from-green-50 via-white to-green-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto text-center">
           <h2 className="text-4xl sm:text-5xl font-bold text-green-800 leading-snug">
@@ -438,6 +830,13 @@ const TennisGilbert: React.FC = () => {
           </p>
         </div>
       </section>
+       {selectedItem && (
+        <DetailsModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          onBookNow={handleBookNow}
+        />
+      )}
     </>
   );
 };

@@ -28,6 +28,7 @@ const TennisCourseCard: React.FC<CourseCardProps> = ({
   course,
   onBookNow,
   onNavigate,
+  
 }) => {
   // const imageUrls = course.imagePaths || [];
 
