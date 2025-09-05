@@ -23,3 +23,7 @@ export * from "./CommunicationIcon";
 export * from "./SportsIcon";
 export * from "./PackageManagmentIcon";
 export * from "./PromotionIcon";
+export * from "./LocationIcon";
+export * from "./TimeIcon";
+export * from "./LunchIcon";
+export * from "./CarFacilityIcon";

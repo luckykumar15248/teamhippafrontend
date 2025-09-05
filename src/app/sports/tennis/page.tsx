@@ -279,8 +279,8 @@ const TennisLandingPage: React.FC = () => {
           </Swiper>
         </div>
       </section>
-      {/* 
-      <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
+      
+      {/* <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto">
           <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-8">
             Meet Our Coaches
