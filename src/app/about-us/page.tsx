@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import { TennisProgram } from "@/app/components/TennisPrograms";
@@ -191,11 +190,11 @@ export default function About() {
 
       <section className="w-full bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="bg-white shadow-lg rounded-xl p-8 md:p-12 mx-auto max-w-screen-2xl">
-          <h2 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black mb-8">
+          <h2 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black mb-4 sm:mb-8">
             Our Location
           </h2>
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-            <div className="flex-1 text-center md:text-left">
+          <div className="flex flex-col xl:flex-row items-center md:items-start gap-8">
+            <div className="w-full xl:w-1/4 text-left">
               <h4 className="text-base sm:text-2xl text-black font-semibold mb-3">
                 You can find us at:
               </h4>
@@ -208,7 +207,7 @@ export default function About() {
               </address>
             </div>
 
-            <div className="flex-1 w-full md:w-auto">
+            <div className="flex-1 w-full xl:w-4/5">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.1794646497406!2d-112.1134139252084!3d33.57468934279706!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b6c44c6203c0b%3A0x88b61e1b9fc77660!2sRose%20Mofford%20Sports%20Complex!5e0!3m2!1sen!2sin!4v1753349497969!5m2!1sen!2sin"
                 width="700"
@@ -217,27 +216,29 @@ export default function About() {
                 allowFullScreen={true}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+                className="!w-full"
               ></iframe>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="w-full bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16">
+      <section className="w-full bg-gray-100 pb-4 sm:pb-8 md:pb-12 px-6 lg:px-16">
         <div className="bg-white shadow-lg rounded-xl p-8 md:p-12 mx-auto max-w-screen-2xl">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-            <div className="flex-1 w-full md:w-auto">
+          <div className="flex flex-col-reverse sm:flex-col xl:flex-row items-center md:items-start gap-8">
+            <div className="w-full xl:w-4/5">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106697.3061383907!2d-111.8384995237223!3d33.31121176115423!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba92dac3c8385%3A0x67a5fd75b68390bb!2sFreestone%20Recreation%20Center!5e0!3m2!1sen!2sin!4v1756745524925!5m2!1sen!2sin"
-                width="600"
-                height="450"
+                width="700"
+                height="350"
                 style={{ border: 0 }}
                 allowFullScreen={true}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+                className="!w-full"
               ></iframe>
             </div>
-            <div className="flex-1 text-center md:text-left">
+            <div className="w-full xl:w-1/4 text-left">
               <h4 className="text-base sm:text-2xl text-black font-semibold mb-3">
                 You can find us at:
               </h4>

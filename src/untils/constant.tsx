@@ -1,6 +1,10 @@
 import {
+  CarFacilityIcon,
   FacebookIcon,
   InstaIcon,
+  LocationIcon,
+  LunchIcon,
+  TimeIcon,
 } from "@/app/components/Icons";
 
 export const NAV_LINKS = [
@@ -253,5 +257,100 @@ export const CAMP_DETAILS = [
     title: "High-Performance Junior Tennis Camps",
     description:
       "Junior tennis camps are designed for young athletes who are serious about developing their game. With a strong focus on performance, these camps offer elite training environments, low coach-to-player ratios, and daily routines that cover everything from stroke mechanics to mental preparation. Campers are often grouped by ability for targeted development and match play. Whether preparing for high school, college, or tournament play, junior tennis camps provide the structure, feedback, and support young players need to excel on the court.",
+  },
+];
+
+export const INFO_ITEMS = [
+  {
+    icon: <LocationIcon className="text-green-700" />,
+    label: "Location:",
+    text: "Gilbert Regional Park, AZ | Freestone Rec Center Gilbert, AZ",
+  },
+  {
+    icon: <TimeIcon className="text-green-700" />,
+    label: "Time:",
+    text: "8:00 AM – 1:00 PM (Monday–Friday)",
+  },
+  {
+    icon: <LunchIcon className="text-green-700" />,
+    label: "Lunch included daily",
+    text: "",
+  },
+  {
+    icon: <CarFacilityIcon className="text-green-700" />,
+    label: "Shuttles from select locations in Scottsdale, PV and Phoenix",
+    text: "",
+  },
+];
+
+export const PROGRAMS_TENNIES = [
+  "Tennis programs for adults and juniors of all levels",
+  "Social clinics",
+  "High-performance training for competitive youth",
+  "Private and semi-private tennis lessons",
+  "Pickleball classes and open play",
+  "Tournaments and Match-Play opportunities",
+];
+
+export const FLEXIBLE_TRAINING = [
+  "Purchase class packages at a discounted rate",
+  "Use class credits to book sessions on your own schedule",
+  "Train when it works for you, without sacrificing consistency",
+];
+
+export const PROGRAMS_MASTER = [
+  {
+    title: "Tennis Coach",
+    img: "/images/tennis-journey.jpeg",
+    description:
+      "Unlock your potential with expert guidance. Our professional trainers will refine your skills and elevate your game to new heights.",
+  },
+  {
+    title: "Junior Tennis Classes",
+    img: "/images/junior.jpg",
+    description:
+      "						Stay active and improve your game! Tailored lessons help you master techniques, build confidence, and enjoy every moment on the court.",
+  },
+  {
+    title: "Adult Tennis Lessons",
+    img: "/images/adult.jpg",
+    description:
+      "						Stay active and improve your game! Tailored lessons help you master techniques, build confidence, and enjoy every moment on the court.",
+  },
+  {
+    title: "High-Performance Coaching",
+    img: "/images/high-performance.jpg",
+    description:
+      "Push your limits with advanced drills and strategies. Designed for competitive players who are serious about taking their game further.",
+  },
+  {
+    title: "Private Instruction",
+    img: "/images/instruction.jpg",
+    description:
+      "Achieve your goals faster with personalized coaching. One-on-one sessions ensure focused training tailored to your unique strengths and needs.",
+  },
+];
+
+export const GILBERT_FAQS = [
+  {
+    question: "Where can I find tennis lessons in Gilbert, Arizona?",
+    answer:
+      "Team Hippa offers a variety of classes and programs at Gilbert Regional Park and Freestone Park, designed for all ages and skill levels. For those seeking more personalized guidance, our coaches also provide private and semi-private sessions tailored to individual needs.",
+  },
+  {
+    question: "What types of tennis lessons are available in Gilbert?",
+    answer:
+      "Team Hippa offers extensive group programs, private lessons, semi-private, as well as focused hitting sessions. We cater to all ages (kids, teens, adults, seniors) and skill levels (beginner, intermediate, advanced).",
+  },
+  {
+    question: "How do I know which group/level to attend?",
+    answer:
+      "You can contact us directly and we'll help to match you with the right group, based on your experience.",
+  },
+  {
+    question:
+      "Are there options for kids and junior tennis lessons in Gilbert?",
+    answer:
+      "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
   },
 ];

@@ -12,8 +12,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-slate: #1E293B;
-  --color-green-700:#64a506;
-  --color-green-600:#b0db72;
+  --color-green-700:#64a506 !important;
+  --color-green-600:#b0db72 !important;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

@@ -1,16 +1,24 @@
 // components/HeroSection.tsx
 
 import Image from "next/image";
+import Link from "next/link";
+import { PhoneIcon } from "../Icons";
 
 interface HeroSectionProps {
   bgImage: string;
   title: string;
   description: string;
+  showCallButton?: boolean;
 }
 
-const SportsHeroSection = ({ bgImage, title, description }: HeroSectionProps) => {
+const SportsHeroSection = ({
+  bgImage,
+  title,
+  description,
+  showCallButton = false,
+}: HeroSectionProps) => {
   return (
-    <div className="relative">
+    <section className="relative">
       <div className="absolute inset-0">
         <Image
           src={bgImage}
@@ -28,8 +36,19 @@ const SportsHeroSection = ({ bgImage, title, description }: HeroSectionProps) =>
         <p className="mt-6 text-xl text-indigo-100 max-w-3xl mx-auto">
           {description}
         </p>
+        {showCallButton && (
+          <div className="flex justify-center mt-5">
+            <Link
+              href="tel:+1234567890"
+              className="text-white px-4 py-2 bg-[#b0db72] hover:bg-[#64a506] rounded w-fit text-sm font-normal flex gap-2 items-center relative"
+            >
+              <PhoneIcon />
+              CALL US NOW
+            </Link>
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 
