@@ -396,9 +396,9 @@ const CoursesAndPackagesPage: React.FC = () => {
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             <button
               onClick={() => setSelectedCategoryId(null)}
-              className={`px-4 py-2 text-sm font-semibold rounded-full shadow-sm transition-colors ${
+              className={`px-4 py-2 text-sm font-semibold !rounded-full shadow-sm transition-colors ${
                 !selectedCategoryId
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-green-600 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -408,9 +408,9 @@ const CoursesAndPackagesPage: React.FC = () => {
               <button
                 key={cat.categoryId}
                 onClick={() => setSelectedCategoryId(cat.categoryId)}
-                className={`px-4 py-2 text-sm font-semibold rounded-full shadow-sm transition-colors ${
+                className={`px-4 py-2 text-sm font-semibold !rounded-full shadow-sm transition-colors ${
                   selectedCategoryId === cat.categoryId
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-green-600 text-white"
                     : "bg-white text-gray-700 hover:bg-gray-100"
                 }`}
               >

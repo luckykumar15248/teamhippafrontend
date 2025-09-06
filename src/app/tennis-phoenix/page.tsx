@@ -265,7 +265,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   );
 };
 
-const TennisGilbert: React.FC = () => {
+const TennisPhoenix: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
@@ -320,7 +320,7 @@ const TennisGilbert: React.FC = () => {
         setMappings(mappingsRes.data || []);
 
         if (visibleCategories.length > 0) {
-          setSelectedCategoryId(visibleCategories[0].categoryId);
+          setSelectedCategoryId(visibleCategories[1].categoryId);
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -412,8 +412,8 @@ const TennisGilbert: React.FC = () => {
     <>
       <SportsHeroSection
         bgImage="/images/tennis.png"
-        title="Team Hippa Tennis Academy coming to Gilbert, AZ"
-        description="Personalized Coaching, Classes for Juniors and Adults, Tournaments…all coming soon to Gilbert."
+        title="Tennis Phoenix – Team Hippa Tennis Academy in Gilbert, AZ"
+        description="Join Team Hippa Tennis Academy near Phoenix, AZ. Coaching, juniors & adult programs in Gilbert."
         showCallButton
       />
 
@@ -846,4 +846,4 @@ const TennisGilbert: React.FC = () => {
   );
 };
 
-export default TennisGilbert;
+export default TennisPhoenix;
