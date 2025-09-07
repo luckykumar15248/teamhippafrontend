@@ -37,6 +37,7 @@ export default function RootLayout({
     "/admin/promotions-management",
     "/admin/inquiries",
     "/admin/waitlist",
+    "/admin/admin-gallery"
   ];
   const showLayout = !hiddenPaths.includes(pathname);
 
