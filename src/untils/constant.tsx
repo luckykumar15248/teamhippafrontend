@@ -8,7 +8,7 @@ import {
 } from "@/app/components/Icons";
 
 export const NAV_LINKS = [
-  { href: "/course-categories", label: "Book Now" },
+  { href: "/book-now", label: "Book Now" },
   { href: "/sports/tennis", label: "Tennis" },
   { href: "/sports/pickleball", label: "Pickleball" },
   { href: "/packages", label: "Packages" },

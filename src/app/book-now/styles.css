@@ -1,0 +1,14 @@
+ .main-swiper .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
+  }
+  .main-swiper .swiper-pagination-bullet-active {
+    opacity: var(--swiper-pagination-bullet-opacity, 2);
+    background: #64a506 !important;
+}
+.main-swiper .swiper-pagination-bullet {
+    width: var(--swiper-pagination-bullet-width, var(--swiper-pagination-bullet-size, 10px));
+    height: var(--swiper-pagination-bullet-height, var(--swiper-pagination-bullet-size, 10px));
+    background: var(--swiper-pagination-bullet-inactive-color, #b0db72);
+    opacity: var(--swiper-pagination-bullet-inactive-opacity, .9);
+}

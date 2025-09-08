@@ -2,7 +2,7 @@
 
 
 //import LocationLandingPage from '../components/LocationLandingPage/LocationLandingPage';
-import LocationLandingPage from '../course-categories/page';
+import LocationLandingPage from '../book-now/page';
 import React from 'react';
 
 const TennisInGilbertPage = () => {

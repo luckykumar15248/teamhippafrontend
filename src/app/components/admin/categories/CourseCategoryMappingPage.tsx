@@ -83,7 +83,7 @@ const CourseCategoryMappingPage = () => {
         if (!headers) return;
 
         try {
-          const res = await axios.get(`${apiUrl}/api/admin/course-categories?courseId=${courseId}`, { headers });
+          const res = await axios.get(`${apiUrl}/api/admin/book-now?courseId=${courseId}`, { headers });
           setMappedCategoryIds(res.data.map((c: { categoryId: number }) => c.categoryId));
         } catch (error) {
             console.error("Could not fetch mappings for course:", error);
@@ -110,14 +110,14 @@ const CourseCategoryMappingPage = () => {
 
     try {
       if (isMapped) {
-        await axios.delete(`${apiUrl}/api/admin/course-categories`, {
+        await axios.delete(`${apiUrl}/api/admin/book-now`, {
           headers,
           data: { courseId: selectedCourseId, categoryId },
         });
         toast.info('Category unlinked from course.');
         setMappedCategoryIds((prev) => prev.filter((id) => id !== categoryId));
       } else {
-        await axios.post(`${apiUrl}/api/admin/course-categories`, {
+        await axios.post(`${apiUrl}/api/admin/book-now`, {
           courseId: selectedCourseId,
           categoryId,
         }, { headers });

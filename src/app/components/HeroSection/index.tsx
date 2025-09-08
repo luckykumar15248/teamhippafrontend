@@ -16,7 +16,7 @@ export default function HeroSection() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const handelBookNow = () => {
-    router.push("/course-categories");
+    router.push("/book-now");
   };
   return (
     <>

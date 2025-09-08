@@ -171,7 +171,7 @@ const LocationLandingPage: React.FC<LocationLandingPageProps> = ({ location, spo
   }, [allCourses, categories, mappings, selectedCategoryId, location, sportName]);
 
   const handleViewDetails = (course: Course) => {
-    router.push(`/course-categories/courses/${course.id}`);
+    router.push(`/book-now/courses/${course.id}`);
   };
 
   const handleBookNow = (courseId: number) => {

@@ -10,6 +10,7 @@ import SportsHeroSection from "@/app/components/SportsHeroSection";
 import PackageCard from "@/app/components/PackageCard";
 import { Button } from "@/app/components/Button";
 import FAQ from "@/app/components/FAQ";
+import Meta from "../components/Meta";
 
 // --- Type Definitions ---
 interface Package {
@@ -32,7 +33,7 @@ const PackagesPage: React.FC = () => {
   const router = useRouter();
 
   const handleTrialClick = () => {
-    router.push("/course-categories");
+    router.push("/book-now");
   };
 
   useEffect(() => {
@@ -63,6 +64,12 @@ const PackagesPage: React.FC = () => {
 
   return (
     <>
+      <Meta
+        title="Our Packages | Value-Packed Tennis Training"
+        description="Discover value-packed tennis bundles combining our best courses to accelerate your skills."
+        image="/images/package.png"
+        url="https://teamhippa.com/packages"
+      />
       <SportsHeroSection
         bgImage="/images/tennis.png"
         title="Our Packages"
