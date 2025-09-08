@@ -34,6 +34,7 @@ interface Category {
   name: string;
   slug: string;
   description?: string;
+
 }
 
 interface Tag {
@@ -734,6 +735,7 @@ const GalleryItemCard: React.FC<{
 };
 
 // --- [UNCHANGED] Category Manager and Modal ---
+
 const CategoryManager: React.FC<{
   initialCategories: Category[];
   refreshData: () => void;
@@ -746,36 +748,70 @@ const CategoryManager: React.FC<{
     setCategories(initialCategories);
   }, [initialCategories]);
 
-  const handleSave = async (categoryData: {
-    name: string;
-    slug: string;
-    description: string;
-  }) => {
-    const headers = getAuthHeaders();
-    if (!headers) return;
+  // const handleSave = async (categoryData: {
+  //   name: string;
+  //   slug: string;
+  //   description: string;
+  // }) => {
+  //   const headers = getAuthHeaders();
+  //   if (!headers) return;
 
-    try {
-      if (editingCategory) {
-        await axios.put(
-          `${apiUrl}/api/admin/gallery/categories/${editingCategory.id}`,
-          categoryData,
-          { headers }
-        );
-        toast.success("Category updated!");
-      } else {
-        await axios.post(
-          `${apiUrl}/api/admin/gallery/categories`,
-          categoryData,
-          { headers }
-        );
-        toast.success("Category created!");
-      }
-      setCatModalOpen(false);
-      refreshData();
-    } catch {
-      toast.error(`Failed to save category.`);
+  //   try {
+  //     if (editingCategory) {
+  //       await axios.put(
+  //         `${apiUrl}/api/admin/gallery/categories/${editingCategory.id}`,
+  //         categoryData,
+  //         { headers }
+  //       );
+  //       toast.success("Category updated!");
+  //     } else {
+  //       await axios.post(
+  //         `${apiUrl}/api/admin/gallery/categories`,
+  //         categoryData,
+  //         { headers }
+  //       );
+  //       toast.success("Category created!");
+  //     }
+  //     setCatModalOpen(false);
+  //     refreshData();
+  //   } catch {
+  //     toast.error(`Failed to save category.`);
+  //   }
+  // };
+
+  // Re-using the interface you already defined
+interface CategorySaveData {
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+const handleSave = async (categoryData: CategorySaveData) => {
+  const headers = getAuthHeaders();
+  if (!headers) return;
+
+  try {
+    if (editingCategory) {
+      await axios.put(
+        `${apiUrl}/api/admin/gallery/categories/${editingCategory.id}`,
+        categoryData,
+        { headers }
+      );
+      toast.success("Category updated!");
+    } else {
+      await axios.post(
+        `${apiUrl}/api/admin/gallery/categories`,
+        categoryData,
+        { headers }
+      );
+      toast.success("Category created!");
     }
-  };
+    setCatModalOpen(false);
+    refreshData();
+  } catch {
+    toast.error(`Failed to save category.`);
+  }
+};
 
   const handleDelete = async (categoryId: number) => {
     if (
@@ -853,10 +889,16 @@ const CategoryManager: React.FC<{
   );
 };
 
+interface CategorySaveData {
+  name: string;
+  slug: string;
+  description?: string;
+}
+
 const CategoryModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
+  onSave: (data: CategorySaveData) => void;
   categoryToEdit: Category | null;
 }> = ({ isOpen, onClose, onSave, categoryToEdit }) => {
   const [name, setName] = useState(categoryToEdit?.name || "");
@@ -1036,7 +1078,7 @@ const TagManager: React.FC<{ initialTags: Tag[]; refreshData: () => void }> = ({
 const TagModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
+  onSave: (data: CategorySaveData) => void;
   tagToEdit: Tag | null;
 }> = ({ isOpen, onClose, onSave, tagToEdit }) => {
   const [name, setName] = useState(tagToEdit?.name || "");
@@ -1193,15 +1235,29 @@ const UploadEditModal: React.FC<{
         );
         formData.append("file", file);
 
+        // const config = {
+        //   headers: { ...headers, "Content-Type": "multipart/form-data" },
+        //   onUploadProgress: (progressEvent: any) => {
+        //     const percentCompleted = Math.round(
+        //       (progressEvent.loaded * 100) / progressEvent.total
+        //     );
+        //     setUploadProgress(percentCompleted);
+        //   },
+        // };
         const config = {
-          headers: { ...headers, "Content-Type": "multipart/form-data" },
-          onUploadProgress: (progressEvent: any) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setUploadProgress(percentCompleted);
-          },
-        };
+  headers: { ...headers, "Content-Type": "multipart/form-data" },
+  onUploadProgress: (progressEvent: import('axios').AxiosProgressEvent) => {
+    if (progressEvent.total) {
+      const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      setUploadProgress(percentCompleted);
+    } else {
+     
+      setUploadProgress(0);
+    }
+  },
+};
         await axios.post(`${apiUrl}/api/admin/gallery`, formData, config);
         toast.success("Item uploaded successfully.");
       }
@@ -1289,7 +1345,8 @@ const UploadEditModal: React.FC<{
               <label className="block text-sm font-medium">Media Type</label>
               <select
                 value={mediaType}
-                onChange={(e) => setMediaType(e.target.value as any)}
+                // onChange={(e) => setMediaType(e.target.value as any)}
+                onChange={(e) => setMediaType(e.target.value as "IMAGE" | "VIDEO")}
                 className="w-full p-2 border rounded-md bg-gray-100"
                 disabled
               >

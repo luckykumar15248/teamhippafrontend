@@ -32,7 +32,7 @@ const PackagesPage: React.FC = () => {
   const router = useRouter();
 
   const handleTrialClick = () => {
-    router.push("/course-categories");
+    router.push("/book-now");
   };
 
   useEffect(() => {

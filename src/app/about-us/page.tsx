@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { TennisProgram } from "@/app/components/TennisPrograms";
+import Meta from "../components/Meta";
 /*
 const teamMembers = [
   {
@@ -60,6 +61,12 @@ export default function About() {
   };
   return (
     <>
+      <Meta
+        title="About Team Hippa Tennis Training | Our Mission & Story"
+        description="Learn about Team Hippa Tennis Training—expert coaching, advanced programs, and player development at a leading tennis academy in the USA."
+        image="/images/about.png"
+        url="https://teamhippa.com/about-us"
+      />
       <section className="bg-gradient-to-r from-[#b0db72] to-[#3a702b]  py-20 px-4 text-center">
         <div className="mx-auto max-w-screen-2xl">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">

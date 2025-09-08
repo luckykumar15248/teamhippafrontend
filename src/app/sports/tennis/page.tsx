@@ -23,6 +23,7 @@ import { Button } from "@/app/components/Button";
 import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
 import { Waitlist } from "@/app/components/WaitList";
 import Link from "next/link";
+import Meta from "@/app/components/Meta";
 
 interface Course {
   id: number;
@@ -150,7 +151,7 @@ const TennisLandingPage: React.FC = () => {
   }, [tennisCourses, categories, mappings]);
 
   const handleNavigate = (courseId: number) => {
-    router.push(`/course-categories/courses/${courseId}`);
+    router.push(`/book-now/courses/${courseId}`);
   };
 
   const handleBookNow = (item: SelectableItem) => {
@@ -169,6 +170,12 @@ const TennisLandingPage: React.FC = () => {
 
   return (
     <>
+      <Meta
+        title="Tennis Academy | World-Class Tennis Programs for All Ages & Levels"
+        description="World-class tennis programs for all ages and skill levels, from beginners to high-performance players."
+        image="/images/tennies.png"
+        url="https://teamhippa.com/sports/tennis"
+      />
       <SportsHeroSection
         bgImage="/images/tennis.png"
         title="Tennis Academy"

@@ -377,12 +377,12 @@ const PickleballGilbert: React.FC = () => {
 
   /*  const handleViewDetails = (item: SelectableItem) => {
         setSelectedItem(item);
-        router.push(`/course-categories/${item}`);
+        router.push(`/book-now/${item}`);
         console.log("item is",item );
     };*/
 
   const handleViewDetails = (course: Course) => {
-    router.push(`/course-categories/courses/${course.id}`);
+    router.push(`/book-now/courses/${course.id}`);
   };
 
   const handleBookNow = (item: SelectableItem) => {
@@ -406,7 +406,7 @@ const PickleballGilbert: React.FC = () => {
   };
 
   const handelJoinClicked = () => {
-    router.push("/course-categories");
+    router.push("/book-now");
   };
   return (
     <>

@@ -1,6 +1,14 @@
+import Meta from "../components/Meta";
+
 export default function TermsCondition() {
   return (
     <>
+     <Meta
+        title="Terms of Service | Team Hippa Tennis Academy"
+        description="Review Team Hippa’s Terms of Service to understand the rules, conditions, and user responsibilities for our tennis academy."
+        image="/images/terms-of-service.png"
+        url="https://teamhippa.com/terms-of-service"
+      />
       <section className="bg-gradient-to-r from-[#b0db72] to-[#3a702b] py-20 px-4 text-center">
         <div className="max-w-screen-xl  mx-auto">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">

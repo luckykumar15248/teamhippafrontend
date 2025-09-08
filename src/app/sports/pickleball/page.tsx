@@ -20,6 +20,7 @@ import { Waitlist } from "@/app/components/WaitList";
 import Link from "next/link";
 import { Button } from "@/app/components/Button";
 import Image from "next/image";
+import Meta from "@/app/components/Meta";
 
 // --- Type Definitions ---
 interface Course {
@@ -150,7 +151,7 @@ const PickleballLandingPage: React.FC = () => {
   }, [pickleballCourses, categories, mappings]);
 
   const handleNavigate = (courseId: number) => {
-    router.push(`/course-categories/courses/${courseId}`);
+    router.push(`/book-now/courses/${courseId}`);
   };
 
   const handleBookNow = (item: SelectableItem) => {
@@ -169,6 +170,12 @@ const PickleballLandingPage: React.FC = () => {
 
   return (
     <>
+      <Meta
+        title="Pickleball Academy Gilbert AZ | Lessons & Training"
+        description="Master pickleball in Gilbert, AZ with Team Hippa! We offer lessons for all levels, youth programs, and top-tier training."
+        image="/images/pickleball.png"
+        url="https://teamhippa.com/sports/pickleball"
+      />
       <SportsHeroSection
         bgImage="/images/tennis.png"
         title="Pickleball Programs"

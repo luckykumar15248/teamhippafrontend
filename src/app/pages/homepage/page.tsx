@@ -13,15 +13,22 @@ import Inquiry from "@/app/components/Inquiry-form";
 import { TennisProgram } from "@/app/components/TennisPrograms";
 import HeroSection from "@/app/components/HeroSection";
 import { useRouter } from "next/navigation";
+import Meta from "@/app/components/Meta";
 
 export default function HomePage() {
-   const router = useRouter();
+  const router = useRouter();
 
   const handelJoinClicked = () => {
-    router.push("/contact")}
+    router.push("/contact");
+  };
 
   return (
     <>
+      <Meta
+        title="Tennis Academy in USA | Best Tennis Training | Team Hippa"
+        description="Team Hippa is a top Tennis Academy in the USA offering expert coaching and training for players of all levels."
+        image="/images/home.png"
+      />
       <HeroSection />
       <TennisProgram />
       <section className="relative w-full h-96 bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-[url('/images/exclusive-deal.jpg')] bg-cover bg-center">
@@ -55,14 +62,14 @@ export default function HomePage() {
               Don&apos;t miss this chance to level up your game. Feel free to
               &nbsp;
               <Link
-               href="tel:+1234567890"
+                href="tel:+1234567890"
                 className="text-[#b0db72] hover:underline font-medium"
               >
                 Call us now &nbsp;
               </Link>
               or visit our website &nbsp;
               <Link
-                href="/course-categories"
+                href="/book-now"
                 className="text-[#b0db72] hover:underline font-medium"
               >
                 Book Your Spot
@@ -107,7 +114,7 @@ export default function HomePage() {
         subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
         data={ABOUT_FAQS}
       />
-      
+
       <section className="min-h-screen bg-gray-100 flex flex-col items-center">
         <div className="w-full bg-[#b0db72] pt-6 md:pt-12 pb-12 md:pb-42 px-6 lg:px-16 text-center shadow-lg">
           <h2 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-3">

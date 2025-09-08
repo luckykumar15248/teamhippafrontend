@@ -1,16 +1,20 @@
 import Link from "next/link";
+import Meta from "../components/Meta";
 
 export default function PrivacyPolicy() {
   return (
     <>
+      <Meta
+        title="Privacy Policy | Team Hippa Tennis Academy"
+        description="Read Team Hippa’s Privacy Policy to learn how we collect, use, and protect your personal information."
+        image="/images/privacy-policy.png"
+        url="https://teamhippa.com/privacy-policy"
+      />
       <section className="bg-gradient-to-r from-[#b0db72] to-[#3a702b] py-20 px-4 text-center">
         <div className="max-w-screen-xl  mx-auto">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
             Privacy Policy
           </h1>
-          {/* <p className="max-w-2xl mx-auto text-lg text-white">
-            Last updated: August 22, 2025
-          </p> */}
         </div>
       </section>
       <section className="w-full -mt-16 z-10 px-4 pb-6 md:pb-12">
@@ -84,8 +88,9 @@ export default function PrivacyPolicy() {
               When you log in, we will also set up several cookies to save your
               login information and your screen display choices. Login cookies
               last for two days, and screen options cookies last for a year. If
-              you select &quot;Remember Me&quot;, your login will persist for two weeks.
-              If you log out of your account, the login cookies will be removed.
+              you select &quot;Remember Me&quot;, your login will persist for
+              two weeks. If you log out of your account, the login cookies will
+              be removed.
             </p>
             <p className="text-base sm:text-lg text-gray-600 font-normal">
               If you edit or publish an article, an additional cookie will be
