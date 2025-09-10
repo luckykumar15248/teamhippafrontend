@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 
@@ -149,6 +149,7 @@ const GalleryPage: React.FC = () => {
                 const response = await axios.get(`${apiUrl}/api/public/gallery/categories`);
                 setCategories([{ id: 0, name: 'All', slug: 'all' }, ...response.data]);
             } catch (error) {
+                console.error("Error fetching categories:", error);
                 toast.error("Could not load gallery categories.");
             }
         };
@@ -166,6 +167,7 @@ const GalleryPage: React.FC = () => {
                 const response = await axios.get(`${apiUrl}/api/public/gallery`, { params });
                 setItems(response.data || []);
             } catch (error) {
+                console.error("Error fetching gallery items:", error);
                 toast.error("Could not load gallery items.");
                 setItems([]);
             } finally {

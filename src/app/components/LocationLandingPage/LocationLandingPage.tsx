@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -119,7 +119,7 @@ const LocationLandingPage: React.FC<LocationLandingPageProps> = ({ location, spo
           axios.get(`${apiUrl}/api/public/course-category-mappings`),
         ]);
 
-        const transformedCourses = (coursesRes.data || []).map((course: any) => ({
+        const transformedCourses = (coursesRes.data || []).map((course: Course) => ({
           ...course,
           imagePaths: (course.imagePaths || []).map((path: string) =>
             path.startsWith("http") ? path : `${frontendServerUrl}${path}`
@@ -131,6 +131,7 @@ const LocationLandingPage: React.FC<LocationLandingPageProps> = ({ location, spo
         setMappings(mappingsRes.data || []);
 
       } catch (error) {
+        console.error("Error fetching offerings data:", error);
         toast.error("Could not load offerings. Please try again later.");
       } finally {
         setIsLoading(false);

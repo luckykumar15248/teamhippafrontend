@@ -68,6 +68,15 @@ const adminDashboardLinks = [
     description: "waitlist,Tennis, Pickerball",
     icon: <WaitlistIcon className="text-black min-w-5 min-h-5"/>,
   },
+
+   {
+    href: "/admin/gallery-management",
+    label: "Gallery Management",
+    description: "Team Hippa Gallery",
+    icon: <WaitlistIcon className="text-black min-w-5 min-h-5"/>,
+  },
+
+  
 ];
 
 // --- API Helper ---
