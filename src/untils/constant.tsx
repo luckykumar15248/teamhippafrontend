@@ -1,10 +1,14 @@
 import {
+  AwardIcon,
   CarFacilityIcon,
+  ExpertIcon,
   FacebookIcon,
+  FitnessIcon,
   InstaIcon,
   LocationIcon,
   LunchIcon,
   TimeIcon,
+  TrophyIcon,
 } from "@/app/components/Icons";
 
 export const NAV_LINKS = [
@@ -355,3 +359,90 @@ export const GILBERT_FAQS = [
       "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
   },
 ];
+export const WINTER_CAMP_FAQS = [
+  {
+    question: "What is the Winter Tennis Camp all about?",
+    answer:
+      "Our Winter Tennis Camp is a 2-week intensive program designed to help players improve their skills, fitness, and confidence on the court while enjoying fun winter activities.",
+  },
+  {
+    question: "Who can join the Winter Tennis Camp?",
+    answer:
+      "The camp is open to players of all ages and skill levels – kids, teens, and adults. Beginners, intermediate, and advanced players are all welcome.",
+  },
+  {
+    question: "Where will the camp take place?",
+    answer:
+      "The camp will be held at City Tennis Academy, New Delhi, with world-class facilities including multiple courts, fitness areas, and a recreational lounge.",
+  },
+  {
+    question: "What are the dates for the camp?",
+    answer:
+      "The Winter Camp runs from December 15th to December 30th, 2025. You can choose full camp participation or join on selected days.",
+  },
+  {
+    question: "What is included in the camp fee?",
+    answer:
+      "The fee covers professional coaching, fitness training, match play, fun activities, camp t-shirt, and refreshments. Accommodation and meals are available as add-ons.",
+  },
+  {
+    question: "How do I register for the camp?",
+    answer:
+      "You can register directly on our website by clicking the 'Register Now' button or by contacting our academy via phone/email. Early bird discounts are available for advance bookings.",
+  },
+  {
+    question: "Do you offer private lessons during the camp?",
+    answer:
+      "Yes, players can book additional private or semi-private lessons with our coaches during the camp for more focused training.",
+  },
+];
+
+export const SCHEDULE = [
+  {
+    time: "8:00 AM",
+    title: "Warm Up & Fitness",
+    desc: "Stretching, cardio drills, and fun games to get players moving.",
+    icon: "🏃",
+  },
+  {
+    time: "10:00 AM",
+    title: "Skill Development",
+    desc: "Focused coaching sessions tailored for each skill level.",
+    icon: "🎾",
+  },
+  {
+    time: "1:00 PM",
+    title: "Match Play",
+    desc: "Friendly matches & guided strategy sessions to boost confidence.",
+    icon: "🏆",
+  },
+  {
+    time: "4:00 PM",
+    title: "Cool Down & Fun",
+    desc: "Relaxation, group activities, and team-building games.",
+    icon: "🌅",
+  },
+];
+export const CAMP_FEATURES = [
+  {
+    icon: <ExpertIcon />,
+    title: "Expert Coaches",
+    desc: "Learn from certified, experienced trainers.",
+  },
+  {
+    icon: <FitnessIcon />,
+    title: "Fitness Training",
+    desc: "Special drills to improve stamina & agility.",
+  },
+  {
+    icon: <TrophyIcon />,
+    title: "Match Play",
+    desc: "Daily matches to sharpen competitive skills.",
+  },
+  {
+    icon: <AwardIcon />,
+    title: "Fun & Awards",
+    desc: "Trophies, medals & a fun closing ceremony.",
+  },
+];
+
