@@ -31,6 +31,7 @@ import "swiper/css/pagination";
 import "./styles.css";
 import Link from "next/link";
 import { SparkleIcon } from "../components/Icons";
+import Meta from "../components/Meta";
 
 // --- Type Definitions (Updated to match API response) ---
 interface Course {
@@ -412,9 +413,15 @@ const TennisGilbert: React.FC = () => {
   };
   return (
     <>
+      <Meta
+        title="Tennis Near Me in Gilbert | Private & Group Lessons Available"
+        description="Looking for tennis near you in Gilbert? Team HIPPA offers private coaching, youth training, and group sessions with certified instructors."
+        image="/images/tennies-gilbert.jpg"
+        url="https://teamhippa.com/tennis-gilbert"
+      />
       <SportsHeroSection
         bgImage="/images/tennis.png"
-        title="Team Hippa Tennis Academy"
+        title="Tennis Coaching & Training | Tennis Academy Courts & Coaching"
         description="Personalized Coaching, Classes for Juniors and Adults, Tournaments…all coming soon to Gilbert."
         showCallButton
       />
