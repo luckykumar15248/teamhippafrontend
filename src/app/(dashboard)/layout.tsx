@@ -112,6 +112,16 @@ const Sidebar: React.FC<SidebarProps> = ({ className, onClose }) => {
       label: "Waitlist",
       icon: <WaitlistIcon />,
     },
+     {
+      href: "/admin/blog",
+      label: "Manage Blog", 
+      icon: <WaitlistIcon />,
+    },
+     {
+      href: "/admin/media-management",
+      label: "Blog Media Management", 
+      icon: <WaitlistIcon />,
+    },
   ];
 
   const userLinks = [

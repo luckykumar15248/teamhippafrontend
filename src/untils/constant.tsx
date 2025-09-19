@@ -17,6 +17,7 @@ export const NAV_LINKS = [
   { href: "/sports/pickleball", label: "Pickleball" },
   { href: "/packages", label: "Packages" },
   { href: "/gallery", label: "Gallery" },
+   { href: "/blog", label: "Blog" },
   { href: "/about-us", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ];
