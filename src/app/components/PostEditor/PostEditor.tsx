@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 
 // Editor.js tools
-import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import Checklist from '@editorjs/checklist';
@@ -39,7 +38,7 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
   const [autoSlug, setAutoSlug] = useState(true);
   const [excerpt, setExcerpt] = useState('');
   const [status, setStatus] = useState('draft');
-  const [content, setContent] = useState<OutputData>({ blocks: [] });
+  const [setContent] = useState<OutputData>({ blocks: [] });
 
   // SEO states
   const [metaTitle, setMetaTitle] = useState('');
@@ -86,7 +85,7 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
 
   // Slug input ref to focus
   const slugInputRef = useRef<HTMLInputElement | null>(null);
-  const [mediaTarget, setMediaTarget] = useState<'featured' | 'og' | 'twitter' | 'editor' | null>(null);
+  const [setMediaTarget] = useState<'featured' | 'og' | 'twitter' | 'editor' | null>(null);
 
   // Slug generator helper
   const generateSlug = useCallback((value: string) => {

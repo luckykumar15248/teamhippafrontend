@@ -31,6 +31,7 @@ import "swiper/css/pagination";
 import "./styles.css";
 import Link from "next/link";
 import { SparkleIcon } from "../components/Icons";
+import Meta from "../components/Meta";
 
 // --- Type Definitions (Updated to match API response) ---
 interface Course {
@@ -412,6 +413,12 @@ const PickleballGilbert: React.FC = () => {
   };
   return (
     <>
+      <Meta
+        title="Pickleball Lessons Gilbert AZ | Beginner to Expert Coaching"
+        description="Learn pickleball at Team Hippa's Academy in Gilbert, AZ. We offer comprehensive lessons, competitive play, and social events on premier courts for all ages."
+        image="/images/tennies-pickleball.jpg"
+        url="https://teamhippa.com/pickleball-gilbert"
+      />
       <SportsHeroSection
         bgImage="/images/tennis.png"
         title="Pickleball in Gilbert, AZ | Team Hippa Academy Courts & Coaching"
@@ -570,7 +577,7 @@ const PickleballGilbert: React.FC = () => {
           {/* Heading */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-semibold uppercase text-black">
-              New Tennis Program in Gilbert
+              New Tennis Program Pickleball in Gilbert
             </h1>
             <div className="mt-2 h-1 w-20 bg-green-600 mx-auto rounded"></div>
           </div>
@@ -590,12 +597,16 @@ const PickleballGilbert: React.FC = () => {
               philosophy, we’ve helped players of all ages grow their game
               through a balanced focus on technique, fitness, and mental
               strength. After success in the Phoenix area, we’re excited to
-              expand into <span className="font-bold">Gilbert</span>, bringing
+              expand into{" "}
+              <span className="font-bold">Pickleball in Gilbert</span>, bringing
               our proven programs to
-              <span className="font-bold"> Gilbert Regional Park</span>. Whether
-              you’re just starting out or competing at a high level, our mission
-              is to provide the structure, flexibility, and support needed to
-              help every player reach their full potential.
+              <span className="font-bold">
+                {" "}
+                Pickleball in Gilbert Regional Park
+              </span>
+              . Whether you’re just starting out or competing at a high level,
+              our mission is to provide the structure, flexibility, and support
+              needed to help every player reach their full potential.
             </p>
 
             <Link
@@ -603,19 +614,23 @@ const PickleballGilbert: React.FC = () => {
               target="_blank"
               className="text-base sm:text-lg font-medium text-blue-600 underline cursor-pointer"
             >
-              Looking for tennis lessons in Gilbert, Arizona?
+              Looking for tennis lessons Pickleball in Gilbert, Arizona?
             </Link>
             <p className="leading-relaxed text-base sm:text-lg text-gray-600 font-normal">
               Team Hippa is launching soon with exciting new&nbsp;
               <span className="font-bold">tennis programs</span> at&nbsp;
-              <span className="font-bold">Gilbert Regional Park </span> and{" "}
+              <span className="font-bold">
+                Pickleball in Gilbert Regional Park{" "}
+              </span>{" "}
+              and{" "}
               <span className="font-bold">Freestone Recreation Center </span>.
             </p>
             <p className="text-base sm:text-lg text-gray-600 font-normal">
               Our academy offers tennis training for all ages and levels —
               including
-              <span className="font-bold"> new tennis programs</span> at Gilbert
-              Regional Park and Freestone Recreation Center.
+              <span className="font-bold"> new tennis programs</span> at
+              Pickleball in Gilbert Regional Park and Freestone Recreation
+              Center.
             </p>
           </div>
 
@@ -625,8 +640,9 @@ const PickleballGilbert: React.FC = () => {
               Flexible, Player-Centered Training – No Set Schedules
             </h2>
             <p className="mb-4 leading-relaxed text-base sm:text-lg text-gray-600 font-normal">
-              Unlike many tennis programs in Gilbert, we don’t lock players into
-              rigid 8-week sessions or fixed times. With Team Hippa, you can:
+              Unlike many tennis programs Pickleball in Gilbert, we don’t lock
+              players into rigid 8-week sessions or fixed times. With Team
+              Hippa, you can:
             </p>
             <ul className="list-disc list-inside space-y-2 text-base sm:text-lg text-gray-600 font-normal">
               {FLEXIBLE_TRAINING.map((item, index) => (
@@ -643,7 +659,7 @@ const PickleballGilbert: React.FC = () => {
           {/* Coaching Philosophy */}
           <div className="mb-12 bg-white shadow-md rounded-2xl p-6 md:p-10">
             <h2 className="text-2xl text-green-600 font-semibold uppercase mb-4">
-              European Coaching Philosophy, Right Here in Gilbert
+              European Coaching Philosophy, Right Here Pickleball in Gilbert
             </h2>
             <p className="mb-4 leading-relaxed text-base sm:text-lg text-gray-600 font-normal">
               Led by a team of{" "}
@@ -658,7 +674,7 @@ const PickleballGilbert: React.FC = () => {
             <p className="leading-relaxed text-base sm:text-lg text-gray-600 font-normal">
               Whether you’re picking up a racket for the first time or training
               for your next tournament, our mission is to provide the
-              highest-quality tennis instruction in Gilbert.
+              highest-quality tennis instruction Pickleball in Gilbert.
             </p>
           </div>
 
@@ -794,7 +810,7 @@ const PickleballGilbert: React.FC = () => {
               </span>
               so effective — and why are we bringing it to our new{" "}
               <span className="font-semibold">
-                tennis academy in Gilbert, Arizona?
+                tennis academy Pickleball Gilbert, Arizona?
               </span>
             </p>
             <span className="absolute -bottom-7 -right-3 text-8xl leading-[6px] text-green-600">
@@ -842,12 +858,14 @@ const PickleballGilbert: React.FC = () => {
               is a structured but flexible training model. Group sizes tend to
               be smaller, allowing for individualized attention, and coaches act
               as long-term mentors, not just instructors. At our{" "}
-              <span className="font-semibold">tennis academy in Gilbert</span>,
-              we embrace this mindset by designing sessions based on a player’s
-              age, experience, and goals. Rather than rigid schedules, we offer
-              flexible training packages so athletes — and parents — can choose
-              when and how often to train. This freedom supports consistency and
-              avoids burnout, especially for busy families.
+              <span className="font-semibold">
+                tennis academy in Pickleball Gilbert
+              </span>
+              , we embrace this mindset by designing sessions based on a
+              player’s age, experience, and goals. Rather than rigid schedules,
+              we offer flexible training packages so athletes — and parents —
+              can choose when and how often to train. This freedom supports
+              consistency and avoids burnout, especially for busy families.
             </p>
 
             <span className="absolute -bottom-7 -right-3 text-8xl leading-[6px] text-black">

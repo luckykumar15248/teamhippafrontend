@@ -64,6 +64,10 @@ const Footer: React.FC = () => {
               Phoenix, AZ 85021 <br />
               United States
             </p>
+            <p className="text-base font-medium text-white leading-7 mb-2">
+              Gilbert Regional Park, AZ <br />
+              Freestone Rec Center Gilbert, AZ <br />
+            </p>
             <span className="flex items-center gap-3 mb-2">
               <EmailIcon />
               <Link
@@ -99,6 +103,7 @@ const Footer: React.FC = () => {
               ))}
             </div>
           </div>
+          
         </div>
 
         <div className="mt-10 pt-8 border-t border-white text-center">

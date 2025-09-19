@@ -12,8 +12,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-slate: #1E293B;
-  --color-green-700:#64a506 !important;
-  --color-green-600:#b0db72 !important;
+  --color-green-700: #64a506 !important;
+  --color-green-600: #b0db72 !important;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -29,4 +29,48 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.custome-scroll::-webkit-scrollbar {
+  height: 2px;
+  background-color: white;
+  border-radius: 10px;
+
+}
+
+.custome-scroll::-webkit-scrollbar-thumb {
+  background: #b0db72;
+  border-radius: 10px;
+  width: 30px;
+}
+.custome-post h2{
+  font-size: 30px; 
+  font-weight: 700;     
+  color: #000;      
+  margin-bottom: 12px;
+}
+.custome-post h3{
+  font-size: 30px; 
+  font-weight: 700;     
+  color: #000;      
+  margin-bottom: 12px;
+}
+
+.custome-post p {
+  font-size: 18px;  
+  margin-bottom: 4px !important;
+  font-weight: 400;  
+  color: #4B5563; 
+}
+.custome-post ol li {
+  font-size: 18px;  
+  margin-bottom: 4px !important;
+  font-weight: 400;  
+  color: #4B5563; 
+}
+.custome-post ul li {
+  font-size: 18px;  
+  margin-bottom: 4px !important;
+  font-weight: 400;  
+  color: #4B5563; 
 }
