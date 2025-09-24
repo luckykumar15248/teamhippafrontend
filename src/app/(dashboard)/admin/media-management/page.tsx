@@ -69,6 +69,7 @@ const MediaLibraryPage: React.FC = () => {
             setMediaItems(response.data.sort((a: MediaItem, b: MediaItem) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) || []);
         } catch (error) {
             toast.error("Failed to load media library.");
+            console.error(error);
         } finally {
             setIsLoading(false);
         }
