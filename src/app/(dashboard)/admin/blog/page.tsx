@@ -22,6 +22,7 @@ interface Category {
   slug: string; 
   description: string; 
   parentId: number | null; 
+  children?: Category[];
 } 
 
 interface Tag { 
@@ -29,6 +30,18 @@ interface Tag {
   name: string; 
   slug: string; 
 } 
+
+interface CategoryFormData {
+  name: string;
+  slug: string;
+  description: string;
+  parentId: number | null;
+}
+
+interface TagFormData {
+  name: string;
+  slug: string;
+}
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'; 
 
@@ -42,7 +55,13 @@ const PlusIcon: FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-
 const ViewIcon: FC = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>; 
 
 // --- MODAL COMPONENTS for Categories and Tags --- 
-const CategoryModal: FC<{ isOpen: boolean; onClose: () => void; onSave: (data: any) => void; categoryToEdit: Category | null; allCategories: Category[] }> = ({ isOpen, onClose, onSave, categoryToEdit, allCategories }) => { 
+const CategoryModal: FC<{ 
+  isOpen: boolean; 
+  onClose: () => void; 
+  onSave: (data: CategoryFormData) => void; 
+  categoryToEdit: Category | null; 
+  allCategories: Category[] 
+}> = ({ isOpen, onClose, onSave, categoryToEdit, allCategories }) => { 
   const [name, setName] = useState(categoryToEdit?.name || ''); 
   const [slug, setSlug] = useState(categoryToEdit?.slug || ''); 
   const [description, setDescription] = useState(categoryToEdit?.description || ''); 
@@ -64,7 +83,12 @@ const CategoryModal: FC<{ isOpen: boolean; onClose: () => void; onSave: (data: a
 
   const handleSubmit = (e: FormEvent) => { 
     e.preventDefault(); 
-    onSave({ name, slug, description, parentId: parentId ? parseInt(parentId) : null }); 
+    onSave({ 
+      name, 
+      slug, 
+      description, 
+      parentId: parentId ? parseInt(parentId) : null 
+    }); 
   }; 
 
   if (!isOpen) return null; 
@@ -80,7 +104,7 @@ const CategoryModal: FC<{ isOpen: boolean; onClose: () => void; onSave: (data: a
           <select value={parentId} onChange={e => setParentId(e.target.value)} className="w-full p-2 border rounded"> 
             <option value="">-- No Parent (Top Level) --</option> 
             {allCategories
-              .filter(c => !categoryToEdit || c.id !== categoryToEdit.id) // Don't allow selecting self as parent
+              .filter(c => !categoryToEdit || c.id !== categoryToEdit.id) // Don&apos;t allow selecting self as parent
               .map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)} 
           </select> 
           <div className="flex justify-end gap-2"> 
@@ -93,7 +117,12 @@ const CategoryModal: FC<{ isOpen: boolean; onClose: () => void; onSave: (data: a
   ); 
 }; 
 
-const TagModal: FC<{ isOpen: boolean; onClose: () => void; onSave: (data: any) => void; tagToEdit: Tag | null }> = ({ isOpen, onClose, onSave, tagToEdit }) => { 
+const TagModal: FC<{ 
+  isOpen: boolean; 
+  onClose: () => void; 
+  onSave: (data: TagFormData) => void; 
+  tagToEdit: Tag | null 
+}> = ({ isOpen, onClose, onSave, tagToEdit }) => { 
   const [name, setName] = useState(tagToEdit?.name || ''); 
   const [slug, setSlug] = useState(tagToEdit?.slug || ''); 
 
@@ -224,7 +253,7 @@ const CategoryManager: FC<{ initialCategories: Category[], refreshData: () => vo
     setHierarchicalCategories(buildCategoryHierarchy(initialCategories));
   }, [initialCategories]);
 
-  const handleSave = async (categoryData: Omit<Category, 'id'>) => { 
+  const handleSave = async (categoryData: CategoryFormData) => { 
     const headers = getAuthHeaders(); 
     if (!headers.Authorization) return; 
     try { 
@@ -238,7 +267,8 @@ const CategoryManager: FC<{ initialCategories: Category[], refreshData: () => vo
       setEditingCategory(null); 
       setModalOpen(false); 
       refreshData(); 
-    } catch { 
+    } catch (err) { 
+      console.error(err);
       toast.error("Failed to save category."); 
     } 
   }; 
@@ -251,7 +281,8 @@ const CategoryManager: FC<{ initialCategories: Category[], refreshData: () => vo
       await axios.delete(`${apiUrl}/api/admin/blog/categories/${categoryId}`, { headers }); 
       toast.success("Category deleted."); 
       refreshData(); 
-    } catch { 
+    } catch (err) { 
+          console.error(err);
       toast.error("Failed to delete category."); 
     } 
   }; 
@@ -299,7 +330,7 @@ const TagManager: FC<{ initialTags: Tag[], refreshData: () => void }> = ({ initi
   const [isModalOpen, setModalOpen] = useState(false); 
   const [editingTag, setEditingTag] = useState<Tag | null>(null); 
 
-  const handleSave = async (tagData: Omit<Tag, 'id'>) => { 
+  const handleSave = async (tagData: TagFormData) => { 
     const headers = getAuthHeaders(); 
     if (!headers.Authorization) return; 
     try { 
@@ -313,7 +344,8 @@ const TagManager: FC<{ initialTags: Tag[], refreshData: () => void }> = ({ initi
       setEditingTag(null); 
       setModalOpen(false); 
       refreshData(); 
-    } catch { 
+    } catch (err) { 
+          console.error(err);
       toast.error("Failed to save tag."); 
     } 
   }; 
@@ -326,7 +358,8 @@ const TagManager: FC<{ initialTags: Tag[], refreshData: () => void }> = ({ initi
       await axios.delete(`${apiUrl}/api/admin/blog/tags/${tagId}`, { headers }); 
       toast.success("Tag deleted."); 
       refreshData(); 
-    } catch { 
+    } catch (err) { 
+          console.error(err);
       toast.error("Failed to delete tag."); 
     } 
   }; 
@@ -378,7 +411,8 @@ const AdminBlogPage: React.FC = () => {
       setPosts(postsRes.data || []); 
       setCategories(catsRes.data || []); 
       setTags(tagsRes.data || []); 
-    } catch (error) { 
+    } catch (err) { 
+          console.error(err);
       toast.error("Failed to load blog data."); 
     } finally { 
       setIsLoading(false); 
@@ -397,7 +431,8 @@ const AdminBlogPage: React.FC = () => {
       await axios.delete(`${apiUrl}/api/admin/blog/posts/${postId}`, { headers }); 
       toast.success("Post deleted."); 
       fetchData(); 
-    } catch { 
+    } catch (err) { 
+          console.error(err);
       toast.error("Failed to delete post."); 
     } 
   }; 
@@ -409,7 +444,8 @@ const AdminBlogPage: React.FC = () => {
       await axios.put(`${apiUrl}/api/admin/blog/posts/${postId}/status`, { status: newStatus }, { headers }); 
       toast.success("Status updated!"); 
       fetchData(); 
-    } catch { 
+    } catch (err) { 
+          console.error(err);
       toast.error("Failed to update status."); 
     } 
   }; 
@@ -425,7 +461,7 @@ const AdminBlogPage: React.FC = () => {
         <header className="mb-8 flex justify-between items-center"> 
           <div> 
             <h1 className="text-3xl font-bold text-gray-900">Blog Management</h1> 
-            <p className="mt-1 text-sm text-gray-600">Manage all content for your website's blog.</p> 
+            <p className="mt-1 text-sm text-gray-600">Manage all content for your website&apos;s blog.</p> 
           </div> 
           {activeTab === 'posts' && ( 
             <Link href="/admin/blog/new" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"> 

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 
 // Editor.js tools
+import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import Checklist from '@editorjs/checklist';
@@ -23,13 +24,50 @@ interface Tag { id: number; name: string; slug: string; }
 interface MediaItem { id: number; mediaUrl: string; altText?: string; fileName?: string; }
 interface Expert { id: number; name: string; title: string; bio: string; image: string; }
 
+interface Post {
+  id?: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  status: string;
+  content: OutputData | string;
+  categories?: Category[];
+  tags?: Tag[];
+  experts?: Expert[];
+  featuredImage?: MediaItem | null;
+  seoMetadata?: SEOData;
+  ogImage?: MediaItem | null;
+  twitterImage?: MediaItem | null;
+}
+
+interface SEOData {
+  metaTitle?: string;
+  metaTitleSuffix?: string;
+  metaDescription?: string;
+  serpPreviewText?: string;
+  metaKeywords?: string;
+  metaRobots?: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImageId?: number | null;
+  ogImageAlt?: string | null;
+  twitterCard?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImageId?: number | null;
+  twitterImageAlt?: string | null;
+  structuredData?:object | null;
+  customMetaTags?: object | null;
+}
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 const getAuthHeaders = () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
   return token ? { Authorization: `Bearer ${token}` } : null;
 };
 
-const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
+const PostEditor: React.FC<{ postToEdit?: Post | null }> = ({ postToEdit }) => {
   const router = useRouter();
 
   // Post fields state
@@ -38,7 +76,6 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
   const [autoSlug, setAutoSlug] = useState(true);
   const [excerpt, setExcerpt] = useState('');
   const [status, setStatus] = useState('draft');
-  const [setContent] = useState<OutputData>({ blocks: [] });
 
   // SEO states
   const [metaTitle, setMetaTitle] = useState('');
@@ -85,7 +122,6 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
 
   // Slug input ref to focus
   const slugInputRef = useRef<HTMLInputElement | null>(null);
-  const [setMediaTarget] = useState<'featured' | 'og' | 'twitter' | 'editor' | null>(null);
 
   // Slug generator helper
   const generateSlug = useCallback((value: string) => {
@@ -94,29 +130,17 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
 
   // Load post data into state when editing or postToEdit changes
   useEffect(() => {
-    if(!postToEdit) return;
+    if (!postToEdit) return;
 
     setTitle(postToEdit.title || '');
     setSlug(postToEdit.slug || '');
     setAutoSlug(postToEdit.slug ? false : true);
     setExcerpt(postToEdit.excerpt || '');
     setStatus(postToEdit.status || 'draft');
-   
-    setContent(postToEdit.content || { blocks: [] });
-    contentRef.current = postToEdit.content || { blocks: [] };
-
-    /*
-   // this blog only user if json is stringfyes
-    let parsedContent = { blocks: [] };
-    try {
-    parsedContent = typeof postToEdit.content === 'string'
-      ? JSON.parse(postToEdit.content)
-      : postToEdit.content;
-  } catch (err) {
-    console.error('Failed to parse content JSON', err);
-  }
-  setContent(parsedContent);
-  contentRef.current = parsedContent;*/
+    
+    contentRef.current = typeof postToEdit.content === 'string' 
+      ? JSON.parse(postToEdit.content) 
+      : postToEdit.content || { blocks: [] };
 
     const seo = postToEdit.seoMetadata || {};
     setMetaTitle(seo.metaTitle || '');
@@ -142,22 +166,20 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
     setFeaturedImage(postToEdit.featuredImage || null);
 
     setSelectedCategories(postToEdit.categories ? postToEdit.categories.map((cat: Category) => cat.id) : []);
-    setSelectedTags(postToEdit.tags || []);
-    //setSelectedTags(postToEdit.tags ? postToEdit.tags.map((tag: Tag) => tag.id) : []);
-    setSelectedExperts(postToEdit.experts || []);
+    setSelectedTags(postToEdit.tags ? postToEdit.tags.map((tag: Tag) => tag.id) : []);
+    setSelectedExperts(postToEdit.experts ? postToEdit.experts.map((ex: Expert) => ex.id) : []);
   }, [postToEdit]);
 
-
-   // Auto update slug when title changes and autoSlug is true
+  // Auto update slug when title changes and autoSlug is true
   useEffect(() => {
-    if(autoSlug) {
+    if (autoSlug) {
       setSlug(generateSlug(title || ''));
     }
   }, [title, autoSlug, generateSlug]);
 
   // --- EditorJS init ---
   useEffect(() => {
-    if(editorRef.current) return;  // Only initialize once
+    if (editorRef.current) return;  // Only initialize once
 
     const editor = new EditorJS({
       holder: editorContainerId,
@@ -165,18 +187,18 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
       data: contentRef.current,
       autofocus: true,
       tools: {
-        header: { class: Header as any, inlineToolbar: true, config: { levels: [1, 2, 3, 4], defaultLevel: 2 } },
-        list: { class: List as any, inlineToolbar: true },
-        quote: { class: Quote as any },
-        checklist: { class: Checklist as any },
-        table: { class: Table as any },
-        embed: { class: Embed as any },
-        code: { class: CodeTool as any },
-        inlineCode: { class: InlineCode as any },
-        linkTool: { class: LinkTool as any, config: { endpoint: `${apiUrl}/api/fetchUrl` } },
-        delimiter: { class: Delimiter as any },
+        header: { class: Header, inlineToolbar: true, config: { levels: [1, 2, 3, 4], defaultLevel: 2 } },
+        list: { class: List, inlineToolbar: true },
+        quote: { class: Quote },
+        checklist: { class: Checklist },
+        table: { class: Table },
+        embed: { class: Embed },
+        code: { class: CodeTool },
+        inlineCode: { class: InlineCode },
+        linkTool: { class: LinkTool, config: { endpoint: `${apiUrl}/api/fetchUrl` } },
+        delimiter: { class: Delimiter },
         image: {
-          class: ImageTool as any,
+          class: ImageTool,
           config: {
             endpoints: {
               byFile: `${apiUrl}/api/admin/media/upload`,
@@ -189,7 +211,7 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
       onReady: () => { },
       onChange: async () => {
         try {
-          const saved = await editor.saver.save();
+          const saved = await editor.save();
           contentRef.current = saved;  // update ref, avoid React re-render to prevent cursor jumps
         } catch (error) {
           console.error('Editor save error', error);
@@ -200,7 +222,7 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
     editorRef.current = editor;
 
     return () => {
-      if(editorRef.current && typeof editorRef.current.destroy === 'function') {
+      if (editorRef.current && typeof editorRef.current.destroy === 'function') {
         editorRef.current.destroy();
         editorRef.current = null;
       }
@@ -259,7 +281,7 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
   const handleMediaAction = (item: MediaItem, action: 'insert' | 'featured' | 'og' | 'twitter') => {
     if (action === 'insert') {
       try {
-        (editorRef.current as any)?.blocks?.insert('image', {
+        editorRef.current?.blocks.insert('image', {
           file: { url: item.mediaUrl },
           caption: item.altText || '',
         }, {}, undefined);
@@ -275,33 +297,30 @@ const PostEditor: React.FC<{ postToEdit?: any | null }> = ({ postToEdit }) => {
       setTwitterImage(item);
     }
     setShowMediaLibrary(false);
-    setMediaTarget(null);
   };
 
-function flattenCategoryIds(categories: Category[]): number[] {
-  let ids: number[] = [];
+  function flattenCategoryIds(categories: Category[]): number[] {
+    let ids: number[] = [];
 
-  categories.forEach(cat => {
-    ids.push(cat.id);
-    if (cat.children && cat.children.length > 0) {
-      ids = ids.concat(flattenCategoryIds(cat.children)); // recursive flatten
-    }
-  });
+    categories.forEach(cat => {
+      ids.push(cat.id);
+      if (cat.children && cat.children.length > 0) {
+        ids = ids.concat(flattenCategoryIds(cat.children)); // recursive flatten
+      }
+    });
 
-  return ids;
-}
-
+    return ids;
+  }
 
   // --- submit handler ---
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if(editorRef.current) {
+    if (editorRef.current) {
       try {
         const saved = await editorRef.current.save();
-       setContent(saved);         // update React state if needed
-      contentRef.current = saved; // keep fresh in ref
-      } catch(err) {
+        contentRef.current = saved; // keep fresh in ref
+      } catch (err) {
         console.error('Save before submit failed', err);
         toast.error('Failed to save editor content');
         return;
@@ -329,30 +348,28 @@ function flattenCategoryIds(categories: Category[]): number[] {
       customMetaTags: customMetaTags ? (() => { try { return JSON.parse(customMetaTags); } catch { return null; } })() : null
     };
 
-
-const categoryIds = flattenCategoryIds(categories.filter(cat => selectedCategories.includes(cat.id)));
+    const categoryIds = flattenCategoryIds(categories.filter(cat => selectedCategories.includes(cat.id)));
     const payload = {
       title,
       slug,
       excerpt,
       status,
-      //content: JSON.stringify(contentRef.current),
       content: contentRef.current,
       featuredImageId: featuredImage?.id || null,
-     categoryIds,
+      categoryIds,
       tagIds: selectedTags,
       experts: selectedExperts,
       seoMetadata
     };
 
     const headers = getAuthHeaders();
-    if(!headers) {
+    if (!headers) {
       toast.error('Not authenticated');
       return;
     }
 
     try {
-      if(postToEdit) {
+      if (postToEdit && postToEdit.id) {
         console.log('Updating post with payload:', payload);
         await axios.put(`${apiUrl}/api/admin/blog/posts/${postToEdit.id}`, payload, { headers });
         toast.success('Post updated!');
@@ -361,14 +378,15 @@ const categoryIds = flattenCategoryIds(categories.filter(cat => selectedCategori
         toast.success('Post created!');
       }
       router.push('/admin/blog');
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       toast.error('Save failed');
     }
   };
+
   // open media modal for a target context
   const openMediaModalFor = (target: 'featured' | 'og' | 'twitter' | 'editor') => {
-    setMediaTarget(target);
+    console.log('Opening media modal for', target);
     setSelectedMediaTab('library');
     setShowMediaLibrary(true);
   };
@@ -379,18 +397,18 @@ const categoryIds = flattenCategoryIds(categories.filter(cat => selectedCategori
   };
 
   // --- SEO score helper ---
- const getSeoScore = () => {
+  const getSeoScore = () => {
     const titleLen = (metaTitle || title).length;
     const descLen = metaDescription.length;
     const hasKeyword = metaKeywords
       ? metaKeywords.split(',').map(k => k.trim().toLowerCase()).some(k => (title + ' ' + metaDescription).toLowerCase().includes(k))
       : false;
     let score = 0;
-    if(titleLen >= 30 && titleLen <= 60) score++;
-    if(descLen >= 50 && descLen <= 160) score++;
-    if(metaKeywords && hasKeyword) score++;
-    if(score === 3) return { label: 'Good SEO score', color: 'bg-green-500' };
-    if(score === 2) return { label: 'Needs Improvement', color: 'bg-yellow-400' };
+    if (titleLen >= 30 && titleLen <= 60) score++;
+    if (descLen >= 50 && descLen <= 160) score++;
+    if (metaKeywords && hasKeyword) score++;
+    if (score === 3) return { label: 'Good SEO score', color: 'bg-green-500' };
+    if (score === 2) return { label: 'Needs Improvement', color: 'bg-yellow-400' };
     return { label: 'Poor SEO', color: 'bg-red-500' };
   };
   const seoScore = getSeoScore();
@@ -780,7 +798,7 @@ const categoryIds = flattenCategoryIds(categories.filter(cat => selectedCategori
                   <button className={`px-4 py-2 ${selectedMediaTab === 'library' ? 'bg-white text-indigo-600' : 'text-gray-600'}`} onClick={() => setSelectedMediaTab('library')}>Library</button>
                   <button className={`px-4 py-2 ${selectedMediaTab === 'upload' ? 'bg-white text-indigo-600' : 'text-gray-600'}`} onClick={() => setSelectedMediaTab('upload')}>Upload</button>
                 </div>
-                <button onClick={() => { setShowMediaLibrary(false); setMediaTarget(null); }} className="text-gray-500 hover:text-gray-700">✕</button>
+                <button onClick={() => { setShowMediaLibrary(false); }} className="text-gray-500 hover:text-gray-700">✕</button>
               </div>
             </div>
             <div className="p-4 overflow-auto flex-grow">
