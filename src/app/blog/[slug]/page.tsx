@@ -120,31 +120,56 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
 
   return parsedContent.blocks.map((block, index) => {
     switch (block.type) {
-      case "header":
-        const level = block.data.level || 2;
-        const headerProps = {
-          key: index,
-          className: "font-bold my-4 text-2xl",
-          dangerouslySetInnerHTML: { __html: block.data.text },
-        };
+      // case "header":
+      //   const level = block.data.level || 2;
+      //   const headerProps = {
+      //     key: index,
+      //     className: "font-bold my-4 text-2xl",
+      //     dangerouslySetInnerHTML: { __html: block.data.text },
+      //   };
         
-        // Use switch case for header levels instead of dynamic element creation
-        switch (level) {
-          case 1:
-            return <h1 {...headerProps} />;
-          case 2:
-            return <h2 {...headerProps} />;
-          case 3:
-            return <h3 {...headerProps} />;
-          case 4:
-            return <h4 {...headerProps} />;
-          case 5:
-            return <h5 {...headerProps} />;
-          case 6:
-            return <h6 {...headerProps} />;
-          default:
-            return <h2 {...headerProps} />;
-        }
+      //   switch (level) {
+      //     case 1:
+      //       return <h1 {...headerProps} />;
+      //     case 2:
+      //       return <h2 {...headerProps} />;
+      //     case 3:
+      //       return <h3 {...headerProps} />;
+      //     case 4:
+      //       return <h4 {...headerProps} />;
+      //     case 5:
+      //       return <h5 {...headerProps} />;
+      //     case 6:
+      //       return <h6 {...headerProps} />;
+      //     default:
+      //       return <h2 {...headerProps} />;
+      //   }
+      case "header":
+  const level = block.data.level || 2;
+
+  // Remove 'key' from the spread object
+  const headerProps = {
+    className: "font-bold my-4 text-2xl",
+    dangerouslySetInnerHTML: { __html: block.data.text },
+  };
+
+  // Pass key directly to each element
+  switch (level) {
+    case 1:
+      return <h1 key={index} {...headerProps} />;
+    case 2:
+      return <h2 key={index} {...headerProps} />;
+    case 3:
+      return <h3 key={index} {...headerProps} />;
+    case 4:
+      return <h4 key={index} {...headerProps} />;
+    case 5:
+      return <h5 key={index} {...headerProps} />;
+    case 6:
+      return <h6 key={index} {...headerProps} />;
+    default:
+      return <h2 key={index} {...headerProps} />;
+  }
 
       case "paragraph":
         return (
