@@ -252,7 +252,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
               alt={post.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center p-4">
+            <div className="absolute inset-0  bg-opacity-50 flex flex-col justify-center items-center text-center p-4">
               <h1 className="text-4xl md:text-6xl font-extrabold text-white">
                 {post.title}
               </h1>

@@ -226,7 +226,7 @@ const BookingPage: React.FC = () => {
         }
     };
     const handleSubmit = async () => {
-        if (!contactName || !contactEmail || !participants[0].firstName || selectedDates.size === 0) {
+        if (!contactName || !contactEmail || !contactPhone ||!participants[0].firstName || selectedDates.size === 0) {
             toast.error("Please fill out all required fields and select at least one date.");
             return;
         }
