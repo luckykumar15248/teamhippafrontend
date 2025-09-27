@@ -31,7 +31,11 @@ interface ImageBlock {
 
 interface ListBlock {
   type: "list";
-  data: { style: "ordered" | "unordered"; items: string[] };
+  data: { 
+    style: "ordered" | "unordered"; 
+    items: (string | { content?: string; text?: string; meta?: object })[]; 
+  };
+
 }
 
 type EditorBlock = HeaderBlock | ParagraphBlock | ImageBlock | ListBlock;
@@ -111,33 +115,61 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
     );
   }
 
+    console.log("Parsed Editor.js Content Blocks:", parsedContent.blocks);
+
+
   return parsedContent.blocks.map((block, index) => {
     switch (block.type) {
-      case "header":
-        const level = block.data.level || 2;
-        const headerProps = {
-          key: index,
-          className: "font-bold my-4 text-2xl",
-          dangerouslySetInnerHTML: { __html: block.data.text },
-        };
+      // case "header":
+      //   const level = block.data.level || 2;
+      //   const headerProps = {
+      //     key: index,
+      //     className: "font-bold my-4 text-2xl",
+      //     dangerouslySetInnerHTML: { __html: block.data.text },
+      //   };
         
-        // Use switch case for header levels instead of dynamic element creation
-        switch (level) {
-          case 1:
-            return <h1 {...headerProps} />;
-          case 2:
-            return <h2 {...headerProps} />;
-          case 3:
-            return <h3 {...headerProps} />;
-          case 4:
-            return <h4 {...headerProps} />;
-          case 5:
-            return <h5 {...headerProps} />;
-          case 6:
-            return <h6 {...headerProps} />;
-          default:
-            return <h2 {...headerProps} />;
-        }
+      //   switch (level) {
+      //     case 1:
+      //       return <h1 {...headerProps} />;
+      //     case 2:
+      //       return <h2 {...headerProps} />;
+      //     case 3:
+      //       return <h3 {...headerProps} />;
+      //     case 4:
+      //       return <h4 {...headerProps} />;
+      //     case 5:
+      //       return <h5 {...headerProps} />;
+      //     case 6:
+      //       return <h6 {...headerProps} />;
+      //     default:
+      //       return <h2 {...headerProps} />;
+      //   }
+      case "header":
+  const level = block.data.level || 2;
+
+  // Remove 'key' from the spread object
+  const headerProps = {
+    className: "font-bold my-4 text-2xl",
+    dangerouslySetInnerHTML: { __html: block.data.text },
+  };
+
+  // Pass key directly to each element
+  switch (level) {
+    case 1:
+      return <h1 key={index} {...headerProps} />;
+    case 2:
+      return <h2 key={index} {...headerProps} />;
+    case 3:
+      return <h3 key={index} {...headerProps} />;
+    case 4:
+      return <h4 key={index} {...headerProps} />;
+    case 5:
+      return <h5 key={index} {...headerProps} />;
+    case 6:
+      return <h6 key={index} {...headerProps} />;
+    default:
+      return <h2 key={index} {...headerProps} />;
+  }
 
       case "paragraph":
         return (
@@ -167,12 +199,33 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
       case "list":
         const ListTag = block.data.style === "ordered" ? "ol" : "ul";
         return (
-          <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
-            {block.data.items.map((item, i) => (
-              <li key={i} dangerouslySetInnerHTML={{ __html: item }} />
-            ))}
+        //   <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
+        //     {block.data.items.map((item, i) => (
+        //       <li key={i} dangerouslySetInnerHTML={{ __html: item }} />
+        //     ))}
+        //   </ListTag>
+        // );
+
+        <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
+            {block.data.items.map((item, i) => {
+              let content = "";
+              if (typeof item === "string") {
+                content = item;
+              } else if (item?.content) {
+                content = item.content;
+              } else if (item?.text) {
+                content = item.text;
+              } else {
+                content = JSON.stringify(item);
+              }
+              return (
+                <li key={i} dangerouslySetInnerHTML={{ __html: content }} />
+              );
+            })}
           </ListTag>
         );
+
+
 
       default:
         return null;
@@ -187,6 +240,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const response = await axios.get<PostDetail>(
       `${apiUrl}/api/public/blog/posts/${slug}`
     );
+    console.log("Post API Response:", response.data);
     const post = response.data;
 
     return (
