@@ -31,7 +31,11 @@ interface ImageBlock {
 
 interface ListBlock {
   type: "list";
-  data: { style: "ordered" | "unordered"; items: string[] };
+  data: { 
+    style: "ordered" | "unordered"; 
+    items: (string | { content?: string; text?: string; meta?: object })[]; 
+  };
+
 }
 
 type EditorBlock = HeaderBlock | ParagraphBlock | ImageBlock | ListBlock;
@@ -111,6 +115,9 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
     );
   }
 
+    console.log("Parsed Editor.js Content Blocks:", parsedContent.blocks);
+
+
   return parsedContent.blocks.map((block, index) => {
     switch (block.type) {
       case "header":
@@ -167,12 +174,33 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
       case "list":
         const ListTag = block.data.style === "ordered" ? "ol" : "ul";
         return (
-          <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
-            {block.data.items.map((item, i) => (
-              <li key={i} dangerouslySetInnerHTML={{ __html: item }} />
-            ))}
+        //   <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
+        //     {block.data.items.map((item, i) => (
+        //       <li key={i} dangerouslySetInnerHTML={{ __html: item }} />
+        //     ))}
+        //   </ListTag>
+        // );
+
+        <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
+            {block.data.items.map((item, i) => {
+              let content = "";
+              if (typeof item === "string") {
+                content = item;
+              } else if (item?.content) {
+                content = item.content;
+              } else if (item?.text) {
+                content = item.text;
+              } else {
+                content = JSON.stringify(item);
+              }
+              return (
+                <li key={i} dangerouslySetInnerHTML={{ __html: content }} />
+              );
+            })}
           </ListTag>
         );
+
+
 
       default:
         return null;
@@ -187,6 +215,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const response = await axios.get<PostDetail>(
       `${apiUrl}/api/public/blog/posts/${slug}`
     );
+    console.log("Post API Response:", response.data);
     const post = response.data;
 
     return (
