@@ -11,7 +11,8 @@ import "swiper/css/pagination";
 
 // --- Type Definitions ---
 interface Course {
-  id: number;
+  id: number; 
+  slug: string;
   name: string;
   sportName: string;
   location: string; // <-- Required field from your API
@@ -172,7 +173,8 @@ const LocationLandingPage: React.FC<LocationLandingPageProps> = ({ location, spo
   }, [allCourses, categories, mappings, selectedCategoryId, location, sportName]);
 
   const handleViewDetails = (course: Course) => {
-    router.push(`/book-now/courses/${course.id}`);
+    router.push(`/book-now/courses/${course.slug}`);
+   // router.push(`/book-now/courses/${course.id}`);
   };
 
   const handleBookNow = (courseId: number) => {
