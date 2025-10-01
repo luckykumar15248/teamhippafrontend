@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Metadata } from "next";
+import { Check } from "lucide-react";
 
 // --- Type Definitions ---
 interface Category {
@@ -31,11 +32,10 @@ interface ImageBlock {
 
 interface ListBlock {
   type: "list";
-  data: { 
-    style: "ordered" | "unordered"; 
-    items: (string | { content?: string; text?: string; meta?: object })[]; 
+  data: {
+    style: "ordered" | "unordered";
+    items: (string | { content?: string; text?: string; meta?: object })[];
   };
-
 }
 
 type EditorBlock = HeaderBlock | ParagraphBlock | ImageBlock | ListBlock;
@@ -115,62 +115,34 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
     );
   }
 
-    console.log("Parsed Editor.js Content Blocks:", parsedContent.blocks);
-
-
   return parsedContent.blocks.map((block, index) => {
     switch (block.type) {
-      // case "header":
-      //   const level = block.data.level || 2;
-      //   const headerProps = {
-      //     key: index,
-      //     className: "font-bold my-4 text-2xl",
-      //     dangerouslySetInnerHTML: { __html: block.data.text },
-      //   };
-        
-      //   switch (level) {
-      //     case 1:
-      //       return <h1 {...headerProps} />;
-      //     case 2:
-      //       return <h2 {...headerProps} />;
-      //     case 3:
-      //       return <h3 {...headerProps} />;
-      //     case 4:
-      //       return <h4 {...headerProps} />;
-      //     case 5:
-      //       return <h5 {...headerProps} />;
-      //     case 6:
-      //       return <h6 {...headerProps} />;
-      //     default:
-      //       return <h2 {...headerProps} />;
-      //   }
+      // --- Header ---
       case "header":
-  const level = block.data.level || 2;
+        const level = block.data.level || 2;
+        const headerProps = {
+          className: "font-bold my-4 text-2xl",
+          dangerouslySetInnerHTML: { __html: block.data.text },
+        };
 
-  // Remove 'key' from the spread object
-  const headerProps = {
-    className: "font-bold my-4 text-2xl",
-    dangerouslySetInnerHTML: { __html: block.data.text },
-  };
+        switch (level) {
+          case 1:
+            return <h1 key={index} {...headerProps} />;
+          case 2:
+            return <h2 key={index} {...headerProps} />;
+          case 3:
+            return <h3 key={index} {...headerProps} />;
+          case 4:
+            return <h4 key={index} {...headerProps} />;
+          case 5:
+            return <h5 key={index} {...headerProps} />;
+          case 6:
+            return <h6 key={index} {...headerProps} />;
+          default:
+            return <h2 key={index} {...headerProps} />;
+        }
 
-  // Pass key directly to each element
-  switch (level) {
-    case 1:
-      return <h1 key={index} {...headerProps} />;
-    case 2:
-      return <h2 key={index} {...headerProps} />;
-    case 3:
-      return <h3 key={index} {...headerProps} />;
-    case 4:
-      return <h4 key={index} {...headerProps} />;
-    case 5:
-      return <h5 key={index} {...headerProps} />;
-    case 6:
-      return <h6 key={index} {...headerProps} />;
-    default:
-      return <h2 key={index} {...headerProps} />;
-  }
-
+      // --- Paragraph ---
       case "paragraph":
         return (
           <p
@@ -180,6 +152,7 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
           />
         );
 
+      // --- Image ---
       case "image":
         return (
           <figure key={index} className="my-6">
@@ -196,35 +169,48 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
           </figure>
         );
 
-      case "list":
-        const ListTag = block.data.style === "ordered" ? "ol" : "ul";
-        return (
-        //   <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
-        //     {block.data.items.map((item, i) => (
-        //       <li key={i} dangerouslySetInnerHTML={{ __html: item }} />
-        //     ))}
-        //   </ListTag>
-        // );
+      // --- List ---
+ case "list":
+  const isOrdered = block.data.style === "ordered";
+  const ListTag = isOrdered ? "ol" : "ul";
 
-        <ListTag key={index} className="list-inside list-disc pl-5 mb-4">
-            {block.data.items.map((item, i) => {
-              let content = "";
-              if (typeof item === "string") {
-                content = item;
-              } else if (item?.content) {
-                content = item.content;
-              } else if (item?.text) {
-                content = item.text;
-              } else {
-                content = JSON.stringify(item);
-              }
-              return (
-                <li key={i} dangerouslySetInnerHTML={{ __html: content }} />
-              );
-            })}
-          </ListTag>
+  return (
+    <ListTag
+      key={index}
+      className={`${
+        isOrdered
+          ? "list-decimal list-inside pl-6 mb-4"
+          : "list-disc list-inside pl-6 mb-4"
+      } space-y-2`}
+    >
+      {block.data.items.map((item, i) => {
+        let content = "";
+        if (typeof item === "string") content = item;
+        else if (item?.content) content = item.content;
+        else if (item?.text) content = item.text;
+        else content = JSON.stringify(item);
+
+        const lower = content.toLowerCase().trim();
+        const hasCheck =
+          lower.startsWith("check") ||
+          lower.startsWith("✓") ||
+          lower.startsWith("✅");
+
+        // Only use flex if there is a check icon
+        return hasCheck ? (
+          <li key={i} className="flex items-start gap-2">
+            <Check className="w-5 h-5 text-green-600 mt-1 shrink-0" />
+            <span dangerouslySetInnerHTML={{ __html: content }} />
+          </li>
+        ) : (
+          <li
+            key={i}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
         );
-
+      })}
+    </ListTag>
+  );
 
 
       default:
@@ -240,7 +226,6 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const response = await axios.get<PostDetail>(
       `${apiUrl}/api/public/blog/posts/${slug}`
     );
-    console.log("Post API Response:", response.data);
     const post = response.data;
 
     return (
@@ -252,7 +237,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
               alt={post.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0  bg-opacity-50 flex flex-col justify-center items-center text-center p-4">
+            <div className="absolute inset-0 bg-opacity-50 flex flex-col justify-center items-center text-center p-4">
               <h1 className="text-4xl md:text-6xl font-extrabold text-white">
                 {post.title}
               </h1>
@@ -286,9 +271,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
         <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
           <div className="space-y-16 max-w-screen-lg mx-auto">
-            <div className="custome-post">
-              {renderBlockContent(post.content)}
-            </div>
+            <div className="custome-post">{renderBlockContent(post.content)}</div>
 
             <div className="mt-8 border-t pt-8">
               <h3 className="text-3xl font-bold text-gray-900">Comments</h3>
