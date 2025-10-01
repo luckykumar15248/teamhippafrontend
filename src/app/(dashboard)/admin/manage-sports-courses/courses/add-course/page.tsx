@@ -22,7 +22,38 @@ interface Course {
   basePriceInfo: string;
   isActive: boolean;
   imagePaths?: string[];
+  slug?: string;
+  seoMetadata?: SEOData;
 }
+
+interface SEOData {
+  metaTitle?: string;
+  metaTitleSuffix?: string;
+  metaDescription?: string;
+  serpPreviewText?: string;
+  metaKeywords?: string;
+  metaRobots?: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImageId?: number | null;
+  ogImageAlt?: string | null;
+  twitterCard?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImageId?: number | null;
+  twitterImageAlt?: string | null;
+  structuredData?: object | null;
+  customMetaTags?: object | null;
+}
+
+interface MediaItem {
+  id: number;
+  mediaUrl: string;
+  altText?: string;
+  fileName?: string;
+}
+
 // --- API Helper ---
 const getAuthHeaders = () => {
     if (typeof window === 'undefined') return null;
@@ -38,6 +69,8 @@ const AddNewCoursePage: React.FC = () => {
   // --- State Management ---
   const [courseId, setCourseId] = useState<number | null>(null);
   const [courseName, setCourseName] = useState('');
+  const [slug, setSlug] = useState('');
+  const [autoSlug, setAutoSlug] = useState(true);
   const [sportId, setSportId] = useState<number>(0);
   const [description, setDescription] = useState('');
   const [shortDescription, setShortDescription] = useState('');
@@ -53,7 +86,41 @@ const AddNewCoursePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSportFilter, setSelectedSportFilter] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // SEO states
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaTitleSuffix, setMetaTitleSuffix] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [serpPreviewText, setSerpPreviewText] = useState('');
+  const [metaKeywords, setMetaKeywords] = useState('');
+  const [metaRobots, setMetaRobots] = useState('');
+  const [canonicalUrl, setCanonicalUrl] = useState('');
+  const [ogTitle, setOgTitle] = useState('');
+  const [ogDescription, setOgDescription] = useState('');
+  const [twitterCard, setTwitterCard] = useState('summary_large_image');
+  const [twitterTitle, setTwitterTitle] = useState('');
+  const [twitterDescription, setTwitterDescription] = useState('');
+  const [structuredData, setStructuredData] = useState('');
+  const [customMetaTags, setCustomMetaTags] = useState('');
+
+  // Media states
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
+  const [selectedMediaTab, setSelectedMediaTab] = useState<'upload' | 'library'>('library');
+  const [ogImage, setOgImage] = useState<MediaItem | null>(null);
+  const [twitterImage, setTwitterImage] = useState<MediaItem | null>(null);
+
   const editor = useRef(null);
+  const slugInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Slug generator helper
+  const generateSlug = (value: string) => {
+    return value
+      .toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
 
   useEffect(() => {
     const fetchSports = async () => {
@@ -68,10 +135,9 @@ const AddNewCoursePage: React.FC = () => {
 
     const fetchCourses = async () => {
       const headers = getAuthHeaders();
-    if (!headers) return;
+      if (!headers) return;
       try {
         const response = await axios.get(`${apiUrl}/api/admin/courses`, { headers });
-       //const coursesData = Array.isArray(response.data) ? response.data : [];
         setCourses(response.data.data);
         setFilteredCourses(response.data.data);
       } catch(error) {
@@ -79,10 +145,29 @@ const AddNewCoursePage: React.FC = () => {
         console.error(error);
       }
     };
+
+    const fetchMedia = async () => {
+      const headers = getAuthHeaders();
+      if (!headers) return;
+      try {
+        const response = await axios.get(`${apiUrl}/api/admin/media`, { headers });
+        setMediaItems(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch media items", error);
+      }
+    };
     
     fetchSports();
     fetchCourses();
+    fetchMedia();
   }, []);
+
+  // Auto update slug when course name changes and autoSlug is true
+  useEffect(() => {
+    if (autoSlug && courseName) {
+      setSlug(generateSlug(courseName));
+    }
+  }, [courseName, autoSlug]);
 
   useEffect(() => {
     let result = [...courses];
@@ -126,6 +211,8 @@ const AddNewCoursePage: React.FC = () => {
   const resetForm = () => {
     setCourseId(null);
     setCourseName('');
+    setSlug('');
+    setAutoSlug(true);
     setSportId(0);
     setDescription('');
     setShortDescription('');
@@ -134,6 +221,24 @@ const AddNewCoursePage: React.FC = () => {
     setIsActive(true);
     setSelectedImages([]);
     setImagePreviews([]);
+    
+    // Reset SEO fields
+    setMetaTitle('');
+    setMetaTitleSuffix('');
+    setMetaDescription('');
+    setSerpPreviewText('');
+    setMetaKeywords('');
+    setMetaRobots('');
+    setCanonicalUrl('');
+    setOgTitle('');
+    setOgDescription('');
+    setTwitterCard('summary_large_image');
+    setTwitterTitle('');
+    setTwitterDescription('');
+    setStructuredData('');
+    setCustomMetaTags('');
+    setOgImage(null);
+    setTwitterImage(null);
   };
 
   const uploadImages = async (files: File[]) => {
@@ -151,9 +256,51 @@ const AddNewCoursePage: React.FC = () => {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const headers = getAuthHeaders();
+    if (!headers) {
+      toast.error("Not authenticated");
+      return;
+    }
+    const form = new FormData();
+    form.append('image', file);
+    try {
+      const res = await axios.post(`${apiUrl}/api/admin/media/upload`, form, {
+        headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+      });
+      const item: MediaItem = res.data;
+      setMediaItems(prev => [item, ...prev]);
+      toast.success("Uploaded");
+    } catch (err) {
+      console.error(err);
+      toast.error("Upload failed");
+    }
+  };
+
+  const handleMediaAction = (item: MediaItem, action: 'og' | 'twitter') => {
+    if (action === 'og') {
+      setOgImage(item);
+    } else if (action === 'twitter') {
+      setTwitterImage(item);
+    }
+    setShowMediaLibrary(false);
+  };
+
+  const openMediaModalFor = (target: 'og' | 'twitter') => {
+    setSelectedMediaTab('library');
+    setShowMediaLibrary(true);
+  };
+
+  const focusSlugInput = () => {
+    setTimeout(() => slugInputRef.current?.focus(), 50);
+  };
+
   const handleCourseSubmit = async (e: React.FormEvent) => {
-      const headers = getAuthHeaders();
-        if (!headers) return;
+    const headers = getAuthHeaders();
+    if (!headers) return;
+    
     e.preventDefault();
     if (sportId === 0) {
       toast.error("Please select a sport category.");
@@ -168,28 +315,63 @@ const AddNewCoursePage: React.FC = () => {
         imagePaths = await uploadImages(selectedImages);
       }
 
+      const seoMetadata = {
+        metaTitle: metaTitle || courseName,
+        metaTitleSuffix,
+        metaDescription,
+        serpPreviewText,
+        metaKeywords,
+        metaRobots,
+        canonicalUrl,
+        ogTitle,
+        ogDescription,
+        ogImageId: ogImage?.id || null,
+        ogImageAlt: ogImage?.altText || null,
+        twitterCard,
+        twitterTitle,
+        twitterDescription,
+        twitterImageId: twitterImage?.id || null,
+        twitterImageAlt: twitterImage?.altText || null,
+        structuredData: structuredData ? (() => {
+          try {
+            return JSON.parse(structuredData);
+          } catch {
+            return null;
+          }
+        })() : null,
+        customMetaTags: customMetaTags ? (() => {
+          try {
+            return JSON.parse(customMetaTags);
+          } catch {
+            return null;
+          }
+        })() : null,
+      };
+
       const courseData = {
         name: courseName,
+        slug: slug,
         sportId: sportId,
         description: description,
         shortDescription: shortDescription,
         duration: duration,
         basePriceInfo: basePriceInfo,
         isActive: isActive,
-        imagePaths: imagePaths
+        imagePaths: imagePaths,
+        seoMetadata: seoMetadata
       };
 
       if (courseId) {
-       
         await axios.put(`${apiUrl}/api/admin/courses/${courseId}`, courseData, { headers });
+            console.log("Course data is->>>>", courseData);
         toast.success(`Course "${courseName}" updated successfully!`);
       } else {
-        await axios.post(`${apiUrl}/api/admin/courses`, courseData, { headers } );
+        await axios.post(`${apiUrl}/api/admin/courses`, courseData, { headers });
+        console.log("Course data is->>>>", courseData);
         toast.success(`Course "${courseName}" created successfully!`);
       }
 
       const response = await axios.get(`${apiUrl}/api/admin/courses`, { headers });
-      //const coursesData = Array.isArray(response.data) ? response.data : [];
       setCourses(response.data.data);
       
       resetForm();
@@ -205,6 +387,8 @@ const AddNewCoursePage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setCourseId(course.id);
     setCourseName(course.name);
+    setSlug(course.slug || '');
+    setAutoSlug(course.slug ? false : true);
     setSportId(course.sportId);
     setDescription(course.description);
     setShortDescription(course.shortDescription);
@@ -218,11 +402,28 @@ const AddNewCoursePage: React.FC = () => {
     if (course.imagePaths && course.imagePaths.length > 0) {
       setImagePreviews(course.imagePaths.map(path => `${apiUrl}${path}`));
     }
+
+    // Load SEO data if exists
+    const seo = course.seoMetadata || {};
+    setMetaTitle(seo.metaTitle || '');
+    setMetaTitleSuffix(seo.metaTitleSuffix || '');
+    setMetaDescription(seo.metaDescription || '');
+    setSerpPreviewText(seo.serpPreviewText || '');
+    setMetaKeywords(seo.metaKeywords || '');
+    setMetaRobots(seo.metaRobots || '');
+    setCanonicalUrl(seo.canonicalUrl || '');
+    setOgTitle(seo.ogTitle || '');
+    setOgDescription(seo.ogDescription || '');
+    setTwitterCard(seo.twitterCard || 'summary_large_image');
+    setTwitterTitle(seo.twitterTitle || '');
+    setTwitterDescription(seo.twitterDescription || '');
+    setStructuredData(seo.structuredData ? JSON.stringify(seo.structuredData, null, 2) : '');
+    setCustomMetaTags(seo.customMetaTags ? JSON.stringify(seo.customMetaTags, null, 2) : '');
   };
 
   const handleDeleteCourse = async (courseId: number) => {
-     const headers = getAuthHeaders();
-        if (!headers) return;
+    const headers = getAuthHeaders();
+    if (!headers) return;
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
         await axios.delete(`${apiUrl}/api/admin/courses/${courseId}`, { headers });
@@ -234,6 +435,26 @@ const AddNewCoursePage: React.FC = () => {
       }
     }
   };
+
+  // SEO score helper
+  const getSeoScore = () => {
+    const titleLen = (metaTitle || courseName).length;
+    const descLen = metaDescription.length;
+    const hasKeyword = metaKeywords
+      ? metaKeywords
+          .split(',')
+          .map(k => k.trim().toLowerCase())
+          .some(k => (courseName + ' ' + metaDescription).toLowerCase().includes(k))
+      : false;
+    let score = 0;
+    if (titleLen >= 30 && titleLen <= 60) score++;
+    if (descLen >= 50 && descLen <= 160) score++;
+    if (metaKeywords && hasKeyword) score++;
+    if (score === 3) return { label: 'Good SEO score', color: 'bg-green-500' };
+    if (score === 2) return { label: 'Needs Improvement', color: 'bg-yellow-400' };
+    return { label: 'Poor SEO', color: 'bg-red-500' };
+  };
+  const seoScore = getSeoScore();
 
   return (
     <div>
@@ -260,10 +481,71 @@ const AddNewCoursePage: React.FC = () => {
                   type="text"
                   id="courseName"
                   value={courseName}
-                  onChange={(e) => setCourseName(e.target.value)}
+                  onChange={(e) => {
+                    setCourseName(e.target.value);
+                    if (autoSlug) setSlug(generateSlug(e.target.value));
+                  }}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
+              </div>
+            </div>
+
+            {/* Slug */}
+            <div className="sm:col-span-2">
+              <label htmlFor="slug" className="block text-sm font-medium leading-6 text-gray-900">
+                Slug
+              </label>
+              <div className="mt-2 flex gap-2">
+                <input
+                  ref={slugInputRef}
+                  type="text"
+                  id="slug"
+                  value={slug}
+                  onChange={(e) => {
+                    setSlug(e.target.value);
+                    setAutoSlug(false);
+                  }}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+                <div className="flex items-center">
+                  <label className="text-sm flex items-center gap-1 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={autoSlug}
+                      onChange={(e) => {
+                        setAutoSlug(e.target.checked);
+                        if (e.target.checked) setSlug(generateSlug(courseName || ''));
+                      }}
+                      className="rounded"
+                    />
+                    Auto
+                  </label>
+                </div>
+              </div>
+              <div className="mt-1 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAutoSlug(false);
+                    focusSlugInput();
+                  }}
+                  className="text-xs text-indigo-600 hover:text-indigo-500"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const generatedSlug = generateSlug(courseName || '');
+                    setSlug(generatedSlug);
+                    setAutoSlug(false);
+                    toast.info("Slug regenerated from course name");
+                  }}
+                  className="text-xs text-indigo-600 hover:text-indigo-500"
+                >
+                  Regenerate
+                </button>
               </div>
             </div>
 
@@ -377,7 +659,7 @@ const AddNewCoursePage: React.FC = () => {
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs leading-5 text-gray-600">PNG, JPG, WEBP up to 5MB</p>
-                </div>d
+                </div>
               </div>
               
               {imagePreviews.length > 0 && (
@@ -437,6 +719,351 @@ const AddNewCoursePage: React.FC = () => {
               </div>
             </fieldset>
           </div>
+
+          {/* SEO Section */}
+          <div className="border-b border-gray-900/10 pb-12 pt-8">
+            <h3 className="text-xl font-semibold leading-7 text-gray-900 mb-6">SEO Settings</h3>
+            
+            <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              {/* SEO Score Indicator */}
+              <div className="col-span-full flex items-center gap-2 mb-4">
+                <div className={`w-4 h-4 rounded-full ${seoScore.color}`}></div>
+                <span className="text-sm font-medium">{seoScore.label}</span>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="metaTitle" className="block text-sm font-medium leading-6 text-gray-900">
+                  Meta Title
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="metaTitle"
+                    value={metaTitle}
+                    onChange={(e) => setMetaTitle(e.target.value)}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-1 text-xs">
+                  <span className="text-gray-500">
+                    {(metaTitle || courseName).length}/60 chars
+                  </span>
+                  <span className={`font-semibold ${
+                    (metaTitle || courseName).length < 30 ? 'text-red-500' :
+                    (metaTitle || courseName).length <= 60 ? 'text-green-600' : 'text-yellow-500'
+                  }`}>
+                    {(metaTitle || courseName).length < 30 ? 'Too short' :
+                     (metaTitle || courseName).length <= 60 ? 'Good' : 'Too long'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="metaTitleSuffix" className="block text-sm font-medium leading-6 text-gray-900">
+                  Meta Title Suffix
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="metaTitleSuffix"
+                    value={metaTitleSuffix}
+                    onChange={(e) => setMetaTitleSuffix(e.target.value)}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="canonicalUrl" className="block text-sm font-medium leading-6 text-gray-900">
+                  Canonical URL
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="canonicalUrl"
+                    value={canonicalUrl}
+                    onChange={(e) => setCanonicalUrl(e.target.value)}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="metaKeywords" className="block text-sm font-medium leading-6 text-gray-900">
+                  Meta Keywords
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="metaKeywords"
+                    value={metaKeywords}
+                    onChange={(e) => setMetaKeywords(e.target.value)}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-1 text-xs">
+                  <span className="text-gray-500">{metaKeywords.length}/255 chars</span>
+                  <span className={`font-semibold ${
+                    metaKeywords.length === 0 ? 'text-red-500' :
+                    metaKeywords.length <= 255 ? 'text-green-600' : 'text-yellow-500'
+                  }`}>
+                    {metaKeywords.length === 0 ? 'Missing' :
+                     metaKeywords.length <= 255 ? 'OK' : 'Too long'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="col-span-full">
+                <label htmlFor="metaDescription" className="block text-sm font-medium leading-6 text-gray-900">
+                  Meta Description
+                </label>
+                <div className="mt-2">
+                  <textarea
+                    id="metaDescription"
+                    value={metaDescription}
+                    onChange={(e) => setMetaDescription(e.target.value)}
+                    rows={3}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-1 text-xs">
+                  <span className="text-gray-500">{metaDescription.length}/160 chars</span>
+                  <span className={`font-semibold ${
+                    metaDescription.length < 50 ? 'text-red-500' :
+                    metaDescription.length <= 160 ? 'text-green-600' : 'text-yellow-500'
+                  }`}>
+                    {metaDescription.length < 50 ? 'Too short' :
+                     metaDescription.length <= 160 ? 'Good' : 'Too long'}
+                  </span>
+                </div>
+              </div>
+
+              {/* SERP Preview */}
+              <div className="col-span-full">
+                <div className="bg-gray-50 rounded-lg p-4 border">
+                  <h4 className="text-sm font-semibold mb-2">Google SERP Preview</h4>
+                  <div className="space-y-1">
+                    <div className="text-indigo-700 text-lg truncate">
+                      {(metaTitle || courseName).slice(0, 60)} {metaTitleSuffix}
+                    </div>
+                    <div className="text-green-700 text-sm">
+                      {canonicalUrl || `https://example.com/courses/${slug}`}
+                    </div>
+                    <div className="text-gray-600 text-sm line-clamp-2">
+                      {metaDescription || shortDescription || 'This is how your meta description will appear in search results.'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Open Graph */}
+              <div className="col-span-full border-t pt-6">
+                <h4 className="font-medium text-lg mb-4">Open Graph (Social)</h4>
+                <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="ogTitle" className="block text-sm font-medium leading-6 text-gray-900">
+                      OG Title
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        id="ogTitle"
+                        value={ogTitle}
+                        onChange={(e) => setOgTitle(e.target.value)}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium leading-6 text-gray-900">
+                      OG Image
+                    </label>
+                    <div className="mt-2">
+                      {ogImage ? (
+                        <div className="flex flex-col gap-2">
+                          <img
+                            src={ogImage.mediaUrl}
+                            alt={ogImage.altText || ''}
+                            className="w-full h-32 object-cover rounded"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => openMediaModalFor('og')}
+                              className="text-sm text-indigo-600"
+                            >
+                              Replace
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setOgImage(null)}
+                              className="text-sm text-red-600"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openMediaModalFor('og')}
+                          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400"
+                        >
+                          Choose OG Image
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label htmlFor="ogDescription" className="block text-sm font-medium leading-6 text-gray-900">
+                    OG Description
+                  </label>
+                  <div className="mt-2">
+                    <textarea
+                      id="ogDescription"
+                      value={ogDescription}
+                      onChange={(e) => setOgDescription(e.target.value)}
+                      rows={2}
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Twitter Card */}
+              <div className="col-span-full border-t pt-6">
+                <h4 className="font-medium text-lg mb-4">Twitter Card</h4>
+                <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="twitterCard" className="block text-sm font-medium leading-6 text-gray-900">
+                      Twitter Card Type
+                    </label>
+                    <div className="mt-2">
+                      <select
+                        id="twitterCard"
+                        value={twitterCard}
+                        onChange={(e) => setTwitterCard(e.target.value)}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      >
+                        <option value="summary">summary</option>
+                        <option value="summary_large_image">summary_large_image</option>
+                        <option value="app">app</option>
+                        <option value="player">player</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium leading-6 text-gray-900">
+                      Twitter Image
+                    </label>
+                    <div className="mt-2">
+                      {twitterImage ? (
+                        <div className="flex flex-col gap-2">
+                          <img
+                            src={twitterImage.mediaUrl}
+                            alt={twitterImage.altText || ''}
+                            className="w-full h-32 object-cover rounded"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => openMediaModalFor('twitter')}
+                              className="text-sm text-indigo-600"
+                            >
+                              Replace
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setTwitterImage(null)}
+                              className="text-sm text-red-600"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openMediaModalFor('twitter')}
+                          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400"
+                        >
+                          Choose Twitter Image
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="twitterTitle" className="block text-sm font-medium leading-6 text-gray-900">
+                      Twitter Title
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        id="twitterTitle"
+                        value={twitterTitle}
+                        onChange={(e) => setTwitterTitle(e.target.value)}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="twitterDescription" className="block text-sm font-medium leading-6 text-gray-900">
+                      Twitter Description
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        id="twitterDescription"
+                        value={twitterDescription}
+                        onChange={(e) => setTwitterDescription(e.target.value)}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Advanced SEO */}
+              <div className="col-span-full border-t pt-6">
+                <h4 className="font-medium text-lg mb-4">Advanced SEO</h4>
+                <div className="grid grid-cols-1 gap-6">
+                  <div>
+                    <label htmlFor="structuredData" className="block text-sm font-medium leading-6 text-gray-900">
+                      Structured Data (JSON-LD)
+                    </label>
+                    <div className="mt-2">
+                      <textarea
+                        id="structuredData"
+                        value={structuredData}
+                        onChange={(e) => setStructuredData(e.target.value)}
+                        rows={6}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 font-mono"
+                        placeholder='{"@context":"https://schema.org", ...}'
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="customMetaTags" className="block text-sm font-medium leading-6 text-gray-900">
+                      Custom Meta Tags (JSON)
+                    </label>
+                    <div className="mt-2">
+                      <textarea
+                        id="customMetaTags"
+                        value={customMetaTags}
+                        onChange={(e) => setCustomMetaTags(e.target.value)}
+                        rows={4}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 font-mono"
+                        placeholder='[{"name":"robots","content":"noindex"}]'
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           
           <div className="mt-6 flex items-center justify-end gap-x-6">
             <button
@@ -462,8 +1089,101 @@ const AddNewCoursePage: React.FC = () => {
           </div>
         </form>
       </div>
-      
-   {/* Search and Filter Section */}
+
+      {/* Media Library Modal */}
+      {showMediaLibrary && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h3 className="font-semibold">Media Library</h3>
+              <div className="flex items-center gap-2">
+                <div className="flex border rounded overflow-hidden">
+                  <button
+                    className={`px-4 py-2 ${
+                      selectedMediaTab === 'library' ? 'bg-white text-indigo-600' : 'text-gray-600'
+                    }`}
+                    onClick={() => setSelectedMediaTab('library')}
+                  >
+                    Library
+                  </button>
+                  <button
+                    className={`px-4 py-2 ${
+                      selectedMediaTab === 'upload' ? 'bg-white text-indigo-600' : 'text-gray-600'
+                    }`}
+                    onClick={() => setSelectedMediaTab('upload')}
+                  >
+                    Upload
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowMediaLibrary(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="p-4 overflow-auto flex-grow">
+              {selectedMediaTab === 'upload' ? (
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                  <input
+                    id="admin-file-upload"
+                    type="file"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="admin-file-upload"
+                    className="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg inline-block"
+                  >
+                    Select Files
+                  </label>
+                  <p className="mt-2 text-sm text-gray-500">
+                    or drag and drop files here
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {mediaItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border rounded-lg overflow-hidden relative"
+                    >
+                      <img
+                        src={item.mediaUrl}
+                        alt={item.altText || ''}
+                        className="w-full h-40 object-cover"
+                      />
+                      <div className="p-2">
+                        <div className="text-sm truncate mb-2">
+                          {item.fileName || item.mediaUrl.split('/').pop() || ''}
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          <button
+                            onClick={() => handleMediaAction(item, 'og')}
+                            className="text-xs bg-gray-100 px-2 py-1 rounded"
+                          >
+                            OG
+                          </button>
+                          <button
+                            onClick={() => handleMediaAction(item, 'twitter')}
+                            className="text-xs bg-gray-100 px-2 py-1 rounded"
+                          >
+                            Twitter
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rest of the component (Search, Filter, and Course List) remains the same */}
+      {/* Search and Filter Section */}
       <div className="mt-8 bg-white p-4 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>

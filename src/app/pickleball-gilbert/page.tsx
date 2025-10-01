@@ -36,6 +36,7 @@ import Meta from "../components/Meta";
 // --- Type Definitions (Updated to match API response) ---
 interface Course {
   id: number;
+  slug: string; 
   name: string;
   sportName: string;
   sportId: number;
@@ -385,7 +386,8 @@ const PickleballGilbert: React.FC = () => {
     };*/
 
   const handleViewDetails = (course: Course) => {
-    router.push(`/book-now/courses/${course.id}`);
+    router.push(`/book-now/courses/${course.slug}`);
+    //router.push(`/book-now/courses/${course.id}`);
   };
 
   const handleBookNow = (item: SelectableItem) => {
