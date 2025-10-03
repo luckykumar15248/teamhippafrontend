@@ -2,15 +2,17 @@
 import CourseDetailClient from "@/app/components/courses/[slug]/CourseDetailClient";
 import { Metadata } from "next";
 
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL!;
 const frontendServerUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL!;
 
 // ---------------------------
 // Server-side SEO Metadata
 // ---------------------------
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const res = await fetch(`${apiUrl}/api/public_api/courses/${params.slug}`, {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  // Await the params Promise
+  const { slug } = await params;
+  
+  const res = await fetch(`${apiUrl}/api/public_api/courses/${slug}`, {
     next: { revalidate: 60 }, // revalidate every 60s
   });
 
@@ -49,8 +51,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 // ---------------------------
 // Server-side Page Wrapper
 // ---------------------------
-export default async function CourseDetailPage({ params }: { params: { slug: string } }) {
-  const res = await fetch(`${apiUrl}/api/public_api/courses/${params.slug}`, {
+export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  // Await the params Promise
+  const { slug } = await params;
+
+  const res = await fetch(`${apiUrl}/api/public_api/courses/${slug}`, {
     next: { revalidate: 60 },
   });
 

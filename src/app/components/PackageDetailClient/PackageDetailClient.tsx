@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '@/app/components/Button';
 
@@ -24,7 +23,7 @@ interface Package {
     imageUrls: string[];
     includedCourses: Course[]; 
 }
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const XIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
 const CheckCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 inline text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>;
 
@@ -59,55 +58,29 @@ const CourseDetailModal: React.FC<CourseDetailModalProps> = ({ course, onClose }
     );
 };
 
+interface PackageDetailClientProps {
+    pkg: Package;
+}
 
-const PackageDetailPage: React.FC = () => {
-    const [pkg, setPackage] = useState<Package | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [mainImage, setMainImage] = useState<string | null>(null);
+const PackageDetailClient: React.FC<PackageDetailClientProps> = ({ pkg }) => {
+    const [mainImage, setMainImage] = useState<string | null>(pkg.imageUrls?.[0] || null);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-    const params = useParams();
     const router = useRouter();
 
-    useEffect(() => {
-        const packageId = params.id as string;
-        if (!packageId) return;
-
-        const fetchData = async () => {
-            setIsLoading(true);
-            try {
-                const response = await axios.get(`${apiUrl}/api/public/packages/${packageId}`);
-                console.log("package details is",response.data);
-                setPackage(response.data);
-                setMainImage(response.data.imageUrls?.[0] || null);
-            } catch (error) {
-                console.log(error)
-                toast.error("Package not found.");
-                router.push('/packages');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchData();
-    }, [params.id, router]);
-
     const handleBookNow = () => {
-        if (!pkg) return;
         toast.info(`Redirecting to booking page for ${pkg.name}...`);
-         router.push(`../booking/package-booking/${pkg.id}`);
+        router.push(`../booking/package-booking/${pkg.id}`);
     };
-
-    if (isLoading) {
-        return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div></div>;
-    }
-
-    if (!pkg) {
-        return <div className="text-center p-20 text-xl text-gray-600">Sorry, we couldn&apos;t find that package.</div>;
-    }
 
     return (
         <div className="bg-gray-50">
+            {/* Hero Section */}
             <div className="relative h-80 md:h-96">
-                <img src={mainImage || 'https://placehold.co/1200x400/c7a2ff/333333?text=Package'} alt={pkg.name} className="w-full h-full object-cover" />
+                <img 
+                    src={mainImage || 'https://placehold.co/1200x400/c7a2ff/333333?text=Package'} 
+                    alt={pkg.name} 
+                    className="w-full h-full object-cover" 
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 p-8 md:p-12">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white mt-4">{pkg.name}</h1>
@@ -115,15 +88,19 @@ const PackageDetailPage: React.FC = () => {
                 </div>
             </div>
 
+            {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     
+                    {/* Left Column - Package Details */}
                     <div className="lg:col-span-2 space-y-8">
+                         {/* Package Description */}
                          <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Package Description</h2>
                             <div className="prose max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: pkg.description }} />
                         </div>
 
+                         {/* Gallery */}
                          {pkg.imageUrls && pkg.imageUrls.length > 1 && (
                             <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
                                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Gallery</h3>
@@ -141,6 +118,7 @@ const PackageDetailPage: React.FC = () => {
                             </div>
                         )}
                         
+                        {/* Included Courses */}
                         <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
                              <h2 className="text-2xl font-bold text-gray-800 mb-4">What&apos;s Included</h2>
                              <div className="space-y-4">
@@ -162,6 +140,7 @@ const PackageDetailPage: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Right Column - Booking Card */}
                     <div className="lg:col-span-1">
                         <div className="bg-white p-6 rounded-lg shadow-md sticky top-24">
                             <div className="space-y-4">
@@ -187,9 +166,11 @@ const PackageDetailPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            
+            {/* Course Detail Modal */}
             {selectedCourse && <CourseDetailModal course={selectedCourse} onClose={() => setSelectedCourse(null)} />}
         </div>
     );
 };
 
-export default PackageDetailPage;
+export default PackageDetailClient;

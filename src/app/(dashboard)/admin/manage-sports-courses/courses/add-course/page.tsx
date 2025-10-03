@@ -291,6 +291,7 @@ const AddNewCoursePage: React.FC = () => {
   const openMediaModalFor = (target: 'og' | 'twitter') => {
     setSelectedMediaTab('library');
     setShowMediaLibrary(true);
+    console.log("Opening media modal for:", target);
   };
 
   const focusSlugInput = () => {

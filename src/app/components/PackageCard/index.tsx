@@ -2,10 +2,10 @@
 
 import { Button } from "../Button";
 
-
 interface Package {
     id: number;
     name: string;
+    slug: string;
     shortDescription: string;
     description: string;
     price: number;
@@ -15,16 +15,24 @@ interface Package {
 
 interface PackageCardProps {
     pkg: Package;
-    onNavigate: (packageId: number) => void;
+    onNavigate: (packageId: number, packageSlug: string) => void;
 }
 
 const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate }) => {
     const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL || "";
     
+    const handleCardClick = () => {
+        onNavigate(pkg.id, pkg.slug);
+    };
+
+    const handleButtonClick = () => {
+        onNavigate(pkg.id, pkg.slug);
+    };
+    
     return (
         <section 
-            className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300"
-            onClick={() => onNavigate(pkg.id)}
+            className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer"
+            onClick={handleCardClick}
         >
             <div className="relative">
                 <img 
@@ -40,14 +48,11 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate }) => {
                 <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
                     <span className="text-lg font-bold text-black">${pkg.price.toFixed(2)}</span>
                     <Button
-                        onClick={() => {
-                            onNavigate(pkg.id);
-                        }} 
+                        onClick={handleButtonClick} 
                        className="text-white px-4 py-2 rounded w-full whitespace-nowrap"
                     >
                         View Details
                     </Button>
-                 
                 </div>
             </div>
         </section>

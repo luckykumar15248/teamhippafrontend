@@ -16,6 +16,7 @@ import Meta from "../components/Meta";
 interface Package {
   id: number;
   name: string;
+  slug: string;
   shortDescription: string;
   description: string;
   price: number;
@@ -58,8 +59,9 @@ const PackagesPage: React.FC = () => {
     fetchData();
   }, [selectedLocation]); // Re-fetch data when selectedLocation changes
 
-  const handleNavigate = (packageId: number) => {
-    router.push(`/packages/${packageId}`);
+  // Use slug in URL for SEO, but we'll use ID internally for data fetching
+  const handleNavigate = (packageId: number, packageSlug: string) => {
+    router.push(`/packages/${packageSlug}`);
   };
 
   return (
@@ -103,7 +105,11 @@ const PackagesPage: React.FC = () => {
         ) : packages.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {packages.map((pkg) => (
-              <PackageCard key={pkg.id} pkg={pkg} onNavigate={handleNavigate} />
+              <PackageCard 
+                key={pkg.id} 
+                pkg={pkg} 
+                onNavigate={(id, slug) => handleNavigate(id, slug)} // Pass both ID and slug
+              />
             ))}
           </div>
         ) : (

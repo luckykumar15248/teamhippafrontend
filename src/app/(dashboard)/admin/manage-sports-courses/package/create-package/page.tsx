@@ -22,16 +22,46 @@ interface Course {
 interface Package {
   id: number;
   name: string;
+  slug: string;
   shortDescription: string;
   description: string;
   price: number;
   isActive: boolean;
-  totalSessions: number; // NEW
-  validityDays: number; // NEW
-  packageLocation: string; // NEW
-  includedCourses: (Course & { sessions: number })[]; // Updated to include sessions
+  totalSessions: number;
+  validityDays: number;
+  packageLocation: string;
+  includedCourses: (Course & { sessions: number })[];
   imageUrls: string[];
   createdAt: string;
+  seoMetadata?: SEOData;
+}
+
+interface SEOData {
+  metaTitle?: string;
+  metaTitleSuffix?: string;
+  metaDescription?: string;
+  serpPreviewText?: string;
+  metaKeywords?: string;
+  metaRobots?: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImageId?: number | null;
+  ogImageAlt?: string | null;
+  twitterCard?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImageId?: number | null;
+  twitterImageAlt?: string | null;
+  structuredData?: object | null;
+  customMetaTags?: object | null;
+}
+
+interface MediaItem {
+  id: number;
+  mediaUrl: string;
+  altText?: string;
+  fileName?: string;
 }
 
 type ImageSource = {
@@ -74,6 +104,8 @@ const ManagePackagesPage: React.FC = () => {
   
   // Form State (Updated)
   const [packageName, setPackageName] = useState('');
+  const [slug, setSlug] = useState('');
+  const [autoSlug, setAutoSlug] = useState(true);
   const [shortDescription, setShortDescription] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -83,6 +115,29 @@ const ManagePackagesPage: React.FC = () => {
   const [isActive, setIsActive] = useState(true);
   const [courseSessions, setCourseSessions] = useState<Map<number, number>>(new Map());
 
+  // SEO states
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaTitleSuffix, setMetaTitleSuffix] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [serpPreviewText, setSerpPreviewText] = useState('');
+  const [metaKeywords, setMetaKeywords] = useState('');
+  const [metaRobots, setMetaRobots] = useState('');
+  const [canonicalUrl, setCanonicalUrl] = useState('');
+  const [ogTitle, setOgTitle] = useState('');
+  const [ogDescription, setOgDescription] = useState('');
+  const [twitterCard, setTwitterCard] = useState('summary_large_image');
+  const [twitterTitle, setTwitterTitle] = useState('');
+  const [twitterDescription, setTwitterDescription] = useState('');
+  const [structuredData, setStructuredData] = useState('');
+  const [customMetaTags, setCustomMetaTags] = useState('');
+
+  // Media states
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
+  const [selectedMediaTab, setSelectedMediaTab] = useState<'upload' | 'library'>('library');
+  const [ogImage, setOgImage] = useState<MediaItem | null>(null);
+  const [twitterImage, setTwitterImage] = useState<MediaItem | null>(null);
+
   const [filters, setFilters] = useState<FilterOptions>({ sportId: null, courseId: null, priceMin: null, priceMax: null, status: 'all', searchTerm: '' });
   const [imageSources, setImageSources] = useState<ImageSource[]>([]);
   const [imageUrlInput, setImageUrlInput] = useState('');
@@ -90,6 +145,16 @@ const ManagePackagesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const editor = useRef(null);
+  const slugInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Slug generator helper
+  const generateSlug = (value: string) => {
+    return value
+      .toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -100,10 +165,11 @@ const ManagePackagesPage: React.FC = () => {
     }
     
     try {
-      const [sportsRes, coursesRes, packagesRes] = await Promise.all([
+      const [sportsRes, coursesRes, packagesRes, mediaRes] = await Promise.all([
         axios.get(`${apiUrl}/api/public_api/sports`),
         axios.get(`${apiUrl}/api/admin/courses`, { headers }),
-        axios.get(`${apiUrl}/api/admin/packages`, { headers })
+        axios.get(`${apiUrl}/api/admin/packages`, { headers }),
+        axios.get(`${apiUrl}/api/admin/media`, { headers }).catch(() => ({ data: [] }))
       ]);
       
       const sportsData = sportsRes.data || [];
@@ -125,6 +191,8 @@ const ManagePackagesPage: React.FC = () => {
       );
       setAllPackages(sortedPackages);
       
+      setMediaItems(mediaRes.data || []);
+      
     } catch (error: unknown) {
       console.error("Fetch error:", error);
       if (typeof error === 'object' && error !== null && 'response' in error) {
@@ -142,6 +210,13 @@ const ManagePackagesPage: React.FC = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Auto update slug when package name changes and autoSlug is true
+  useEffect(() => {
+    if (autoSlug && packageName) {
+      setSlug(generateSlug(packageName));
+    }
+  }, [packageName, autoSlug]);
 
   useEffect(() => {
     const filtered = allPackages.filter(pkg => {
@@ -255,9 +330,54 @@ const ManagePackagesPage: React.FC = () => {
     setImageSources(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
+  // Media library functions
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const headers = getAuthHeaders();
+    if (!headers) {
+      toast.error("Not authenticated");
+      return;
+    }
+    const form = new FormData();
+    form.append('image', file);
+    try {
+      const res = await axios.post(`${apiUrl}/api/admin/media/upload`, form, {
+        headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+      });
+      const item: MediaItem = res.data;
+      setMediaItems(prev => [item, ...prev]);
+      toast.success("Uploaded");
+    } catch (err) {
+      console.error(err);
+      toast.error("Upload failed");
+    }
+  };
+
+  const handleMediaAction = (item: MediaItem, action: 'og' | 'twitter') => {
+    if (action === 'og') {
+      setOgImage(item);
+    } else if (action === 'twitter') {
+      setTwitterImage(item);
+    }
+    setShowMediaLibrary(false);
+  };
+
+  const openMediaModalFor = (target: 'og' | 'twitter') => {
+    setSelectedMediaTab('library');
+    setShowMediaLibrary(true);
+        console.log("Opening media modal for:", target);
+  };
+
+  const focusSlugInput = () => {
+    setTimeout(() => slugInputRef.current?.focus(), 50);
+  };
+
   const resetForm = () => {
     setEditingPackageId(null);
     setPackageName('');
+    setSlug('');
+    setAutoSlug(true);
     setShortDescription('');
     setDescription('');
     setPrice('');
@@ -268,12 +388,32 @@ const ManagePackagesPage: React.FC = () => {
     setCourseSessions(new Map());
     setImageSources([]);
     setImageUrlInput('');
+    
+    // Reset SEO fields
+    setMetaTitle('');
+    setMetaTitleSuffix('');
+    setMetaDescription('');
+    setSerpPreviewText('');
+    setMetaKeywords('');
+    setMetaRobots('');
+    setCanonicalUrl('');
+    setOgTitle('');
+    setOgDescription('');
+    setTwitterCard('summary_large_image');
+    setTwitterTitle('');
+    setTwitterDescription('');
+    setStructuredData('');
+    setCustomMetaTags('');
+    setOgImage(null);
+    setTwitterImage(null);
   };
 
   const handleEditClick = (pkg: Package) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setEditingPackageId(pkg.id);
     setPackageName(pkg.name || '');
+    setSlug(pkg.slug || '');
+    setAutoSlug(pkg.slug ? false : true);
     setShortDescription(pkg.shortDescription || '');
     setDescription(pkg.description || '');
     setPrice(String(pkg.price || ''));
@@ -289,6 +429,23 @@ const ManagePackagesPage: React.FC = () => {
     setCourseSessions(courseSessionMap);
     
     setImageSources((pkg.imageUrls || []).map(url => ({ type: 'url', url })));
+
+    // Load SEO data if exists
+    const seo = pkg.seoMetadata || {};
+    setMetaTitle(seo.metaTitle || '');
+    setMetaTitleSuffix(seo.metaTitleSuffix || '');
+    setMetaDescription(seo.metaDescription || '');
+    setSerpPreviewText(seo.serpPreviewText || '');
+    setMetaKeywords(seo.metaKeywords || '');
+    setMetaRobots(seo.metaRobots || '');
+    setCanonicalUrl(seo.canonicalUrl || '');
+    setOgTitle(seo.ogTitle || '');
+    setOgDescription(seo.ogDescription || '');
+    setTwitterCard(seo.twitterCard || 'summary_large_image');
+    setTwitterTitle(seo.twitterTitle || '');
+    setTwitterDescription(seo.twitterDescription || '');
+    setStructuredData(seo.structuredData ? JSON.stringify(seo.structuredData, null, 2) : '');
+    setCustomMetaTags(seo.customMetaTags ? JSON.stringify(seo.customMetaTags, null, 2) : '');
   };
   
   const handleDeleteClick = async (packageId: number) => {
@@ -340,8 +497,42 @@ const ManagePackagesPage: React.FC = () => {
 
       const finalImageUrls = [...existingUrls, ...uploadedFilePaths];
       
+      const seoMetadata = {
+        metaTitle: metaTitle || packageName,
+        metaTitleSuffix,
+        metaDescription,
+        serpPreviewText,
+        metaKeywords,
+        metaRobots,
+        canonicalUrl,
+        ogTitle,
+        ogDescription,
+        ogImageId: ogImage?.id || null,
+        ogImageAlt: ogImage?.altText || null,
+        twitterCard,
+        twitterTitle,
+        twitterDescription,
+        twitterImageId: twitterImage?.id || null,
+        twitterImageAlt: twitterImage?.altText || null,
+        structuredData: structuredData ? (() => {
+          try {
+            return JSON.parse(structuredData);
+          } catch {
+            return null;
+          }
+        })() : null,
+        customMetaTags: customMetaTags ? (() => {
+          try {
+            return JSON.parse(customMetaTags);
+          } catch {
+            return null;
+          }
+        })() : null,
+      };
+
       const packageData = {
         name: packageName,
+        slug: slug,
         shortDescription,
         description,
         price: parseFloat(price) || 0,
@@ -351,6 +542,7 @@ const ManagePackagesPage: React.FC = () => {
         isActive,
         courses: Array.from(courseSessions.entries()).map(([courseId, sessions]) => ({ courseId, sessions })),
         imageUrls: finalImageUrls,
+        seoMetadata: seoMetadata
       };
 
       const headers = getAuthHeaders();
@@ -360,7 +552,7 @@ const ManagePackagesPage: React.FC = () => {
         ? `${apiUrl}/api/admin/packages/${editingPackageId}` 
         : `${apiUrl}/api/admin/packages`;
       const method = editingPackageId ? 'put' : 'post';
-      console.log("Package location", packageData);
+      console.log("Package location----->", packageData);
       const response = await axios[method](endpoint, packageData, { headers });
 
       if (response.data?.success) {
@@ -403,6 +595,26 @@ const ManagePackagesPage: React.FC = () => {
     });
   };
 
+  // SEO score helper
+  const getSeoScore = () => {
+    const titleLen = (metaTitle || packageName).length;
+    const descLen = metaDescription.length;
+    const hasKeyword = metaKeywords
+      ? metaKeywords
+          .split(',')
+          .map(k => k.trim().toLowerCase())
+          .some(k => (packageName + ' ' + metaDescription).toLowerCase().includes(k))
+      : false;
+    let score = 0;
+    if (titleLen >= 30 && titleLen <= 60) score++;
+    if (descLen >= 50 && descLen <= 160) score++;
+    if (metaKeywords && hasKeyword) score++;
+    if (score === 3) return { label: 'Good SEO score', color: 'bg-green-500' };
+    if (score === 2) return { label: 'Needs Improvement', color: 'bg-yellow-400' };
+    return { label: 'Poor SEO', color: 'bg-red-500' };
+  };
+  const seoScore = getSeoScore();
+
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
@@ -415,8 +627,75 @@ const ManagePackagesPage: React.FC = () => {
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
                 <label htmlFor="packageName" className="block text-sm font-medium text-gray-700">Package Name</label>
-                <input type="text" id="packageName" value={packageName} onChange={(e) => setPackageName(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"/>
+                <input 
+                  type="text" 
+                  id="packageName" 
+                  value={packageName} 
+                  onChange={(e) => {
+                    setPackageName(e.target.value);
+                    if (autoSlug) setSlug(generateSlug(e.target.value));
+                  }} 
+                  required 
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
               </div>
+
+              {/* Slug Field */}
+              <div className="md:col-span-2">
+                <label htmlFor="slug" className="block text-sm font-medium text-gray-700">Slug</label>
+                <div className="mt-1 flex gap-2">
+                  <input
+                    ref={slugInputRef}
+                    type="text"
+                    id="slug"
+                    value={slug}
+                    onChange={(e) => {
+                      setSlug(e.target.value);
+                      setAutoSlug(false);
+                    }}
+                    className="block w-full rounded-md border-gray-300 shadow-sm"
+                  />
+                  <div className="flex items-center">
+                    <label className="text-sm flex items-center gap-1 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        checked={autoSlug}
+                        onChange={(e) => {
+                          setAutoSlug(e.target.checked);
+                          if (e.target.checked) setSlug(generateSlug(packageName || ''));
+                        }}
+                        className="rounded"
+                      />
+                      Auto
+                    </label>
+                  </div>
+                </div>
+                <div className="mt-1 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAutoSlug(false);
+                      focusSlugInput();
+                    }}
+                    className="text-xs text-indigo-600 hover:text-indigo-500"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const generatedSlug = generateSlug(packageName || '');
+                      setSlug(generatedSlug);
+                      setAutoSlug(false);
+                      toast.info("Slug regenerated from package name");
+                    }}
+                    className="text-xs text-indigo-600 hover:text-indigo-500"
+                  >
+                    Regenerate
+                  </button>
+                </div>
+              </div>
+
               <div className="md:col-span-2">
                 <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-700">Short Description</label>
                 <input type="text" id="shortDescription" value={shortDescription} onChange={(e) => setShortDescription(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="A brief summary for card views" />
@@ -511,6 +790,301 @@ const ManagePackagesPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* SEO Section */}
+          <div className="mt-8 border-t border-gray-200 pt-8">
+            <h3 className="text-xl font-semibold text-gray-800 mb-6">SEO Settings</h3>
+            
+            <div className="grid grid-cols-1 gap-6">
+              {/* SEO Score Indicator */}
+              <div className="flex items-center gap-2 mb-4">
+                <div className={`w-4 h-4 rounded-full ${seoScore.color}`}></div>
+                <span className="text-sm font-medium">{seoScore.label}</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="metaTitle" className="block text-sm font-medium text-gray-700">Meta Title</label>
+                  <input
+                    type="text"
+                    id="metaTitle"
+                    value={metaTitle}
+                    onChange={(e) => setMetaTitle(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  />
+                  <div className="flex items-center justify-between mt-1 text-xs">
+                    <span className="text-gray-500">
+                      {(metaTitle || packageName).length}/60 chars
+                    </span>
+                    <span className={`font-semibold ${
+                      (metaTitle || packageName).length < 30 ? 'text-red-500' :
+                      (metaTitle || packageName).length <= 60 ? 'text-green-600' : 'text-yellow-500'
+                    }`}>
+                      {(metaTitle || packageName).length < 30 ? 'Too short' :
+                       (metaTitle || packageName).length <= 60 ? 'Good' : 'Too long'}
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="metaTitleSuffix" className="block text-sm font-medium text-gray-700">Meta Title Suffix</label>
+                  <input
+                    type="text"
+                    id="metaTitleSuffix"
+                    value={metaTitleSuffix}
+                    onChange={(e) => setMetaTitleSuffix(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="canonicalUrl" className="block text-sm font-medium text-gray-700">Canonical URL</label>
+                  <input
+                    type="text"
+                    id="canonicalUrl"
+                    value={canonicalUrl}
+                    onChange={(e) => setCanonicalUrl(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="metaKeywords" className="block text-sm font-medium text-gray-700">Meta Keywords</label>
+                  <input
+                    type="text"
+                    id="metaKeywords"
+                    value={metaKeywords}
+                    onChange={(e) => setMetaKeywords(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  />
+                  <div className="flex items-center justify-between mt-1 text-xs">
+                    <span className="text-gray-500">{metaKeywords.length}/255 chars</span>
+                    <span className={`font-semibold ${
+                      metaKeywords.length === 0 ? 'text-red-500' :
+                      metaKeywords.length <= 255 ? 'text-green-600' : 'text-yellow-500'
+                    }`}>
+                      {metaKeywords.length === 0 ? 'Missing' :
+                       metaKeywords.length <= 255 ? 'OK' : 'Too long'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="metaDescription" className="block text-sm font-medium text-gray-700">Meta Description</label>
+                <textarea
+                  id="metaDescription"
+                  value={metaDescription}
+                  onChange={(e) => setMetaDescription(e.target.value)}
+                  rows={3}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+                <div className="flex items-center justify-between mt-1 text-xs">
+                  <span className="text-gray-500">{metaDescription.length}/160 chars</span>
+                  <span className={`font-semibold ${
+                    metaDescription.length < 50 ? 'text-red-500' :
+                    metaDescription.length <= 160 ? 'text-green-600' : 'text-yellow-500'
+                  }`}>
+                    {metaDescription.length < 50 ? 'Too short' :
+                     metaDescription.length <= 160 ? 'Good' : 'Too long'}
+                  </span>
+                </div>
+              </div>
+
+              {/* SERP Preview */}
+              <div>
+                <div className="bg-gray-50 rounded-lg p-4 border">
+                  <h4 className="text-sm font-semibold mb-2">Google SERP Preview</h4>
+                  <div className="space-y-1">
+                    <div className="text-indigo-700 text-lg truncate">
+                      {(metaTitle || packageName).slice(0, 60)} {metaTitleSuffix}
+                    </div>
+                    <div className="text-green-700 text-sm">
+                      {canonicalUrl || `https://example.com/packages/${slug}`}
+                    </div>
+                    <div className="text-gray-600 text-sm line-clamp-2">
+                      {metaDescription || shortDescription || 'This is how your meta description will appear in search results.'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Open Graph */}
+              <div className="border-t pt-6">
+                <h4 className="font-medium text-lg mb-4">Open Graph (Social)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="ogTitle" className="block text-sm font-medium text-gray-700">OG Title</label>
+                    <input
+                      type="text"
+                      id="ogTitle"
+                      value={ogTitle}
+                      onChange={(e) => setOgTitle(e.target.value)}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">OG Image</label>
+                    <div className="mt-1">
+                      {ogImage ? (
+                        <div className="flex flex-col gap-2">
+                          <img
+                            src={ogImage.mediaUrl}
+                            alt={ogImage.altText || ''}
+                            className="w-full h-32 object-cover rounded"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => openMediaModalFor('og')}
+                              className="text-sm text-indigo-600"
+                            >
+                              Replace
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setOgImage(null)}
+                              className="text-sm text-red-600"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openMediaModalFor('og')}
+                          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400"
+                        >
+                          Choose OG Image
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label htmlFor="ogDescription" className="block text-sm font-medium text-gray-700">OG Description</label>
+                  <textarea
+                    id="ogDescription"
+                    value={ogDescription}
+                    onChange={(e) => setOgDescription(e.target.value)}
+                    rows={2}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Twitter Card */}
+              <div className="border-t pt-6">
+                <h4 className="font-medium text-lg mb-4">Twitter Card</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="twitterCard" className="block text-sm font-medium text-gray-700">Twitter Card Type</label>
+                    <select
+                      id="twitterCard"
+                      value={twitterCard}
+                      onChange={(e) => setTwitterCard(e.target.value)}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    >
+                      <option value="summary">summary</option>
+                      <option value="summary_large_image">summary_large_image</option>
+                      <option value="app">app</option>
+                      <option value="player">player</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Twitter Image</label>
+                    <div className="mt-1">
+                      {twitterImage ? (
+                        <div className="flex flex-col gap-2">
+                          <img
+                            src={twitterImage.mediaUrl}
+                            alt={twitterImage.altText || ''}
+                            className="w-full h-32 object-cover rounded"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => openMediaModalFor('twitter')}
+                              className="text-sm text-indigo-600"
+                            >
+                              Replace
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setTwitterImage(null)}
+                              className="text-sm text-red-600"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openMediaModalFor('twitter')}
+                          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400"
+                        >
+                          Choose Twitter Image
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="twitterTitle" className="block text-sm font-medium text-gray-700">Twitter Title</label>
+                    <input
+                      type="text"
+                      id="twitterTitle"
+                      value={twitterTitle}
+                      onChange={(e) => setTwitterTitle(e.target.value)}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="twitterDescription" className="block text-sm font-medium text-gray-700">Twitter Description</label>
+                    <input
+                      type="text"
+                      id="twitterDescription"
+                      value={twitterDescription}
+                      onChange={(e) => setTwitterDescription(e.target.value)}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Advanced SEO */}
+              <div className="border-t pt-6">
+                <h4 className="font-medium text-lg mb-4">Advanced SEO</h4>
+                <div className="grid grid-cols-1 gap-6">
+                  <div>
+                    <label htmlFor="structuredData" className="block text-sm font-medium text-gray-700">Structured Data (JSON-LD)</label>
+                    <textarea
+                      id="structuredData"
+                      value={structuredData}
+                      onChange={(e) => setStructuredData(e.target.value)}
+                      rows={6}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm font-mono"
+                      placeholder='{"@context":"https://schema.org", ...}'
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="customMetaTags" className="block text-sm font-medium text-gray-700">Custom Meta Tags (JSON)</label>
+                    <textarea
+                      id="customMetaTags"
+                      value={customMetaTags}
+                      onChange={(e) => setCustomMetaTags(e.target.value)}
+                      rows={4}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm font-mono"
+                      placeholder='[{"name":"robots","content":"noindex"}]'
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           
           <div className="mt-8">
             <h3 className="text-xl font-semibold text-gray-800 border-b pb-4 mb-6">Select Courses & Set Session Limits</h3>
@@ -587,6 +1161,99 @@ const ManagePackagesPage: React.FC = () => {
         </form>
       </div>
 
+      {/* Media Library Modal */}
+      {showMediaLibrary && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h3 className="font-semibold">Media Library</h3>
+              <div className="flex items-center gap-2">
+                <div className="flex border rounded overflow-hidden">
+                  <button
+                    className={`px-4 py-2 ${
+                      selectedMediaTab === 'library' ? 'bg-white text-indigo-600' : 'text-gray-600'
+                    }`}
+                    onClick={() => setSelectedMediaTab('library')}
+                  >
+                    Library
+                  </button>
+                  <button
+                    className={`px-4 py-2 ${
+                      selectedMediaTab === 'upload' ? 'bg-white text-indigo-600' : 'text-gray-600'
+                    }`}
+                    onClick={() => setSelectedMediaTab('upload')}
+                  >
+                    Upload
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowMediaLibrary(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="p-4 overflow-auto flex-grow">
+              {selectedMediaTab === 'upload' ? (
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                  <input
+                    id="admin-file-upload"
+                    type="file"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="admin-file-upload"
+                    className="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg inline-block"
+                  >
+                    Select Files
+                  </label>
+                  <p className="mt-2 text-sm text-gray-500">
+                    or drag and drop files here
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {mediaItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border rounded-lg overflow-hidden relative"
+                    >
+                      <img
+                        src={item.mediaUrl}
+                        alt={item.altText || ''}
+                        className="w-full h-40 object-cover"
+                      />
+                      <div className="p-2">
+                        <div className="text-sm truncate mb-2">
+                          {item.fileName || item.mediaUrl.split('/').pop() || ''}
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          <button
+                            onClick={() => handleMediaAction(item, 'og')}
+                            className="text-xs bg-gray-100 px-2 py-1 rounded"
+                          >
+                            OG
+                          </button>
+                          <button
+                            onClick={() => handleMediaAction(item, 'twitter')}
+                            className="text-xs bg-gray-100 px-2 py-1 rounded"
+                          >
+                            Twitter
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rest of the component remains the same */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">Filter Packages</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
