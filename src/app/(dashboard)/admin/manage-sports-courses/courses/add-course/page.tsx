@@ -667,7 +667,7 @@ const AddNewCoursePage: React.FC = () => {
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {imagePreviews.map((src, index) => (
                     <div key={index} className="relative group">
-                      <Image
+                      <img
                         src={src}
                         height={100}
                         width={100}
