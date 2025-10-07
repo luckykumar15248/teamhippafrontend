@@ -29,7 +29,7 @@ interface UserProfile {
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 const WaitlistForm: React.FC<{
-  sportName: "Pickleball" | "Tennis";
+  sportName: "Pickleball" | "Tennis" | "Winter Camp" | "Summer Camp";
   onClose: () => void;
 }> = ({ sportName, onClose }) => {
   const [name, setName] = useState("");

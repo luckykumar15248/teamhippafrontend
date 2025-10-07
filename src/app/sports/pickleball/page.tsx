@@ -1,12 +1,6 @@
-"use client";
-
-import React, { useState, useEffect, useMemo } from "react";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import "react-toastify/dist/ReactToastify.css";
-import SportsHeroSection from "@/app/components/SportsHeroSection";
-import TennisCourseCard from "@/app/components/TennisCourseCard";
+import React from "react";
+import PickleballPageClient from "@/app/components/LandingPage/PickleballPageClient/PickleballPageClient";
+import Meta from "@/app/components/Meta";
 import {
   ABOUT_FAQS,
   CHOICE_ITEMS,
@@ -14,19 +8,13 @@ import {
   LIST_ITEMS,
   OFFER_ITEMS,
 } from "@/untils/constant";
-import FAQ from "@/app/components/FAQ";
-import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
-import { Waitlist } from "@/app/components/WaitList";
-import Link from "next/link";
-import { Button } from "@/app/components/Button";
-import Image from "next/image";
-import Meta from "@/app/components/Meta";
 
-// --- Type Definitions ---
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 interface Course {
   id: number;
   name: string;
-  sportName: string; // sportName must be a string
+  sportName: string;
   shortDescription: string;
   basePriceInfo: string;
   description: string;
@@ -46,383 +34,109 @@ interface CourseCategoryMapping {
   categoryId: number;
 }
 
-// --- Type for Book Now ---
-type SelectableItem = {
-  id: number;
-  name: string;
-  type: string;
-};
+async function fetchPickleballData() {
+  const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
+    fetch(`${apiUrl}/api/public_api/courses`, { cache: "no-store" }),
+    fetch(`${apiUrl}/api/public/categories`, { cache: "no-store" }),
+    fetch(`${apiUrl}/api/public/course-category-mappings`, { cache: "no-store" }),
+  ]);
 
-// --- Main Page Component ---
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-const PickleballLandingPage: React.FC = () => {
-  const [pickleballCourses, setPickleballCourses] = useState<Course[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
-  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const allFetchedCourses: Course[] = await coursesRes.json();
+  const allFetchedCategories: Category[] = await categoriesRes.json();
+  const allFetchedMappings: CourseCategoryMapping[] = await mappingsRes.json();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
-          axios.get(`${apiUrl}/api/public_api/courses`),
-          axios.get(`${apiUrl}/api/public/categories`),
-          axios.get(`${apiUrl}/api/public/course-category-mappings`),
-        ]);
+  const bookableCourseIds = new Set(allFetchedMappings.map((m) => m.courseId));
 
-        const allFetchedCourses = coursesRes.data || [];
-        const allFetchedCategories = categoriesRes.data || [];
-        const allFetchedMappings = mappingsRes.data || [];
+  const filteredPickleballCourses = allFetchedCourses
+    .filter(
+      (c) =>
+        c.isActive &&
+        typeof c.sportName === "string" &&
+        c.sportName.toLowerCase() === "pickleball" &&
+        bookableCourseIds.has(c.id)
+    )
+    .map((c) => ({
+      ...c,
+      sportName: c.sportName ?? "",
+    }));
 
-        const bookableCategory = allFetchedCategories.find(
-          (cat: Category) => cat.categoryName === "Available for Booking"
-        );
-        if (!bookableCategory)
-          console.warn("'Available for Booking' category not found.");
+  const visibleCategories = allFetchedCategories.filter(
+    (c) => c.isPubliclyVisible
+  );
 
-        const bookableCourseIds = new Set(
-          allFetchedMappings.map((m: CourseCategoryMapping) => m.courseId)
-        );
-
-        // Ensure sportName is a string and filter out courses with null sportName
-        const filteredPickleballCourses = allFetchedCourses
-          .filter(
-            (c: Course) =>
-              c.isActive &&
-              typeof c.sportName === "string" &&
-              c.sportName.toLowerCase() === "pickleball" &&
-              bookableCourseIds.has(c.id)
-          )
-          .map((c: Course) => ({
-            ...c,
-            sportName: c.sportName ?? "", // fallback to empty string if null
-          }));
-
-        setPickleballCourses(filteredPickleballCourses);
-        setCategories(
-          allFetchedCategories.filter((c: Category) => c.isPubliclyVisible)
-        );
-        setMappings(allFetchedMappings);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        toast.error(
-          "Could not load our Pickleball programs. Please try again later."
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const groupedCourses = useMemo(() => {
-    const courseMap = new Map(pickleballCourses.map((c) => [c.id, c]));
-    const groups: {
-      [categoryName: string]: { courses: Course[]; order: number };
-    } = {};
-
-    mappings.forEach((mapping) => {
-      const category = categories.find(
-        (c) => c.categoryId === mapping.categoryId
-      );
-      const course = courseMap.get(mapping.courseId);
-
-      if (category && course) {
-        if (!groups[category.categoryName]) {
-          groups[category.categoryName] = {
-            courses: [],
-            order: category.displayOrder,
-          };
-        }
-        if (
-          !groups[category.categoryName].courses.some((c) => c.id === course.id)
-        ) {
-          groups[category.categoryName].courses.push(course);
-        }
-      }
-    });
-
-    return Object.entries(groups).sort(
-      ([, groupA], [, groupB]) => groupA.order - groupB.order
-    );
-  }, [pickleballCourses, categories, mappings]);
-
-  const handleNavigate = (courseId: number) => {
-    router.push(`/book-now/courses/${courseId}`);
+  return {
+    pickleballCourses: filteredPickleballCourses,
+    categories: visibleCategories,
+    mappings: allFetchedMappings,
   };
+}
 
-  const handleBookNow = (item: SelectableItem) => {
-    console.log(`Navigating to book ${item.type} with ID ${item.id}`);
-    toast.info(`Redirecting to book "${item.name}"...`);
-    router.push(`/booking/course/${item.id}`);
+function generateStructuredData() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SportsActivityLocation',
+    'name': 'Team Hippa Pickleball Academy',
+    'description':
+      'Professional pickleball academy in Gilbert, AZ offering lessons, training, and clinics for all skill levels and ages.',
+    'url': 'https://teamhippa.com/sports/pickleball',
+    'telephone': '+1-602-341-3361',
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': 'Rose Mofford Sports Complex 9833 N 25th Ave Phoenix, AZ 85021',
+      'addressLocality': 'Phoenix',
+      'addressRegion': 'AZ',
+      'postalCode': '852XX',
+      'addressCountry': 'US',
+    },
+    'geo': {
+      '@type': 'GeoCoordinates',
+      'latitude': '33.3528',
+      'longitude': '-111.7890',
+    },
+    'openingHours': 'Mo-Fr 06:00-22:00, Sa-Su 07:00-20:00',
+    'offers': {
+      '@type': 'Offer',
+      'description': 'Pickleball Lessons and Training Programs',
+    },
+    'sport': 'Pickleball',
+    
   };
+  
+}
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
+export default async function PickleballLandingPage() {
+  const { pickleballCourses, categories, mappings } = await fetchPickleballData();
+  const structuredData = generateStructuredData();
 
   return (
     <>
       <Meta
         title="Pickleball Academy Gilbert AZ | Lessons & Training"
         description="Master pickleball in Gilbert, AZ with Team Hippa! We offer lessons for all levels, youth programs, and top-tier training."
-        image="/images/pickleball.png"
+        keywords="pickleball gilbert, pickleball lessons, pickleball training, pickleball academy, team hippa pickleball, pickleball coaching, pickleball clinics, youth pickleball, adult pickleball"
+        image="https://teamhippa.com/images/pickleball.png"
         url="https://teamhippa.com/sports/pickleball"
-      />
-      <SportsHeroSection
-        bgImage="/images/tennis.png"
-        title="Pickleball Programs"
-        description="Join the fastest-growing sport! Our pickleball programs are perfect for all ages, focusing on fun, strategy, and social play."
+        canonical="https://teamhippa.com/sports/pickleball"
+        ogType="website"
+        twitterCard="summary_large_image"
       />
 
-      <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
-        <div className="space-y-16 max-w-screen-2xl mx-auto">
-          {groupedCourses.length > 0 ? (
-            groupedCourses.map(([categoryName, { courses: courseList }]) => (
-              <div key={categoryName}>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                  {categoryName}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {courseList.map((course) => (
-                    <TennisCourseCard
-                      key={course.id}
-                      course={course}
-                      onNavigate={handleNavigate}
-                      onBookNow={() =>
-                        handleBookNow({ ...course, type: "course" })
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-16 bg-white rounded-lg shadow">
-              <h3 className="text-xl font-semibold text-gray-700">
-                No Pickleball Courses Currently Available
-              </h3>
-              <p className="mt-2 text-base sm:text-lg text-gray-600 font-normal">
-                Please check back soon for new offerings!
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="bg-gray-100 text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-center">
-          <div className="flex flex-col space-y-6">
-            <p className="text-base text-[#b0db72] font-normal uppercase tracking-wide">
-              Coaching
-            </p>
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
-              What is a Pickleball Academy?
-            </h1>
-            <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
-              {" "}
-              Unlike casual classes or drop-in play, a{" "}
-              <span className="font-bold">pickleball academy</span> offers
-              structured, progressive instruction—similar to what you&apos;d
-              find in tennis, soccer, or martial arts academies.
-            </p>
-            <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
-              {" "}
-              We&apos;re not just teaching technique—we&apos;re building players
-              from the ground up with skill pathways, competitive prep, and
-              community-based development.
-            </p>
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mt-4">
-              Key Features:
-            </h3>
-            <ul className="list-disc list-inside space-y-2 text-base sm:text-lg text-gray-700">
-              {LIST_ITEMS.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
-            <img
-              src="/images/coaching.jpeg"
-              alt="coaching"
-              className="rounded-lg shadow-lg w-full h-auto object-cover min-h-full"
-            />
-          </div>
-        </div>
-      </section>
-      <section className="bg-gray-100  text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto flex flex-col-reverse md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
-          <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
-            <Image
-              src="/images/offerings.jpg"
-              width={100}
-              height={100}
-              alt="coaching"
-              className="rounded-lg shadow-lg w-full h-auto object-cover min-h-full"
-            />
-          </div>
-          <div className="flex flex-col space-y-6">
-            <p className="text-base sm:text-lg text-[#b0db72] font-normal uppercase tracking-wide">
-              Offerings
-            </p>
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
-              What We Offer
-            </h1>
-            <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
-              Team Hippa’s Pickleball Academy is designed to serve{" "}
-              <span className="font-bold">all ages and skill levels,</span> from
-              complete beginners to competitive players.
-            </p>
-
-            <ul className="list-disc list-inside space-y-2 text-base sm:text-lg text-gray-600 font-normal">
-              {OFFER_ITEMS.map((item, index) => (
-                <li key={index}>
-                  <strong>{item.title}:</strong> {item.description}
-                </li>
-              ))}
-            </ul>
-            <h2 className="text-xl font-semibold mb-2">COMING SOON:</h2>
-            <ul className="list-disc list-inside space-y-2 text-base sm:text-lg text-gray-600 font-normal">
-              <li>Earn your official DUPR Rating through Team Hippa</li>
-              <li>
-                Online Platform to engage with the local pickleball community,
-                schedule matches, ranking system for Team Hippa members
-              </li>
-              <li>
-                <strong>Online Community & Local Rankings:</strong>Connect,
-                schedule matches, log scores
-              </li>
-              <li>
-                <strong>PPA/DUPR Ratings:</strong>Earn an official pickleball
-                rating for tournaments
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-100 text-gray-800 pt-4 sm:pt-8 md:pt-12 px-6 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-center">
-          <div className="flex flex-col space-y-6">
-            <p className="text-base sm:text-lg text-[#b0db72] font-normal uppercase tracking-wide">
-              Importance
-            </p>
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
-              Why Pickleball Instruction Matters
-            </h1>
-            <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
-              Whether you’re just getting started or trying to level up,
-              structured coaching matters—in{" "}
-              <span className="font-bold">every sport</span>.
-            </p>
-
-            <ul className="list-disc list-inside space-y-2 text-base sm:text-lg text-gray-600 font-normal">
-              {INSTRUCTION_ITEMS.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
-            <Image
-              src="/images/importance.jpg"
-              width={100}
-              height={100}
-              alt="coaching"
-              className="rounded-lg shadow-lg w-full h-auto object-cover min-h-full"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto flex flex-col-reverse md:grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
-          <div className="w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg h-full">
-            <Image
-              src="/images/coaching.jpeg"
-              width={100}
-              height={100}
-              alt="coaching"
-              className="rounded-lg shadow-lg w-full h-auto object-cover min-h-full"
-            />
-          </div>
-          <div className="flex flex-col space-y-6">
-            <p className="text-base sm:text-lg text-[#b0db72] font-normal uppercase tracking-wide">
-              Choice
-            </p>
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
-              Why Team Hippa?
-            </h1>
-            <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
-              <span className="font-bold">
-                Team Hippa has delivered high-performance tennis coaching to
-                athletes across the valley.
-              </span>{" "}
-              offers With a team deeply rooted in racquet sports, we’ve turned
-              our focus to pickleball — developing a modern training philosophy
-              that blends the speed, intensity, and physicality of competitive
-              tennis with today’s professional-level pickleball.
-            </p>
-            <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
-              Pickleball is no longer a slow-paced backyard game. It’s fast,
-              demanding, and strategic — Now we’re bringing that same energy,
-              structure, and community into{" "}
-              <span className="font-bold">pickleball</span>—right here in
-              Gilbert.
-            </p>
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mt-4">
-              Our Strengths:
-            </h3>
-            <ul className="list-disc list-inside space-y-2 text-base sm:text-lg text-gray-600 font-normal">
-              {CHOICE_ITEMS.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-      <FAQ
-        title="The fastest growing Tennis Academy"
-        subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
-        data={ABOUT_FAQS}
+      {/* JSON-LD structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <Waitlist
-        title="Interested in Joining?"
-        subtitle=" Our spots fill up fast. Join the waitlist to be notified of openings!"
-        onOpenWaitlist={() => setIsWaitlistOpen(true)}
+      <PickleballPageClient
+        pickleballCourses={pickleballCourses}
+        categories={categories}
+        mappings={mappings}
+        faqData={ABOUT_FAQS}
+        choiceItems={CHOICE_ITEMS}
+        instructionItems={INSTRUCTION_ITEMS}
+        listItems={LIST_ITEMS}
+        offerItems={OFFER_ITEMS}
       />
-      <section className="py-4 sm:py-8 px-6 lg:px-16 text-center">
-        <div className="max-w-screen-2xl mx-auto">
-          <div className="mt-4 flex justify-center">
-            <Link
-              href="/images/Rule-book-Website.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Open PDF in a new tab"
-            >
-              <Button>Class policies / Rule Book</Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-      {/* --- The Modal --- */}
-      {isWaitlistOpen && (
-        <WaitlistForm
-          sportName="Tennis"
-          onClose={() => setIsWaitlistOpen(false)}
-        />
-      )}
     </>
   );
-};
-
-export default PickleballLandingPage;
+}

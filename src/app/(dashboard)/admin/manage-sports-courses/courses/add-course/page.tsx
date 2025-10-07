@@ -4,7 +4,7 @@ import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import JoditEditor from 'jodit-react';
-import Image from 'next/image';
+
 
 interface Sport {
   id: number;

@@ -1,23 +1,23 @@
-// app/winter-camp/page.tsx
+// app/summer-camp/page.tsx
 import { Metadata } from 'next';
 import React from 'react';
-import WinterCampPageClient from '../components/LandingPage/WinterCampPageClient/WinterCampPageClient';
+import SummerCampPageClient from '../components/LandingPage/SummerCampPageClient/SummerCampPageClient';
 
 export const metadata: Metadata = {
   title: 'Winter Camp Gilbert & Phoenix | Kids Sports & Activities',
-  description: 'Join our fun winter camp in Gilbert and Phoenix! Sports, games, and learning activities for kids of all ages.',
-  keywords: 'winter camp, sports camp, kids activities, Gilbert, Phoenix, tennis camp, youth sports',
+  description: 'Join our fun summer camp in Gilbert and Phoenix! Sports, games, and learning activities for kids of all ages.',
+  keywords: 'summer camp, sports camp, kids activities, Gilbert, Phoenix, tennis camp, youth sports',
   openGraph: {
     title: 'Winter Camp in Gilbert & Phoenix',
-    description: 'Join the best winter sports camp for kids and teens.',
-    url: 'https://teamhippa.com/winter-camp',
+    description: 'Join the best summer sports camp for kids and teens.',
+    url: 'https://teamhippa.com/summer-camp',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Winter Camp Gilbert & Phoenix',
-    description: 'Register your kids for our exciting winter camp.',
-    images: 'https://teamhippa.com/images/winter-camp.jpg',
+    description: 'Register your kids for our exciting summer camp.',
+    images: 'https://teamhippa.com/images/summer-camp.jpg',
   },
   icons: {
     icon: '/favicon.ico',
@@ -33,7 +33,7 @@ const generateStructuredData = () => {
         '@type': 'SportsActivityLocation',
         'name': 'Team Hippa Winter Camp - Gilbert',
         'description': 'Winter sports camp for kids in Gilbert, AZ.',
-        'url': 'https://teamhippa.com/winter-camp',
+        'url': 'https://teamhippa.com/summer-camp',
         'telephone': '+1-602-341-3361',
         'address': {
           '@type': 'PostalAddress',
@@ -51,7 +51,7 @@ const generateStructuredData = () => {
         'openingHours': 'Mo-Fr 06:00-22:00, Sa-Su 07:00-20:00',
         'offers': {
           '@type': 'Offer',
-          'description': 'Kids and adult winter sports activities and training',
+          'description': 'Kids and adult summer sports activities and training',
         },
         'sport': 'Tennis',
       },
@@ -59,7 +59,7 @@ const generateStructuredData = () => {
         '@type': 'SportsActivityLocation',
         'name': 'Team Hippa Winter Camp - Phoenix',
         'description': 'Winter sports camp for kids in Phoenix, AZ.',
-        'url': 'https://teamhippa.com/winter-camp',
+        'url': 'https://teamhippa.com/summer-camp',
         'telephone': '+1-602-341-3361',
         'address': {
           '@type': 'PostalAddress',
@@ -77,7 +77,7 @@ const generateStructuredData = () => {
         'openingHours': 'Mo-Fr 06:00-22:00, Sa-Su 07:00-20:00',
         'offers': {
           '@type': 'Offer',
-          'description': 'Kids winter sports activities and training',
+          'description': 'Kids summer sports activities and training',
         },
         'sport': 'Tennis',
       }
@@ -85,7 +85,7 @@ const generateStructuredData = () => {
   };
 };
 
-export default function WinterCampPage() {
+export default function tennisSummerCampPageClient() {
   const structuredData = generateStructuredData();
 
   return (
@@ -102,7 +102,9 @@ export default function WinterCampPage() {
       />
 
       {/* Call the client component */}
-      <WinterCampPageClient />
-    </>
+     
+     <SummerCampPageClient />
+
+          </>
   );
 }

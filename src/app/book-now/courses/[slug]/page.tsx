@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // Await the params Promise
   const { slug } = await params;
   
-  const res = await fetch(`${apiUrl}/api/public_api/courses/${slug}`, {
+  const res = await fetch(`${apiUrl}/api/public/courses/byslug/${slug}`, {
     next: { revalidate: 60 }, // revalidate every 60s
   });
 
@@ -55,7 +55,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
   // Await the params Promise
   const { slug } = await params;
 
-  const res = await fetch(`${apiUrl}/api/public_api/courses/${slug}`, {
+  const res = await fetch(`${apiUrl}/api/public/courses/byslug/${slug}`, {
     next: { revalidate: 60 },
   });
 

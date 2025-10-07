@@ -166,8 +166,7 @@ const Inquiry: React.FC = () => {
    placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72]
    focus:z-10 sm:text-sm"
           >
-            <option value="">Gernal</option>
-            {sports.map((sport) => (
+              {sports.map((sport) => (
               <option key={sport.id} value={sport.id}>
                 {sport.name}
               </option>
