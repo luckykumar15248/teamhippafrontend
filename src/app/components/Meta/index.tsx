@@ -5,6 +5,11 @@ interface MetaProps {
   description: string;
   image?: string;
   url?: string; 
+   canonical?: string;
+  ogType?: string; 
+  twitterCard?: string;
+  keywords?: string;
+ // e.g., "website", "article"
 }
 
 const Meta = ({ title, description, image, url }: MetaProps) => {

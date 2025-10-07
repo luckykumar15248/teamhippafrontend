@@ -11,6 +11,7 @@ import {
   TrophyIcon,
 } from "@/app/components/Icons";
 
+
 export const NAV_LINKS = [
   { href: "/book-now", label: "Book Now" },
   { href: "/sports/tennis", label: "Tennis" },
@@ -42,11 +43,20 @@ export const SOCIAL_LINKS = [
 ];
 
 export const SLIDES_IMG = [
+  
+  {
+    image: "",
+    heading: "UPCOMING Winter Tennis Camp 2025",
+    subtext: "Find the best Winter Tennis Camp 2025 in the USA 2025.",
+    buttonText: "View Details",
+    url : "https://teamhippa.com//winter-camp",
+  },
   {
     image: "/images/junior-summer.jpeg",
-    heading: "Youth Summer Tennis Camp",
-    subtext: "Find the best summer camps in the USA 2025.",
-    buttonText: "Book Now",
+    heading: "UPCOMING Youth Summer Tennis Camp 2026",
+    subtext: "Find the best summer camps in the USA 2026.",
+    buttonText: "View Details",
+    url : "https://teamhippa.com/summer-camp",
   },
   {
     image: "/images/pickleball.png",
@@ -58,8 +68,7 @@ export const SLIDES_IMG = [
   {
     image: "/images/junior-tennis.png",
     heading: "Master junior tennis: expert lessons & training",
-    subtext:
-      "Help your child master their game with expert junior tennis lessons and training designed for all skill levels.",
+    subtext:  "Help your child master their game with expert junior tennis lessons and training designed for all skill levels.",
     buttonText: "Book Now",
   },
   {
@@ -339,12 +348,12 @@ export const PROGRAMS_MASTER = [
 
 export const GILBERT_FAQS = [
   {
-    question: "Where can I find tennis lessons in Gilbert, Arizona?",
+    question: "Where can I find tennis lessons in Phoenix, Arizona?",
     answer:
-      "Team Hippa offers a variety of classes and programs at Gilbert Regional Park and Freestone Park, designed for all ages and skill levels. For those seeking more personalized guidance, our coaches also provide private and semi-private sessions tailored to individual needs.",
+      "Team Hippa offers a variety of classes and programs at Phoenix Regional Park, designed for all ages and skill levels. For those seeking more personalized guidance, our coaches also provide private and semi-private sessions tailored to individual needs.",
   },
   {
-    question: "What types of tennis lessons are available in Gilbert?",
+    question: "What types of tennis lessons are available in Phoenix?",
     answer:
       "Team Hippa offers extensive group programs, private lessons, semi-private, as well as focused hitting sessions. We cater to all ages (kids, teens, adults, seniors) and skill levels (beginner, intermediate, advanced).",
   },
@@ -397,6 +406,47 @@ export const WINTER_CAMP_FAQS = [
       "Yes, players can book additional private or semi-private lessons with our coaches during the camp for more focused training.",
   },
 ];
+
+export const SUMMER_CAMP_FAQS = [
+  {
+    question: "What is the Summer Tennis Camp all about?",
+    answer:
+      "Our Summer Tennis Camp is a 2-week intensive program designed to help players improve their skills, fitness, and confidence on the court while enjoying fun winter activities.",
+  },
+  {
+    question: "Who can join the Summer Tennis Camp?",
+    answer:
+      "The camp is open to players of all ages and skill levels – kids, teens, and adults. Beginners, intermediate, and advanced players are all welcome.",
+  },
+  {
+    question: "Where will the camp take place?",
+    answer:
+      "The camp will be held at City Tennis Academy, New Delhi, with world-class facilities including multiple courts, fitness areas, and a recreational lounge.",
+  },
+  {
+    question: "What are the dates for the camp?",
+    answer:
+      "The Summer Camp runs from December 15th to December 30th, 2025. You can choose full camp participation or join on selected days.",
+  },
+  {
+    question: "What is included in the camp fee?",
+    answer:
+      "The fee covers professional coaching, fitness training, match play, fun activities, camp t-shirt, and refreshments. Accommodation and meals are available as add-ons.",
+  },
+  {
+    question: "How do I register for the camp?",
+    answer:
+      "You can register directly on our website by clicking the 'Register Now' button or by contacting our academy via phone/email. Early bird discounts are available for advance bookings.",
+  },
+  {
+    question: "Do you offer private lessons during the camp?",
+    answer:
+      "Yes, players can book additional private or semi-private lessons with our coaches during the camp for more focused training.",
+  },
+];
+
+
+
 
 export const SCHEDULE = [
   {

@@ -6,55 +6,90 @@ import { EmailIcon, PhoneIcon } from "../Icons";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-
+  console.log("Current Year:", currentYear); // Debugging line to check the year
   return (
-    <footer className="relative bg-[url('/images/footer-banner.jpg')] text-gray-300 py-12 px-6 lg:px-16">
-      <div className="absolute inset-0 bg-black/50 z-0" />
-      <div className="relative z-10 mx-auto max-w-screen-2xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <Link href="/">
-              <Image
-                src="/images/logo.png"
-                alt="eamHippa-logo"
-                width={250}
-                height={50}
-                className="max-w-28 h-24 mb-4"
-              />
+    
+
+<footer className="relative bg-[url('/images/footer-banner.jpg')] text-gray-300 py-12 px-6 lg:px-16">
+  <div className="absolute inset-0 bg-black/50 z-0" />
+  <div className="relative z-10 mx-auto max-w-screen-2xl">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+      {/* Section 1: About / Logo */}
+      <div>
+        <Link href="/">
+          <Image
+            src="/images/logo.png"
+            alt="TeamHippa-logo"
+            width={250}
+            height={50}
+            className="max-w-28 h-24 mb-4"
+          />
+        </Link>
+        <p className="text-base font-medium text-white">
+          Your premier destination for sports course bookings and academy
+          management. Join us to unlock your potential!
+        </p>
+      </div>
+
+      {/* Section 2: Quick Links */}
+      <div>
+        <h3 className="text-lg font-bold text-[#b0db72] mb-4">Quick Links</h3>
+        <ul className="space-y-2">
+          {FOOTER_NAV.map((link) => (
+            <li key={link.label}>
+              <Link
+                href={link.href}
+                className="hover:text-[#b0db72] transition-colors duration-150 text-base font-medium text-white"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link
+              href="/contact"
+              className="hover:text-[#b0db72] transition-colors duration-150 text-base font-medium text-white"
+            >
+              Contact Us
             </Link>
-            <p className="text-base font-medium text-white">
-              Your premier destination for sports course bookings and academy
-              management. Join us to unlock your potential!
-            </p>
-          </div>
+          </li>
+        </ul>
+      </div>
 
-          <div>
-            <h3 className="text-lg font-bold text-[#b0db72] mb-4">
-              Quick Links
-            </h3>
-            <ul className="space-y-2">
-              {FOOTER_NAV.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="hover:text-[#b0db72] transition-colors duration-150 text-base font-medium text-white"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  href="/contact"
-                  className="hover:text-[#b0db72] transition-colors duration-150 text-base font-medium text-white"
-                >
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
-          </div>
+      {/* Section 3: Our Services (NEW) */}
+      <div>
+        <h3 className="text-lg font-bold text-[#b0db72] mb-4">Our Services</h3>
+        <ul className="space-y-2">
+          <li>
+            <Link
+              href="https://teamhippa.com/tennis-gilbert"
+              className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
+            >
+              Tennis Academy Courts & Coaching in Gilbert, AZ
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="https://teamhippa.com/tennis-phoenix"
+              className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
+            >
+              Tennis Academy Courts & Coaching in Phoenix, AZ
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="https://teamhippa.com/contact"
+              className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
+            >
+              Submit an Enquiry
+            </Link>
+          </li>
+        </ul>
+      </div>
 
-          <div>
+      {/* Section 4: Get In Touch + Social Links */}
+      <div>
             <h3 className="text-lg font-bold text-[#b0db72] mb-4">
               Get In Touch
             </h3>
@@ -103,16 +138,18 @@ const Footer: React.FC = () => {
               ))}
             </div>
           </div>
-          
-        </div>
 
-        <div className="mt-10 pt-8 border-t border-white text-center">
-          <p className="text-base font-medium text-white">
-            &copy; {currentYear} TeamHippa. All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
+    </div>
+
+    {/* Footer Bottom */}
+    <div className="mt-10 pt-8 border-t border-white text-center">
+      <p className="text-base font-medium text-white">
+        &copy; {new Date().getFullYear()} TeamHippa. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
   );
 };
 

@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
+import ClassPoliciesAndRuleBook from "@/app/components/ClassPoliciesAndRuleBook";
 
 interface Course {
   id: number;
@@ -413,7 +414,17 @@ const BookingPage: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        <div className="mb-10">
+            <ClassPoliciesAndRuleBook href="/images/Rule-book-Website-Updated.pdf">
+        Class policies / Rule Book
+      </ClassPoliciesAndRuleBook>
+    </div>
+    </div>  
+
+
+
+     
+      
     );
 };
 

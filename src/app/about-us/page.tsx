@@ -235,7 +235,7 @@ export default function About() {
           <div className="flex flex-col-reverse sm:flex-col xl:flex-row items-center md:items-start gap-8">
             <div className="w-full xl:w-4/5">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106697.3061383907!2d-111.8384995237223!3d33.31121176115423!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba92dac3c8385%3A0x67a5fd75b68390bb!2sFreestone%20Recreation%20Center!5e0!3m2!1sen!2sin!4v1756745524925!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13345.341445697002!2d-111.73830168818297!3d33.257711601803315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872bad570fadd6f5%3A0xe40dfe4ca6265a91!2sGilbert%20Regional%20Park!5e0!3m2!1sen!2sin!4v1759830187292!5m2!1sen!2sin"
                 width="700"
                 height="350"
                 style={{ border: 0 }}
@@ -244,17 +244,14 @@ export default function About() {
                 referrerPolicy="no-referrer-when-downgrade"
                 className="!w-full"
               ></iframe>
+           
             </div>
             <div className="w-full xl:w-1/4 text-left">
               <h4 className="text-base sm:text-2xl text-black font-semibold mb-3">
                 You can find us at:
               </h4>
               <address className="not-italic text-base sm:text-lg text-gray-600 font-normal mb-3">
-                Gilbert Regional Park, AZ |
-                <br />
-                Freestone Rec Center Gilbert,
-                <br />
-                AZ
+                Gilbert Regional Park, AZ 
               </address>
             </div>
           </div>

@@ -386,6 +386,8 @@ const PackageCard: React.FC<{
               ></div>
             </div>
           </div>
+          
+          {/* Session Details 
           <div className="pt-2">
             <p className="font-semibold text-gray-600 mb-1">Session Details:</p>
             <ul className="text-xs text-gray-600 space-y-1 pl-2">
@@ -400,6 +402,8 @@ const PackageCard: React.FC<{
               ))}
             </ul>
           </div>
+        */}
+
         </div>
       </div>
 
@@ -1066,8 +1070,8 @@ const UserDashboardPage: React.FC = () => {
                     .filter((detail) => detail.remainingSessions > 0)
                     .map((detail) => (
                       <option key={detail.courseId} value={detail.courseId}>
-                        {detail.courseName} ({detail.remainingSessions} sessions
-                        left)
+                        {detail.courseName} {/*(detail.remainingSessions*/} {/*sessions
+                        left)*/}
                       </option>
                     ))}
                 </select>

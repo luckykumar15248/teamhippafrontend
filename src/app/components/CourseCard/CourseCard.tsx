@@ -1,59 +1,44 @@
-// components/CourseCard.tsx
-"use client";
+'use client';
+
 import React, { useState } from "react";
+import { Button } from "../Button";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Button } from "@/app/components/Button";
-import "./styles.css";
-export interface Course {
+
+// --- Inline Type Definitions ---
+interface Course {
   id: number;
+  slug: string; 
   name: string;
   sportName: string;
+  sportId: number;
   shortDescription: string;
   basePriceInfo: string;
   description: string;
-  imagePaths: string[] | null;
+  imagePaths: string[];
   isActive: boolean;
+  duration: string;
 }
 
 interface CourseCardProps {
   course: Course;
   onBookNow: (courseId: number) => void;
-  onNavigate: (courseId: number) => void;
+  onViewDetails: (course: Course) => void;
 }
 
-const TennisCourseCard: React.FC<CourseCardProps> = ({
+const CourseCard: React.FC<CourseCardProps> = ({
   course,
   onBookNow,
-  onNavigate,
-  
+  onViewDetails,
 }) => {
-  // const imageUrls = course.imagePaths || [];
-
-const isLocal = process.env.NODE_ENV === "development";
-const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL || "";
-
-const imageUrls = (course.imagePaths || []).map((path) => {
-  if (!path) return "";
-
-  if (isLocal) {
-    // Local environment में सीधे path ही वापिस दें
-    return path;
-  }
-
-  // Production या अन्य environment में backend URL के साथ जोड़ें
-  if (path.startsWith("http")) return path;
-  if (path.startsWith("/")) return `${frontendUrl}${path}`;
-  return `${frontendUrl}/${path}`;
-});
-
+  const imageUrls = course.imagePaths || [];
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
     <section className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300">
-      <div className="relative">
+      <div className="relative group">
         <Swiper
           modules={[Pagination]}
           pagination={{ clickable: true }}
@@ -62,23 +47,24 @@ const imageUrls = (course.imagePaths || []).map((path) => {
         >
           {(imageUrls.length > 0
             ? imageUrls
-            : ["https://placehold.co/600x400/818cf8/ffffff?text=Tennis"]
-          ).map((url, index) => (
+            : ["https://placehold.co/600x400/a7a2ff/333333?text=TeamHippa"]
+          ).map((url: string, index: number) => (
             <SwiperSlide key={index}>
               <img
                 src={url}
-                alt={`Slide ${index + 1}`}
+                alt={course.name}
                 className="h-48 w-full object-cover"
               />
             </SwiperSlide>
           ))}
         </Swiper>
 
-        {/* Slide count shown below */}
-        <span className="text-xs text-white mt-1 text-center bg-black/70 flex justify-center items-center w-fit rounded-full py-1 px-4 absolute right-6 bottom-6 z-[9]">
-          {activeIndex + 1} / {imageUrls.length}
+        {/* Slide count display */}
+        <span className="text-xs text-white mt-1 text-center bg-black/70 flex justify-center items-center w-fit rounded-full py-1 px-4 absolute right-6 bottom-6 z-10">
+          {activeIndex + 1} / {imageUrls.length > 0 ? imageUrls.length : 1}
         </span>
       </div>
+
       <div className="p-6 flex-grow flex flex-col">
         <h3 className="text-xl font-semibold text-black line-clamp-1">
           {course.name}
@@ -86,14 +72,13 @@ const imageUrls = (course.imagePaths || []).map((path) => {
         <p className="mt-2 text-base sm:text-lg text-gray-600 font-normal line-clamp-2">
           {course.shortDescription}
         </p>
-
         <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
           <span className="text-lg font-bold text-black">
             ${course.basePriceInfo || "Contact for Price"}
           </span>
           <div className="flex justify-between gap-2">
             <Button
-              onClick={() => onNavigate(course.id)}
+              onClick={() => onViewDetails(course)}
               className="!text-[#b0db72] hover:!text-white bg-transparent border border-[#b0db72] w-full whitespace-nowrap"
             >
               View Details
@@ -111,4 +96,4 @@ const imageUrls = (course.imagePaths || []).map((path) => {
   );
 };
 
-export default TennisCourseCard;
+export default CourseCard;
