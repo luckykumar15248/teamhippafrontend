@@ -1,4 +1,4 @@
-// File: app/courses/page.tsx
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -10,13 +10,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import SportsHeroSection from "../components/SportsHeroSection";
-import { Button } from "../components/Button";
-import "./styles.css";
+import SportsHeroSection from "../../../components/SportsHeroSection";
+import { Button } from "../../../components/Button";
+
 
 // --- Type Definitions (Updated to match API response) ---
 interface Course {
   id: number;
+  slug: string;
   name: string;
   sportName: string;
   sportId: number;
@@ -250,7 +251,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 };
 
 // --- Main Page Component ---
-const CoursesAndPackagesPage: React.FC = () => {
+const BookNowClient: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [mappings, setMappings] = useState<CourseCategoryMapping[]>([]);
@@ -278,15 +279,6 @@ const CoursesAndPackagesPage: React.FC = () => {
         if (!bookableCategory) {
           console.warn("'Available for Booking' category not found.");
         }
-/*
-        const bookableCourseIds = new Set(
-          (mappingsRes.data || [])
-            .filter(
-              (m: CourseCategoryMapping) =>
-                m.categoryId === bookableCategory?.categoryId
-            )
-            .map((m: CourseCategoryMapping) => m.courseId)
-        );*/
 
         // Transform courses to include full image URLs and ensure imagePaths exists
         const transformedCourses = (coursesRes.data || []).map(
@@ -365,7 +357,8 @@ const CoursesAndPackagesPage: React.FC = () => {
     };*/
 
   const handleViewDetails = (course: Course) => {
-  router.push(`/book-now/courses/${course.id}`);
+router.push(`/book-now/courses/${course.slug}`);
+  //router.push(`/book-now/courses/${course.id}`);
   };
 
   const handleBookNow = (item: SelectableItem) => {
@@ -463,4 +456,4 @@ const CoursesAndPackagesPage: React.FC = () => {
   );
 };
 
-export default CoursesAndPackagesPage;
+export default BookNowClient;

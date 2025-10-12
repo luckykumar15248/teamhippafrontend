@@ -251,7 +251,7 @@ export default function About() {
                 You can find us at:
               </h4>
               <address className="not-italic text-base sm:text-lg text-gray-600 font-normal mb-3">
-                Gilbert Regional Park, AZ 
+                Gilbert Regional Park 3005 E Queen Creek Rd, Gilbert, AZ 85298, United States
               </address>
             </div>
           </div>

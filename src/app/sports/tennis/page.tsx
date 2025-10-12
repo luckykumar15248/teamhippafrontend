@@ -130,7 +130,7 @@ export default async function TennisLandingPage() {
   return (
     <>
       <Meta
-        title="Tennis Academy | World-Class Programs in Gilbert & Phoenix"
+        title="Tennis Academy | World-Class Programs in Gilbert & Phoenix | Team Hippa"
         description="Top tennis coaching and training programs for all ages and skill levels at our Gilbert and Phoenix locations."
         keywords="tennis gilbert, tennis phoenix, tennis coaching, tennis lessons, tennis programs, team hippa tennis"
         image="https://teamhippa.com/images/tennis.png"

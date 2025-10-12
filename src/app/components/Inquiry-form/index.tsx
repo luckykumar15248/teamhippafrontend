@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Button } from "../Button";
 import Input from "../Input";
 
@@ -17,8 +18,20 @@ interface Course {
   name: string;
   sportId: number;
 }
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-const Inquiry: React.FC = () => {
+
+const referralOptions = [
+  "Google Search",
+  "Social Media (Facebook, Instagram, etc.)",
+  "Friend or Family",
+  "Advertisement",
+  "Other",
+];
+
+const ContactForm: React.FC = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -32,14 +45,6 @@ const Inquiry: React.FC = () => {
   const [sports, setSports] = useState<Sport[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
-
-  const referralOptions = [
-    "Google Search",
-    "Social Media (Facebook, Instagram, etc.)",
-    "Friend or Family",
-    "Advertisement",
-    "Other",
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +66,7 @@ const Inquiry: React.FC = () => {
   useEffect(() => {
     if (selectedSport) {
       const filtered = courses.filter(
-        (c) => c.sportId === parseInt(selectedSport)
+        (c) => c.sportId === parseInt(selectedSport, 10)
       );
       setFilteredCourses(filtered);
       setSelectedCourse("");
@@ -78,22 +83,37 @@ const Inquiry: React.FC = () => {
       return;
     }
 
-    setIsSubmitting(true);
-    const finalReferral =
-      referralSource === "Other" ? otherReferralSource : referralSource;
+    if (!executeRecaptcha) {
+      toast.error("reCAPTCHA has not loaded, please try again later.");
+      return;
+    }
 
-    const data = {
-      visitorName: name,
-      visitorEmail: email,
-      visitorPhone: phone,
-      sportId: selectedSport ? parseInt(selectedSport) : undefined,
-      courseId: selectedCourse ? parseInt(selectedCourse) : undefined,
-      message,
-      referralSource: finalReferral,
-    };
+    setIsSubmitting(true);
 
     try {
+      const recaptchaToken = await executeRecaptcha("contact_form");
+      if (!recaptchaToken) {
+        toast.error("reCAPTCHA verification failed. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const finalReferral =
+        referralSource === "Other" ? otherReferralSource : referralSource;
+
+      const data = {
+        visitorName: name,
+        visitorEmail: email,
+        visitorPhone: phone,
+        sportId: selectedSport ? parseInt(selectedSport, 10) : undefined,
+        courseId: selectedCourse ? parseInt(selectedCourse, 10) : undefined,
+        message,
+        referralSource: finalReferral,
+        recaptchaToken,
+      };
+
       await axios.post(`${apiUrl}/api/public_api/inquiries`, data);
+
       toast.success("Inquiry submitted successfully!");
 
       // Reset form
@@ -105,8 +125,12 @@ const Inquiry: React.FC = () => {
       setMessage("");
       setReferralSource("");
       setOtherReferralSource("");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        toast.error("reCAPTCHA validation failed from server. Please try again.");
+      } else {
+        toast.error("Something went wrong. Please try again later.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -145,7 +169,7 @@ const Inquiry: React.FC = () => {
       {/* Phone */}
       <div>
         <Input
-          label="Phone Number *"
+          label="Phone Number"
           id="phone"
           name="phone"
           type="text"
@@ -162,11 +186,10 @@ const Inquiry: React.FC = () => {
           <select
             value={selectedSport}
             onChange={(e) => setSelectedSport(e.target.value)}
-            className="rounded relative block w-full px-3 py-3 border border-gray-300
-   placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72]
-   focus:z-10 sm:text-sm"
+            className="rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72] focus:z-10 sm:text-sm"
           >
-              {sports.map((sport) => (
+            <option value="">Select a Sport</option>
+            {sports.map((sport) => (
               <option key={sport.id} value={sport.id}>
                 {sport.name}
               </option>
@@ -180,11 +203,9 @@ const Inquiry: React.FC = () => {
             value={selectedCourse}
             onChange={(e) => setSelectedCourse(e.target.value)}
             disabled={!selectedSport}
-            className="rounded relative block w-full px-3 py-3 border border-gray-300
-   placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72]
-   focus:z-10 sm:text-sm"
+            className="rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72] focus:z-10 sm:text-sm"
           >
-            <option value="">Select a course</option>
+            <option value="">Select a Course</option>
             {filteredCourses.map((course) => (
               <option key={course.id} value={course.id}>
                 {course.name}
@@ -197,7 +218,7 @@ const Inquiry: React.FC = () => {
       {/* Message */}
       <div>
         <Input
-          label="Message"
+          label="Message *"
           id="message"
           name="message"
           type="textarea"
@@ -216,9 +237,7 @@ const Inquiry: React.FC = () => {
         <select
           value={referralSource}
           onChange={(e) => setReferralSource(e.target.value)}
-          className="rounded relative block w-full px-3 py-3 border border-gray-300
-   placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72]
-   focus:z-10 sm:text-sm"
+          className="rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72] focus:z-10 sm:text-sm"
         >
           <option value="">Select an option</option>
           {referralOptions.map((option) => (
@@ -249,8 +268,32 @@ const Inquiry: React.FC = () => {
           {isSubmitting ? "Submitting..." : "Submit Inquiry"}
         </Button>
       </div>
+
+      <div>
+        <p className="text-xs text-gray-500 text-center mt-4">
+          This site is protected by reCAPTCHA and the Google{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            className="text-indigo-600 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://policies.google.com/terms"
+            className="text-indigo-600 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Terms of Service
+          </a>{" "}
+          apply.
+        </p>
+      </div>
     </form>
   );
 };
 
-export default Inquiry;
+export default ContactForm;

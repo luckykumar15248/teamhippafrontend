@@ -346,7 +346,7 @@ export const PROGRAMS_MASTER = [
   },
 ];
 
-export const GILBERT_FAQS = [
+export const PHOENIX_FAQS = [
   {
     question: "Where can I find tennis lessons in Phoenix, Arizona?",
     answer:
@@ -364,11 +364,36 @@ export const GILBERT_FAQS = [
   },
   {
     question:
+      "Are there options for kids and junior tennis lessons in Phoenix?",
+    answer:
+      "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
+  },
+];
+
+export const GILBERT_FAQS = [
+  {
+    question: "Where can I find tennis lessons in Gilbert, Arizona?",
+    answer:
+      "Team Hippa offers a variety of classes and programs at Gilbert Regional Park, designed for all ages and skill levels. For those seeking more personalized guidance, our coaches also provide private and semi-private sessions tailored to individual needs.",
+  },
+  {
+    question: "What types of tennis lessons are available in Gilbert?",
+    answer:
+      "Team Hippa offers extensive group programs, private lessons, semi-private, as well as focused hitting sessions. We cater to all ages (kids, teens, adults, seniors) and skill levels (beginner, intermediate, advanced).",
+  },
+  {
+    question: "How do I know which group/level to attend?",
+    answer:
+      "You can contact us directly and we'll help to match you with the right group, based on your experience.",
+  },
+  {
+    question:
       "Are there options for kids and junior tennis lessons in Gilbert?",
     answer:
       "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
   },
 ];
+
 export const WINTER_CAMP_FAQS = [
   {
     question: "What is the Winter Tennis Camp all about?",

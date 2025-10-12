@@ -4,7 +4,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import router from "next/router";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const InquiryStatus = {
   NEW: "NEW",
   PENDING: "PENDING",
@@ -22,8 +24,10 @@ interface Inquiry {
   visitorEmail: string;
   visitorPhone: string;
   message: string;
-  sportName: string;
-  courseName: string;
+  sportId?: number | null;
+  courseId?: number | null;
+  sportName?: string;
+  courseName?: string;
   status: string;
   createdAt: string;
   referralSource: string;
@@ -40,7 +44,6 @@ interface Course {
   name: string;
 }
 
-// --- API Helper ---
 const getAuthHeaders = () => {
   if (typeof window === "undefined") return null;
   const token = localStorage.getItem("authToken");
@@ -49,6 +52,7 @@ const getAuthHeaders = () => {
 };
 
 const AdminEnquiriesPage = () => {
+  const [rawInquiries, setRawInquiries] = useState<Inquiry[]>([]);
   const [allInquiries, setAllInquiries] = useState<Inquiry[]>([]);
   const [sports, setSports] = useState<Sport[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -66,18 +70,17 @@ const AdminEnquiriesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Modal states
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
-  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [selectedInquiryId, setSelectedInquiryId] = useState<number | null>(null);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailBody, setEmailBody] = useState("");
   const [adminRemarks, setAdminRemarks] = useState("");
 
   useEffect(() => {
-    fetchInquiries();
     fetchSports();
     fetchCourses();
+    fetchInquiries();
   }, []);
 
   const fetchInquiries = async () => {
@@ -87,10 +90,8 @@ const AdminEnquiriesPage = () => {
       return;
     }
     try {
-      const response = await axios.get(`${apiUrl}/api/admin/inquiries`, {
-        headers,
-      });
-      setAllInquiries(response.data);
+      const response = await axios.get(`${apiUrl}/api/admin/inquiries`, { headers });
+      setRawInquiries(response.data);
     } catch (error) {
       toast.error("Failed to fetch inquiries.");
       console.log(error);
@@ -99,8 +100,8 @@ const AdminEnquiriesPage = () => {
 
   const fetchSports = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/public_api/sports`);
-      setSports(response.data);
+      const res = await axios.get(`${apiUrl}/api/public_api/sports`);
+      setSports(res.data);
     } catch (error) {
       toast.error("Failed to fetch sports.");
       console.log(error);
@@ -109,77 +110,66 @@ const AdminEnquiriesPage = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/public_api/courses`);
-      setCourses(response.data);
+      const res = await axios.get(`${apiUrl}/api/public_api/courses`);
+      setCourses(res.data);
     } catch (error) {
       toast.error("Failed to fetch courses.");
       console.log(error);
     }
   };
 
-  /* const getAuthToken = () => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('authToken');
-        }
-        return null;
-    }*/
+  useEffect(() => {
+    if (!rawInquiries.length) {
+      setAllInquiries([]);
+      return;
+    }
+    const mapped = rawInquiries.map((inq) => ({
+      ...inq,
+      sportName: inq.sportId
+        ? sports.find((s) => s.id === inq.sportId)?.name || "N/A"
+        : "N/A",
+      courseName: inq.courseId
+        ? courses.find((c) => c.id === inq.courseId)?.name || "N/A"
+        : "N/A",
+    }));
+    setAllInquiries(mapped);
+  }, [rawInquiries, sports, courses]);
 
   useEffect(() => {
-    //const token = getAuthToken();
     setCurrentPage(1);
-  }, [
-    statusFilter,
-    dateFromFilter,
-    dateToFilter,
-    sportFilter,
-    courseFilter,
-    search,
-  ]);
+  }, [statusFilter, dateFromFilter, dateToFilter, sportFilter, courseFilter, search]);
 
   const filteredInquiries = useMemo(() => {
     let data = allInquiries
-      .filter((inquiry) =>
-        statusFilter ? inquiry.status === statusFilter : true
+      .filter((inq) => (statusFilter ? inq.status === statusFilter : true))
+      .filter((inq) =>
+        dateFromFilter ? new Date(inq.createdAt) >= new Date(dateFromFilter) : true
       )
-      .filter((inquiry) =>
-        dateFromFilter
-          ? new Date(inquiry.createdAt) >= new Date(dateFromFilter)
-          : true
+      .filter((inq) =>
+        dateToFilter ? new Date(inq.createdAt) <= new Date(dateToFilter) : true
       )
-      .filter((inquiry) =>
-        dateToFilter
-          ? new Date(inquiry.createdAt) <= new Date(dateToFilter)
-          : true
-      )
-      .filter((inquiry) =>
+      .filter((inq) =>
         sportFilter
-          ? inquiry.sportName?.toLowerCase() === sportFilter.toLowerCase()
+          ? inq.sportName?.toLowerCase() === sportFilter.toLowerCase()
           : true
       )
-      .filter((inquiry) =>
+      .filter((inq) =>
         courseFilter
-          ? inquiry.courseName?.toLowerCase() === courseFilter.toLowerCase()
+          ? inq.courseName?.toLowerCase() === courseFilter.toLowerCase()
           : true
       )
-      .filter((inquiry) => {
-        const val =
-          `${inquiry.visitorName} ${inquiry.visitorEmail} ${inquiry.visitorPhone}`.toLowerCase();
+      .filter((inq) => {
+        const val = `${inq.visitorName} ${inq.visitorEmail} ${inq.visitorPhone}`.toLowerCase();
         return val.includes(search.toLowerCase());
       });
 
     if (sortKey) {
       data = [...data].sort((a, b) => {
-        // Safely get values with fallbacks for undefined
-        const valA = (
-          a[sortKey as keyof Inquiry]?.toString() || ""
-        ).toLowerCase();
-        const valB = (
-          b[sortKey as keyof Inquiry]?.toString() || ""
-        ).toLowerCase();
+        const valA = (a[sortKey as keyof Inquiry]?.toString() || "").toLowerCase();
+        const valB = (b[sortKey as keyof Inquiry]?.toString() || "").toLowerCase();
         return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
       });
     }
-
     return data;
   }, [
     allInquiries,
@@ -207,16 +197,7 @@ const AdminEnquiriesPage = () => {
   };
 
   const handleExport = () => {
-    const headers = [
-      "Name",
-      "Email",
-      "Phone",
-      "Sport",
-      "Course",
-      "Message",
-      "Status",
-      "Date",
-    ];
+    const headers = ["Name", "Email", "Phone", "Sport", "Course", "Message", "Status", "Date"];
     const rows = filteredInquiries.map((inq) => [
       inq.visitorName,
       inq.visitorEmail,
@@ -229,137 +210,117 @@ const AdminEnquiriesPage = () => {
     ]);
 
     const csvContent = [headers, ...rows]
-      .map((row) =>
-        row
-          .map((item) => `"${(item ?? "").toString().replace(/"/g, '""')}"`)
-          .join(",")
+      .map((r) =>
+        r.map((v) => `"${(v ?? "").toString().replace(/"/g, '""')}"`).join(",")
       )
       .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-
     const link = document.createElement("a");
     link.href = url;
     link.download = "inquiries.csv";
     link.click();
-
     URL.revokeObjectURL(url);
   };
 
-  const updateStatus = async (
-    ids: number[],
-    status: string,
-    remarks?: string
-  ) => {
+  const updateStatus = async (ids: number[], status: string, remarks?: string) => {
     const headers = getAuthHeaders();
     if (!headers) return;
+
     try {
       await axios.post(
         `${apiUrl}/api/admin/inquiries/bulk-status`,
-        {
-          ids,
-          status,
-          remarks: remarks,
-        },
+        { ids, status, remarks },
         { headers }
       );
       toast.success("Status updated successfully.");
       fetchInquiries();
       setSelectedIds([]);
-      if (ids.includes(selectedInquiry?.id || 0)) {
-        setSelectedInquiry((prev) =>
-          prev
-            ? { ...prev, status, adminRemarks: remarks || prev.remarks }
-            : null
-        );
-      }
-    } catch (err) {
+    } catch (error) {
       toast.error("Failed to update status.");
-      console.log(err);
+      console.log(error);
     }
   };
 
   const deleteInquiries = async (ids: number[]) => {
     const headers = getAuthHeaders();
     if (!headers) return;
+
     try {
-      await axios.post(
-        `${apiUrl}/api/admin/inquiries/delete`,
-        { ids },
-        { headers }
-      );
+      await axios.post(`${apiUrl}/api/admin/inquiries/delete`, { ids }, { headers });
       toast.success("Deleted successfully.");
       fetchInquiries();
       setSelectedIds([]);
-      if (ids.includes(selectedInquiry?.id || 0)) {
-        setViewModalOpen(false);
-      }
-    } catch (err) {
+      if (selectedInquiryId && ids.includes(selectedInquiryId)) setViewModalOpen(false);
+    } catch (error) {
       toast.error("Failed to delete.");
-      console.log(err);
+      console.log(error);
     }
   };
 
-  const openViewModal = (inquiry: Inquiry) => {
-    setSelectedInquiry(inquiry);
-    setAdminRemarks(inquiry.remarks || "");
+  const openViewModal = (id: number) => {
+    setSelectedInquiryId(id);
     setViewModalOpen(true);
   };
 
-  const openEmailModal = (inquiry: Inquiry) => {
-    setSelectedInquiry(inquiry);
+  const openEmailModal = (id: number) => {
+    const inquiry = allInquiries.find(i => i.id === id);
+    setSelectedInquiryId(id);
     setEmailSubject(
-      `Response to your inquiry about ${
-        inquiry.sportName || inquiry.courseName || "our services"
-      }`
+      `Response to your inquiry about ${inquiry?.sportName || inquiry?.courseName || "our services"}`
     );
     setEmailBody(
-      `Dear ${
-        inquiry.visitorName
-      },\n\nThank you for reaching out to us regarding ${
-        inquiry.sportName || inquiry.courseName || "our services"
+      `Dear ${inquiry?.visitorName},\n\nThank you for reaching out regarding ${
+        inquiry?.sportName || inquiry?.courseName || "our services"
       }.\n\n`
     );
     setEmailModalOpen(true);
   };
 
   const sendEmail = async () => {
-    if (!selectedInquiry) {
+    const inquiry =
+      selectedInquiryId !== null
+        ? allInquiries.find(i => i.id === selectedInquiryId)
+        : null;
+    if (!inquiry) {
       toast.error("No inquiry selected.");
       return;
     }
     const headers = getAuthHeaders();
-    if (!headers || !selectedInquiry) return;
+    if (!headers) return;
+
     try {
       await axios.post(
         `${apiUrl}/api/admin/inquiries/reply`,
         {
-          inquiryId: selectedInquiry.id,
-          toEmail: selectedInquiry.visitorEmail,
+          inquiryId: inquiry.id,
+          toEmail: inquiry.visitorEmail,
           subject: emailSubject,
           body: emailBody,
         },
         { headers }
       );
-
-      //// In a real app, you would send this to your backend to handle the email sending
-      //window.location.href = `mailto:${selectedInquiry.visitorEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-      toast.success(
-        "Email prepared successfully. Please send it from your email client."
-      );
+      toast.success("Email prepared successfully. Please send it from your client.");
       setEmailModalOpen(false);
-    } catch (err) {
+    } catch (error) {
       toast.error("Failed to prepare email.");
-      console.log(err);
+      console.log(error);
     }
   };
 
   const saveAdminRemarks = () => {
-    if (selectedInquiry) {
-      updateStatus([selectedInquiry.id], selectedInquiry.status, adminRemarks);
-    }
+    const inquiry =
+      selectedInquiryId !== null
+        ? allInquiries.find(i => i.id === selectedInquiryId)
+        : null;
+    if (inquiry) updateStatus([inquiry.id], inquiry.status, adminRemarks);
   };
+
+  const selectedInquiry =
+    selectedInquiryId !== null
+      ? allInquiries.find((i) => i.id === selectedInquiryId) || null
+      : null;
 
   return (
     <div className="p-6">
@@ -417,9 +378,7 @@ const AdminEnquiriesPage = () => {
         >
           <option value="">All Sports</option>
           {sports.map((s) => (
-            <option key={s.id} value={s.name}>
-              {s.name}
-            </option>
+            <option key={s.id}>{s.name}</option>
           ))}
         </select>
 
@@ -430,9 +389,7 @@ const AdminEnquiriesPage = () => {
         >
           <option value="">All Courses</option>
           {courses.map((c) => (
-            <option key={c.id} value={c.name}>
-              {c.name}
-            </option>
+            <option key={c.id}>{c.name}</option>
           ))}
         </select>
 
@@ -458,11 +415,11 @@ const AdminEnquiriesPage = () => {
                 <input
                   type="checkbox"
                   checked={selectedIds.length === paginatedInquiries.length}
-                  onChange={() => {
-                    if (selectedIds.length === paginatedInquiries.length)
-                      setSelectedIds([]);
-                    else setSelectedIds(paginatedInquiries.map((i) => i.id));
-                  }}
+                  onChange={() =>
+                    selectedIds.length === paginatedInquiries.length
+                      ? setSelectedIds([])
+                      : setSelectedIds(paginatedInquiries.map((i) => i.id))
+                  }
                 />
               </th>
               {[
@@ -519,13 +476,13 @@ const AdminEnquiriesPage = () => {
                 </td>
                 <td className="p-2 flex gap-2">
                   <button
-                    onClick={() => openViewModal(inq)}
+                    onClick={() => openViewModal(inq.id)}
                     className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm"
                   >
                     View
                   </button>
                   <button
-                    onClick={() => openEmailModal(inq)}
+                    onClick={() => openEmailModal(inq.id)}
                     className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm"
                   >
                     Email
@@ -583,6 +540,7 @@ const AdminEnquiriesPage = () => {
                     {selectedInquiry.visitorName}
                   </p>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Email
@@ -591,6 +549,7 @@ const AdminEnquiriesPage = () => {
                     {selectedInquiry.visitorEmail}
                   </p>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Phone
@@ -599,6 +558,7 @@ const AdminEnquiriesPage = () => {
                     {selectedInquiry.visitorPhone}
                   </p>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Date
@@ -607,6 +567,7 @@ const AdminEnquiriesPage = () => {
                     {new Date(selectedInquiry.createdAt).toLocaleString()}
                   </p>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Sport
@@ -615,6 +576,7 @@ const AdminEnquiriesPage = () => {
                     {selectedInquiry.sportName || "N/A"}
                   </p>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Course
@@ -640,17 +602,13 @@ const AdminEnquiriesPage = () => {
                 </label>
                 <select
                   value={selectedInquiry.status}
-                  onChange={(e) => {
-                    setSelectedInquiry({
-                      ...selectedInquiry,
-                      status: e.target.value,
-                    });
+                  onChange={(e) =>
                     updateStatus(
                       [selectedInquiry.id],
                       e.target.value,
                       adminRemarks
-                    );
-                  }}
+                    )
+                  }
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
                   {Object.values(InquiryStatus).map((s) => (
@@ -720,6 +678,7 @@ const AdminEnquiriesPage = () => {
                     {selectedInquiry.visitorEmail}
                   </p>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     From

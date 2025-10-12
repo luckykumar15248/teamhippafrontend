@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import SportsHeroSection from "../components/SportsHeroSection";
 import "./styles.css";
 import {
-   GILBERT_FAQS,
+   PHOENIX_FAQS,
 } from "@/untils/constant";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -192,7 +192,7 @@ function generateStructuredData() {
       },
       {
         '@type': 'FAQPage',
-        mainEntity: GILBERT_FAQS.map(faq => ({
+        mainEntity: PHOENIX_FAQS.map(faq => ({
           '@type': 'Question',
           name: faq.question,
           acceptedAnswer: {
@@ -269,7 +269,7 @@ async function TennisPhoenixPage() {
       <FAQ
         title="The fastest growing Tennis Academy"
         subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
-        data={GILBERT_FAQS}
+        data={PHOENIX_FAQS}
       />
     </>
   );

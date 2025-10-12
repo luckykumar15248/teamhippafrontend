@@ -133,6 +133,25 @@ export async function generateMetadata({
   }
 }
 
+function generateStructuredData(post: PostDetail) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "image": post.featuredImageUrl || [],
+    "author": {
+      "@type": "Person",
+      "name": post.authorName
+    },
+    "datePublished": post.publishedAt,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://teamhippa.com/blog/${post.slug}`
+    },
+  };
+}
+
+
 // --- Helper to Render Editor.js Blocks ---
 const renderBlockContent = (contentObject: EditorContent | string) => {
   let parsedContent: EditorContent | null = null;
@@ -328,6 +347,11 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const post = response.data;
 
     return (
+      <><script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(generateStructuredData(post)) }}
+/>
+
       <article className="bg-white">
         {/* --- Header Image --- */}
         {post.featuredImageUrl && (
@@ -337,7 +361,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
               alt={post.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-center p-4">
+            <div className="absolute inset-0 bg-opacity-40 flex flex-col justify-center items-center text-center p-4">
               <h1 className="text-4xl md:text-6xl font-extrabold text-white">
                 {post.title}
               </h1>
@@ -369,6 +393,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
           </div>
         </section>
       </article>
+      </>
     );
   } catch {
     return (
