@@ -111,7 +111,7 @@ export default async function PickleballLandingPage() {
   return (
     <>
       <Meta
-        title="Pickleball Academy Gilbert AZ | Lessons & Training"
+        title="Pickleball Academy Gilbert AZ | Lessons & Training | Team Hippa"
         description="Master pickleball in Gilbert, AZ with Team Hippa! We offer lessons for all levels, youth programs, and top-tier training."
         keywords="pickleball gilbert, pickleball lessons, pickleball training, pickleball academy, team hippa pickleball, pickleball coaching, pickleball clinics, youth pickleball, adult pickleball"
         image="https://teamhippa.com/images/pickleball.png"

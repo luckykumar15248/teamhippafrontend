@@ -7,7 +7,7 @@ export const TennisProgram = () => {
     <section className="relative w-full bg-gray-100 py-4 sm:py-8 md:py-12 px-6 lg:px-16">
       <div className="mx-auto max-w-screen-2xl">
         <h1 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black mb-8">
-          Comprehensive Tennis Programs for All Levels
+        Join the Best Tennis Academy in Arizona, USA | Team Hippa
         </h1>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between">
           <div className="w-full md:w-1/2 h-full flex flex-col items-center justify-center mb-8 md:mb-0">
@@ -23,7 +23,8 @@ export const TennisProgram = () => {
           </div>
 
          <div className="w-full md:w-1/2 md:pl-12 text-left">
-            <p className="text-base sm:text-lg text-gray-600 font-normal mb-3">
+            <p className="text-base sm:text-lg text-gray-600 font-normal mb-3">Team Hippa Tennis Academy offers comprehensive tennis programs and expert coaching for all ages and skill levels in Gilbert, AZ and Phoenix, AZ.</p>
+            <p className="text-base sm:text-lg text-gray-600 font-normal mb-6">
               Whether you’re a beginner learning the basics or a seasoned player aiming for
               high-performance success, we have the perfect program for you. Our Tennis Trainers
               bring years of experience to help players of all levels improve their skills.

@@ -1,5 +1,4 @@
-"use client";
-
+// app/layout.tsx
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
@@ -7,7 +6,23 @@ import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { AuthProvider } from "./context/AuthContext";
-import { usePathname } from "next/navigation";
+
+import type { Metadata } from "next";
+import RecaptchaProvider from "./components/RecaptchaProvider/RecaptchaProvider";
+
+// Set your root metadata and canonical base for the whole app
+export const metadata: Metadata = {
+  metadataBase: new URL('https://teamhippa.com'),
+  title: {
+    default: 'Tennis Academy in USA | Best Tennis Training | Team Hippa',
+    template: '%s | Team Hippa',
+  },
+  description:
+    'Team Hippa is a top Tennis Academy in the USA offering expert coaching and training for players of all levels.',
+  icons: {
+    icon: '/images/logo.png',
+  },
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,32 +36,13 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const pathname = usePathname();
-  const hiddenPaths = [
-    "/dashboard",
-    "/admin/bookings",
-    "/admin/booking-calendar",
-    "/admin/manage-user-packages",
-    "/admin/analytics",
-    "/admin/waitlist",
-    "/admin/manage-sports-courses",
-    "/admin/manage-sports-courses/package/create-package",
-    "/admin/promotions-management",
-    "/admin/inquiries",
-    "/admin/waitlist",
-    "/admin/admin-gallery"
-  ];
-  const showLayout = !hiddenPaths.includes(pathname);
-
+}) {
   return (
     <html lang="en">
-      <link rel="icon" href="/images/logo.png" />
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+       
         <AuthProvider>
           <ToastContainer
             position="top-right"
@@ -60,9 +56,11 @@ export default function RootLayout({
             pauseOnHover
             theme="light"
           />
-          {showLayout && <Header />}
-          <main className="">{children}</main>
-          {showLayout && <Footer />}
+          {/* Header and Footer should only use client logic in subcomponents, not here */}
+          <Header />
+          <RecaptchaProvider>
+          <main>{children}</main></RecaptchaProvider>
+          <Footer />
         </AuthProvider>
       </body>
     </html>

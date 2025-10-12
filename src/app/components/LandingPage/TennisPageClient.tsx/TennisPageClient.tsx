@@ -24,6 +24,7 @@ import ClassPoliciesAndRuleBook from "@/app/components/ClassPoliciesAndRuleBook"
 interface Course {
   id: number;
   name: string;
+  slug?: string;  
   sportName: string | null;
   shortDescription: string;
   basePriceInfo: string;
@@ -66,8 +67,8 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
     router.push(`/booking/course/${item.id}`);
   };
 
-  const handleNavigate = (courseId: number) => {
-    router.push(`/book-now/courses/${courseId}`);
+  const handleNavigate = (slug: string) => {
+    router.push(`/book-now/courses/${slug}`);
   };
 
   const groupedCourses = useMemo(() => {
@@ -123,7 +124,7 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
                         ...course,
                         sportName: course.sportName ?? "",
                       }}
-                      onNavigate={handleNavigate}
+                      onNavigate={() => handleNavigate(course.slug || '')}
                       onBookNow={() =>
                         handleBookNow({ ...course, type: "course" })
                       }

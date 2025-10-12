@@ -22,6 +22,8 @@ import { toast } from "react-toastify";
 import { Button } from "../../Button";
 import CourseCard from "../../CourseCard/CourseCard";
 import SummerCampShortDetails from '../../../components/SummerCampShortDetails/SummerCampShortDetails';
+
+
 // --- Inline Type Definitions ---
 interface Course {
   id: number;
@@ -209,37 +211,12 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
 
   
 </section>
-<section className="relative bg-gradient-to-r from-[#b0db72] to-[#3a702b] py-12 sm:py-16 md:py-20 px-6 lg:px-16 text-center text-white overflow-hidden">
-        <div className="absolute inset-0 bg-black/20" />
 
-        <div className="relative max-w-screen-xl mx-auto">
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-6 capitalize">
-            Book Our Summer Camp At{" "}
-            <span className="relative">Teamhippa Academy</span>&nbsp; For Your
-            Junior!
-          </h2>
-
-          <p className="text-base sm:text-lg md:text-xl text-white/90 font-light max-w-3xl mx-auto mb-8 leading-relaxed">
-            Join us at the Teamhippa Academy for an exceptional tennis training
-            experience! Whether you’re an adult or a child, and regardless of
-            your current skill level, our camps offer a premier opportunity to
-            improve your game.
-          </p>
-
-          <div className="flex justify-center">
-            <Button
-              //onClick={handleClick}
-              className="bg-white !text-[#64a506] px-6 py-3 !rounded-full font-medium shadow-md hover:shadow-lg hover:bg-gray-100 transition-all duration-300"
-            >
-              Register Now
-            </Button>
-          </div>
-        </div>
-      </section>
-
+    
     <SummerCampShortDetails />
 
       <section className="bg-white py-10 px-6 lg:px-16">
+        
         <div className="max-w-screen-2xl mx-auto">
           {/* Heading */}
           <div className="text-center mb-12">

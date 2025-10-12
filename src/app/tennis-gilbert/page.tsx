@@ -48,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamhippa.com';
   
   return {
-    title: "Tennis Lessons in Gilbert, AZ | Youth & Adult Coaching | Team Hippa",
+    title: "Tennis Academy in Gilbert, AZ | Youth & Adult Coaching | Team Hippa",
     description: "Professional tennis coaching in Gilbert, Arizona. Private lessons, youth programs, group sessions with European-trained coaches. Book your trial lesson today!",
     keywords: "tennis lessons Gilbert, tennis coaching Arizona, youth tennis Gilbert, adult tennis lessons, private tennis coaching, tennis academy Phoenix, European tennis coaching",
     authors: [{ name: "Team Hippa" }],

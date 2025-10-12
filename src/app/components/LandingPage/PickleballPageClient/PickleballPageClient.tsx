@@ -14,6 +14,7 @@ import Image from "next/image";
 interface Course {
   id: number;
   name: string;
+  slug?: string;  // Optional slug field for navigation 
   sportName: string; // sportName must be a string
   shortDescription: string;
   basePriceInfo: string;
@@ -69,8 +70,8 @@ export default function PickleballPageClient({
     router.push(`/booking/course/${item.id}`);
   };
 
-  const handleNavigate = (courseId: number) => {
-    router.push(`/book-now/courses/${courseId}`);
+  const handleNavigate = (slug: string) => {
+    router.push(`/book-now/courses/${slug}`);
   };
 
   const groupedCourses = useMemo(() => {
@@ -119,7 +120,7 @@ export default function PickleballPageClient({
                     key={course.id}
                     course={course}
                     onBookNow={() => handleBookNow({ ...course, type: "course" })}
-                    onNavigate={() => handleNavigate(course.id)}
+                     onNavigate={() => handleNavigate(course.slug || '')}
                   />
                 ))}
               </div>

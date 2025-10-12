@@ -79,6 +79,23 @@ const Footer: React.FC = () => {
           </li>
           <li>
             <Link
+              href="https://teamhippa.com/winter-camp"
+              className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
+            >
+               Upcoming Tennis Winter Camp 2025
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="https://teamhippa.com/summer-camp"
+              className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
+            >
+              Up coming Tennis Summer Camp 2026
+            </Link>
+          </li>
+    
+          <li>
+            <Link
               href="https://teamhippa.com/contact"
               className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
             >
@@ -100,8 +117,8 @@ const Footer: React.FC = () => {
               United States
             </p>
             <p className="text-base font-medium text-white leading-7 mb-2">
-              Gilbert Regional Park, AZ <br />
-              Freestone Rec Center Gilbert, AZ <br />
+              Gilbert Regional Park <br />
+              3005 E Queen Creek Rd, Gilbert, AZ 85298, United States <br />
             </p>
             <span className="flex items-center gap-3 mb-2">
               <EmailIcon />
