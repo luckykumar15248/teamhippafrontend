@@ -1,13 +1,14 @@
 import { Metadata } from 'next';
 import React, { Suspense } from 'react';
 import HomePage from './pages/homepage/page';
+import Script from "next/script";
 
 // Structured data for Tennis Academy (for Google, rich results)
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "SportsOrganization",
-  "name": "Team Hippa Tennis Academy",
-  "description": "A top Tennis Academy in USA offering expert coaching and training for players of all ages and levels in Gilbert, AZ and Phoenix, AZ.  Join us to elevate your game!",
+  "name": "Team Hippa Tennis Academy in Arizona, USA",
+  "description": "A top Tennis Academy in Arizona, USA offering expert coaching and training for players of all ages and levels in Gilbert, AZ and Phoenix, AZ.  Join us to elevate your game!",
   "url": "https://teamhippa.com",
   "logo": "https://teamhippa.com/images/logo-big.png",
   "telephone": "+1-602-341-3361",
@@ -62,7 +63,21 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
+    
     <>
+     {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-QLZS2FLVP4"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-QLZS2FLVP4', { page_path: window.location.pathname });
+          `}
+        </Script>
           
       <Suspense fallback={
         <div className="min-h-screen flex items-center justify-center">

@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import axios from 'axios';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamhippa.com';
 
 interface SitemapUrl {
     loc: string;

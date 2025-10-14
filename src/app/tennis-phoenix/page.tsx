@@ -12,7 +12,7 @@ import FAQ from "../components/FAQ";
 import React from "react";
 import axios from "axios";
 import TennisPhoenixClient from "../components/LandingPage/TennisPhoenixClient/TennisPhoenixClient";
-
+import Script from 'next/script';
 
 // --- Type Definitions ---
 interface Course {
@@ -243,6 +243,18 @@ async function TennisPhoenixPage() {
 
   return (
     <>
+     <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-QLZS2FLVP4"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-QLZS2FLVP4', { page_path: window.location.pathname });
+          `}
+        </Script>
       {/* Structured Data for SEO */}
       <script
         type="application/ld+json"
