@@ -15,11 +15,11 @@ import RecaptchaProvider from "./components/RecaptchaProvider/RecaptchaProvider"
 export const metadata: Metadata = {
   metadataBase: new URL('https://teamhippa.com'),
   title: {
-    default: 'Tennis Academy in Arizona, Arizona, USA  | Best Tennis Training | Team Hippa',
+    default: 'Tennis Academy in USA  | Best Tennis Training | Team Hippa',
     template: '%s | Team Hippa',
   },
   description:
-    'Team Hippa is a top Tennis Academy in the Arizona, USA | offering expert coaching and training for players of all levels.',
+    'Team Hippa is a top Tennis Academy in USA | offering expert coaching and training for players of all levels.',
   icons: {
     icon: '/images/logo.png',
   },

@@ -290,21 +290,21 @@ const BookingPage: React.FC = () => {
     }, []);
 
     return (
-        <div className="bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
             <div className="max-w-6xl mx-auto py-12 px-4">
                 <div className="text-center mb-10">
-                    <h1 className="text-4xl font-extrabold text-gray-900">Book Your Spot</h1>
-                    <p className="mt-2 text-lg text-gray-600">for {course?.name || 'our amazing course'}</p>
+                    <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">Book Your Spot</h1>
+                    <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">for {course?.name || 'our amazing course'}</p>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     <div className="lg:col-span-2 bg-white rounded-lg shadow-xl p-8 space-y-10">
                         <section>
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">1. Your Contact Information</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div><label className="block text-sm font-medium text-gray-700">Full Name</label><input value={contactName} onChange={e => setContactName(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500" /></div>
-                                <div><label className="block text-sm font-medium text-gray-700">Email Address</label><input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500" /></div>
-                                <div><label className="block text-sm font-medium text-gray-700">Phone Number</label><input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500" /></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 dark:text-gray-100">
+                                <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Full Name</label><input value={contactName} onChange={e => setContactName(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Email Address</label><input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Phone Number</label><input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" /></div>
                             </div>
                         </section>
 
@@ -315,18 +315,18 @@ const BookingPage: React.FC = () => {
                                     <div key={p.id} className="p-4 border rounded-lg bg-gray-50/50 relative">
                                         <h3 className="font-semibold text-lg mb-4">Participant #{index + 1}</h3>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <div><label className="text-sm font-medium">First Name</label><input value={p.firstName} onChange={e => handleParticipantChange(index, 'firstName', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3" /></div>
-                                            <div><label className="text-sm font-medium">Last Name</label><input value={p.lastName} onChange={e => handleParticipantChange(index, 'lastName', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3" /></div>
-                                            <div><label className="text-sm font-medium">Date of Birth</label><input type="date" value={p.dateOfBirth} onChange={e => handleParticipantChange(index, 'dateOfBirth', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3" /></div>
-                                            <div><label className="text-sm block font-medium">Skill Level</label><select value={p.skillLevel} onChange={e => handleParticipantChange(index, 'skillLevel', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+                                            <div><label className="text-sm font-medium text-gray-900 dark:text-gray-100">First Name</label><input value={p.firstName} onChange={e => handleParticipantChange(index, 'firstName', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" /></div>
+                                            <div><label className="text-sm font-medium text-gray-700 dark:text-gray-100">Last Name</label><input value={p.lastName} onChange={e => handleParticipantChange(index, 'lastName', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" /></div>
+                                            <div><label className="text-sm font-medium text-gray-700 dark:text-gray-100">Date of Birth</label><input type="date" value={p.dateOfBirth} onChange={e => handleParticipantChange(index, 'dateOfBirth', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" /></div>
+                                            <div><label className="text-sm block font-medium text-gray-700 dark:text-gray-100">Skill Level</label><select value={p.skillLevel} onChange={e => handleParticipantChange(index, 'skillLevel', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
                                             <div className="hidden">
-                                                <label className="text-sm font-medium">Hours Required per Day</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-100">Hours Required per Day</label>
                                                 <select value={p.dailyHours || ''} onChange={e => handleParticipantChange(index, 'dailyHours', Number(e.target.value))} className="mt-1 block w-full rounded-md border border-gray-300 p-3">
                                                     <option value="">Select hours</option>
                                                     {[...Array(12)].map((_, i) => (<option key={i + 1} value={i + 1}>{i + 1} Hour{i > 0 ? 's' : ''}</option>))}
                                                 </select>
                                             </div>
-                                            <div className="sm:col-span-2"><label className="text-sm font-medium">Medical Notes</label><textarea value={p.medicalNotes} onChange={e => handleParticipantChange(index, 'medicalNotes', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 p-3" rows={2}></textarea></div>
+                                            <div className="sm:col-span-2"><label className="text-sm font-medium text-gray-700 dark:text-gray-100">Medical Notes</label><textarea value={p.medicalNotes} onChange={e => handleParticipantChange(index, 'medicalNotes', e.target.value)} className="mt-1 block w-full rounded-md border border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" rows={2}></textarea></div>
                                         </div>
                                         {participants.length > 1 && (<button onClick={() => removeParticipant(p.id)} className="absolute top-4 right-4 text-red-500 hover:text-red-700"><TrashIcon /></button>)}
                                     </div>
@@ -338,8 +338,8 @@ const BookingPage: React.FC = () => {
                         <section>
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">3. Select Booking Dates</h2>
                             <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">Available Schedules</label>
-                                <select value={selectedScheduleId || ''} onChange={e => setSelectedScheduleId(Number(e.target.value))} className="mt-1 block w-full md:w-1/2 rounded-md border-gray-300 shadow-sm p-3">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Available Schedules</label>
+                                <select value={selectedScheduleId || ''} onChange={e => setSelectedScheduleId(Number(e.target.value))} className="mt-1 block w-full md:w-1/2 rounded-md border-gray-300 shadow-sm p-3 dark:text-gray-100">
                                     <option value="">-- Select a Schedule --</option>
                                     {schedules.map(s => <option key={s.schedule_id} value={s.schedule_id}>{s.scheduleName}</option>)}
                                 </select>
@@ -347,7 +347,7 @@ const BookingPage: React.FC = () => {
                             <div className="bg-white p-4 rounded-md border">
                                 <div className="flex items-center justify-between mb-4">
                                     <button onClick={handlePrevMonth} className="p-2 rounded-full hover:bg-gray-100"><ChevronLeftIcon /></button>
-                                    <h3 className="text-lg font-semibold">{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
+                                    <h3 className="text-lg font-semibold dark:text-gray-100">{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
                                     <button onClick={handleNextMonth} className="p-2 rounded-full hover:bg-gray-100"><ChevronRightIcon /></button>
                                 </div>
                                 <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500">
@@ -371,7 +371,7 @@ const BookingPage: React.FC = () => {
                                         }
                                         
                                         return (
-                                            <div key={dayString} onClick={() => isAvailable && isFutureOrToday && handleDateSelect(dayString)} className={`p-2 border rounded-md h-16 flex flex-col justify-center items-center text-sm transition-colors ${dayClass}`}>
+                                            <div key={dayString} onClick={() => isAvailable && isFutureOrToday && handleDateSelect(dayString)} className={`p-2 border rounded-md h-16 flex flex-col justify-center items-center text-sm transition-colors ${dayClass} dark:bg-gray-800 dark:text-gray-100`}>
                                                 <span>{day.getDate()}</span>
                                                 {slot && (
                                                     <span className="text-xs">
@@ -387,14 +387,14 @@ const BookingPage: React.FC = () => {
                     </div>
 
                     <div className="lg:col-span-1">
-                         <div className="bg-white rounded-lg shadow-xl p-6 sticky top-24">
-                           <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4">Booking Summary</h3>
+                         <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6 sticky top-24">
+                           <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4 dark:text-gray-100">Booking Summary</h3>
                            <div className="space-y-3 text-sm">
-                               <div className="flex justify-between"><span>Course:</span><span className="font-semibold">{course?.name}</span></div>
-                               <div className="flex justify-between"><span>Participants:</span><span className="font-semibold">{participants.length}</span></div>
-                               <div className="flex justify-between"><span>Dates Selected:</span><span className="font-semibold">{selectedDates.size}</span></div>
+                               <div className="flex justify-between text-gray-700 dark:text-gray-100"><span>Course:</span><span className="font-semibold">{course?.name}</span></div>
+                               <div className="flex justify-between text-gray-700 dark:text-gray-100"><span>Participants:</span><span className="font-semibold">{participants.length}</span></div>
+                               <div className="flex justify-between text-gray-700 dark:text-gray-100"><span>Dates Selected:</span><span className="font-semibold">{selectedDates.size}</span></div>
                                <div className="border-t my-2"></div>
-                               <div className="flex justify-between font-semibold text-gray-700"><span>Subtotal:</span><span>${priceDetails.subtotal.toFixed(2)}</span></div>
+                               <div className="flex justify-between font-semibold text-gray-700 dark:text-gray-100"><span>Subtotal:</span><span>${priceDetails.subtotal.toFixed(2)}</span></div>
                                
                                <div className="pt-4 space-y-2">
                                    <div className="flex gap-2">

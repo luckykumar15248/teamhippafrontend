@@ -156,6 +156,7 @@ export default function About() {
                 width={100}
                 height={100}
                 className="rounded-lg shadow-lg w-full h-auto object-cover max-h-96"
+                
               />
             </div>
           </div>
