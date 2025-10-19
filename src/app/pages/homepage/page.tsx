@@ -35,7 +35,7 @@ export default function HomePage() {
             Join us
           </p>
           <h2 className="text-4xl sm:text-5xl font-semibold text-white mb-4">
-            Join the Best Tennis Academy in Arizona | Personalized Coaching with an Exclusive Deal!
+           Join the Best Tennis Academy in USA | Personalized Coaching with an Exclusive Deal!
           </h2>
           <Button
             onClick={handelJoinClicked}

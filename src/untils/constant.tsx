@@ -394,6 +394,41 @@ export const GILBERT_FAQS = [
   },
 ];
 
+export const ARIZONA_TENNIS_ACADEMY = [
+  {
+    question: "What locations in Arizona do you serve?",
+    answer:
+      "Our primary training facilities are conveniently located to serve players throughout the Valley, with a focus on Phoenix and Gilbert. We welcome players from neighboring communities, including Chandler, Mesa, and Scottsdale.",
+  },
+  {
+    question: "Can I take both tennis and pickleball lessons at Team Hippa?",
+    answer:
+      "Absolutely! We are one of the few academies in Arizona that specializes in both sports. Many of our players enjoy training in both, as the skills are complementary. Switching between tennis and pickleball is a great way to improve your overall racquet skills and have more fun on the court.",
+  },
+  {
+    question: "What is your policy for bad weather, like extreme heat or rain?",
+    answer:
+      "Your safety is our priority. In cases of extreme heat, rain, or other unsafe weather conditions, we will cancel the session and notify you as early as possible. We will then work with you to schedule a make-up class at a convenient time.",
+  },
+  {
+    question: "What types of tennis lessons are available in Gilbert?",
+    answer:
+      "Team Hippa offers extensive group programs, private lessons, semi-private, as well as focused hitting sessions. We cater to all ages (kids, teens, adults, seniors) and skill levels (beginner, intermediate, advanced).",
+  },
+  {
+    question: "How do I know which group/level to attend?",
+    answer:
+      "You can contact us directly and we'll help to match you with the right group, based on your experience.",
+  },
+  {
+    question:
+      "Are there options for kids and junior tennis lessons in Gilbert?",
+    answer:
+      "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
+  }
+  
+];
+
 export const WINTER_CAMP_FAQS = [
   {
     question: "What is the Winter Tennis Camp all about?",
