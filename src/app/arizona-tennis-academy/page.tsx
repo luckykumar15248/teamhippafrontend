@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamhippa.com';
   return {
     title: "Arizona Tennis Academy | Arizona Tennis Coaching & Camps",
-    description: "Join Team Hippa’s top Arizona Tennis Academy. Premium youth and adult lessons, clinics, private coaching, camps, and leagues in Phoenix and Gilbert. Book a class today!",
+    description: "Join Team Hippa top Arizona Tennis Academy. Premium youth and adult lessons, clinics, private coaching, camps, and leagues in Phoenix and Gilbert. Book a class today!",
     keywords: "Arizona tennis coaching, Phoenix tennis academy, pickleball lessons Arizona, Gilbert tennis classes, Scottsdale tennis camps, tennis trainers Arizona, youth tennis programs",
     alternates: {
       canonical: '/arizona-tennis-academy',
