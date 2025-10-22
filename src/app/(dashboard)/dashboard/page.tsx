@@ -76,6 +76,13 @@ const adminDashboardLinks = [
     icon: <WaitlistIcon className="text-black min-w-5 min-h-5"/>,
   },
 
+  {
+    href: "/admin/tournaments-management",
+    label: "Tournment Management",
+    description: "Team Hippa Tournment",
+    icon: <WaitlistIcon className="text-black min-w-5 min-h-5"/>,
+  }
+
   
 ];
 

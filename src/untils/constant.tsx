@@ -18,7 +18,8 @@ export const NAV_LINKS = [
   { href: "/sports/pickleball", label: "Pickleball" },
   { href: "/packages", label: "Packages" },
   { href: "/gallery", label: "Gallery" },
-   { href: "/blog", label: "Blog" },
+  { href: "/blog", label: "Blog" },
+  { href: "/tournaments", label: "Tournaments" },
   { href: "/about-us", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ];
@@ -45,11 +46,11 @@ export const SOCIAL_LINKS = [
 export const SLIDES_IMG = [
   
   {
-    image: "",
+    image: "/images/tennis-winter-camp.jpg",
     heading: "UPCOMING Winter Tennis Camp 2025",
     subtext: "Find the best Winter Tennis Camp 2025 in the USA 2025.",
     buttonText: "View Details",
-    url : "https://teamhippa.com//winter-camp",
+    url : "https://teamhippa.com/winter-camp",
   },
   {
     image: "/images/junior-summer.jpeg",
@@ -510,29 +511,35 @@ export const SUMMER_CAMP_FAQS = [
 
 export const SCHEDULE = [
   {
-    time: "8:00 AM",
-    title: "Warm Up & Fitness",
-    desc: "Stretching, cardio drills, and fun games to get players moving.",
+    time: "9:00 AM",
+    title: "Warm Up and Tennis Training",
+    desc: "Focus on Drills, Technique, and Strategy",
     icon: "🏃",
   },
   {
-    time: "10:00 AM",
-    title: "Skill Development",
-    desc: "Focused coaching sessions tailored for each skill level.",
+    time: "10:30 AM",
+    title: "Fitness",
+    desc: "We utilize an indoor gym and provide a tailored Fitness program for each player",
     icon: "🎾",
   },
   {
-    time: "1:00 PM",
-    title: "Match Play",
-    desc: "Friendly matches & guided strategy sessions to boost confidence.",
+    time: "11:30 AM",
+    title: "Lunch Break",
+    desc: "Included in Camp Fee",
     icon: "🏆",
   },
   {
-    time: "4:00 PM",
-    title: "Cool Down & Fun",
-    desc: "Relaxation, group activities, and team-building games.",
+    time: "12:30 PM",
+    title: "Match play and Competition",
+    desc: "Players will compete against each other, with a tournament at the end of the week with prizes.",
     icon: "🌅",
   },
+  {
+    time: "2:00 PM",
+    title: "Cooldown and Pick-Up",
+    desc: "Transportation Available both ways from Scottsdale, Phoenix and PV (Surcharge)",
+    icon: "🌅",
+  }
 ];
 export const CAMP_FEATURES = [
   {

@@ -408,7 +408,7 @@ const BookingPage: React.FC = () => {
                                <div className="flex justify-between text-xl font-bold text-gray-900"><span>Total:</span><span>${priceDetails.finalPrice.toFixed(2)}</span></div>
                            </div>
                            <button onClick={handleSubmit} disabled={isSubmitting || selectedDates.size === 0} className="w-full mt-6 bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400">
-                               {isSubmitting ? 'Processing...' : 'Confirm & Book'}
+                               {isSubmitting ? 'Processing...' : 'Continue to Payment'}
                            </button>
                         </div>
                     </div>

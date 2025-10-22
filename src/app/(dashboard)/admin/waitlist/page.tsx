@@ -237,6 +237,7 @@ const AdminWaitlistPage: React.FC = () => {
                 <option value="">All Sports</option>
                 <option value="Pickleball">Pickleball</option>
                 <option value="Tennis">Tennis</option>
+                 <option value="Winter Camp">Winter Camp</option>
             </select>
             <select name="status" value={filters.status} onChange={handleFilterChange} className="p-2 border rounded-md">
                 <option value="">All Statuses</option>

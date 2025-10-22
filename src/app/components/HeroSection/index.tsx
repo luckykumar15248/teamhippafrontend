@@ -15,8 +15,9 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-  const handelBookNow = () => {
-    router.push("/book-now");
+   const handleBookNow = (url: string) => {
+    if (url) router.push(url);
+    else router.push("/book-now"); // fallback route
   };
   return (
     <>
@@ -54,11 +55,11 @@ export default function HeroSection() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent p-6 text-white flex flex-col justify-center">
                   <h3 className="text-3xl font-bold mb-2">{slide.heading}</h3>
                   <p className="text-lg font-medium mb-4">{slide.subtext}</p>
-                  <Button
-                    onClick={handelBookNow}
-                    className="text-white px-4 py-2 rounded w-fit"
+                 <Button
+                  onClick={() => handleBookNow(slide.url ?? "/book-now")}
+                  className="text-white px-4 py-2 rounded w-fit"
                   >
-                    {slide.buttonText}
+                  {slide.buttonText}
                   </Button>
                 </div>
               </div>

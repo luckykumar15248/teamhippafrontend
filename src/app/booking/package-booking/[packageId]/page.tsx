@@ -484,7 +484,7 @@ const PackageBookingPage: React.FC = () => {
                                 disabled={isSubmitting || !isBookingValid || !selectedScheduleId || !isScheduleActive} 
                                 className="w-full mt-6 bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                             >
-                                {isSubmitting ? 'Processing...' : 'Confirm & Book Package'}
+                                {isSubmitting ? 'Processing...' : 'Continue to Payment'}
                             </button>
                         </div>
                     </div>

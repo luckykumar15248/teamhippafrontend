@@ -591,7 +591,7 @@ const CheckoutPage: React.FC = () => {
             Complete Your Booking
           </h1>
           <p className="mt-3 text-xl text-gray-600">
-            Secure payment for your reservation in Gilbert, AZ
+            Secure payment for your reservation
           </p>
         </div>
 
