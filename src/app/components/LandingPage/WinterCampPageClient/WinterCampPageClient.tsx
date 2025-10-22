@@ -63,7 +63,7 @@ export default function WinterCampPageClient() {
         showCallButton
       />
 
-      {/* Your camp info, schedule, amenities, FAQ, etc. */}
+      {/* Your camp info, schedule, amenities, FAQ, etc. 
       
       <section className="w-full bg-gray-white py-4 sm:py-8 md:py-12 px-6 lg:px-16">
                 <div className="mx-auto max-w-screen-2xl">
@@ -92,7 +92,7 @@ export default function WinterCampPageClient() {
                         makes every swing a step closer to success.
                       </p>
       
-                      {/* Tab Navigation */}
+                   
                       <div className="flex border-b border-gray-300 mb-6">
                         <span
                           className={`py-2 px-4 text-lg font-medium rounded-t-lg transition-colors duration-300
@@ -129,13 +129,12 @@ export default function WinterCampPageClient() {
                         </span>
                       </div>
       
-                      {/* Tab Content */}
+                    
                       <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200">
                         {renderTabContent()}
                       </div>
                     </div>
       
-                    {/* Right Column: Image */}
                     <div className="lg:w-1/2 w-full flex justify-center items-center p-4 bg-[#b0db72] rounded-lg">
                       <Image
                         src="/images/our-story.png"
@@ -148,6 +147,7 @@ export default function WinterCampPageClient() {
                   </div>
                 </div>
               </section>
+              */}
               <section className="py-12 px-6 lg:px-16 bg-gradient-to-r from-[#b0db72] to-[#64a506] text-white">
                 <div className="max-w-screen-xl mx-auto text-center">
                   <h3 className="text-3xl sm:text-5xl font-semibold mb-8">

@@ -7,8 +7,8 @@ import Script from "next/script";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "SportsOrganization",
-  "name": "Team Hippa Tennis Academy in Arizona, USA",
-  "description": "A top Tennis Academy in Arizona, USA offering expert coaching and training for players of all ages and levels in Gilbert, AZ and Phoenix, AZ.  Join us to elevate your game!",
+  "name": "Team Hippa Tennis Academy",
+  "description": "A top Tennis Academy in USA offering tennis lessons and expert coaching and training for players of all ages and levels in Gilbert, AZ and Phoenix, AZ.  Join us to elevate your game!",
   "url": "https://teamhippa.com",
   "logo": "https://teamhippa.com/images/logo-big.png",
   "telephone": "+1-602-341-3361",
@@ -22,20 +22,20 @@ const structuredData = {
 };
 
 export const metadata: Metadata = {
-  title: 'Team Hippa | Tennis Academy in Arizona, USA | Best Tennis Training, AZ, USA',
-  description: 'Team Hippa is a top Tennis Academy in the Arizona, USA offering expert coaching and training for players of all levels in Gilbert, AZ and Phoenix, AZ.',
-  keywords: 'tennis academy usa,tennis academy Gilbert, tennis academy Phoenix, tennis academy in AZ, tennis academy usa tennis training, tennis coaching, team hippa, youth tennis, adult tennis',
+  title: 'Tennis Lessons in Gilbert & Phoenix AZ | Team Hippa Tennis Academy',
+  description: 'Team Hippa is a top Tennis Academy in the USA offering tennis lessons & expert coaching and training for players of all levels in Gilbert, AZ and Phoenix, AZ. Book your spot today!',
+  keywords: 'tennis academy usa, tennis academy Gilbert, tennis academy Phoenix, tennis academy in AZ, tennis academy usa tennis training, tennis coaching, team hippa, youth tennis, adult tennis, tennis lessons gilbert, tennis lessons phoenix, tennis coaching AZ, adult tennis lessons, junior tennis lessons, private tennis coaching, Team Hippa tennis',
   openGraph: {
-    title: 'Tennis Academy in Arizona, USA | Best Tennis Training | Team Hippa',
-    description: 'Team Hippa is a top Tennis Academy in the USA offering expert coaching and training for players of all levels.',
+    title: 'Tennis Lessons | Best Tennis Training | Team Hippa Tennis Academy',
+    description: 'Team Hippa is a top Tennis Academy in the USA offering expert coaching and training for players of all levels. Book your spot today!',
     url: 'https://teamhippa.com',
     type: 'website',
     images: [{ url: 'https://teamhippa.com/images/home.png' }]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Tennis Academy in Arizona, USA | Best Tennis Training | Team Hippa',
-    description: 'Team Hippa is a top Tennis Academy in the Arizona, USA offering expert coaching for all levels.',
+    title: 'Tennis Lessons in Gilbert & Phoenix AZ | Team Hippa Tennis Academy',
+    description: 'Team Hippa is a top Tennis Academy in USA offering expert coaching and Tennis Lessons for all levels. Book your spot today!',
     images: ['https://teamhippa.com/images/home.png'],
   },
   robots: {

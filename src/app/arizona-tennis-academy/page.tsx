@@ -19,14 +19,14 @@ const frontendServerUrl = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL;
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://teamhippa.com';
   return {
-    title: "Arizona Tennis Academy | Arizona Tennis Coaching & Camps",
-    description: "Join Team Hippa top Arizona Tennis Academy. Premium youth and adult lessons, clinics, private coaching, camps, and leagues in Phoenix and Gilbert. Book a class today!",
-    keywords: "Arizona tennis coaching, Phoenix tennis academy, pickleball lessons Arizona, Gilbert tennis classes, Scottsdale tennis camps, tennis trainers Arizona, youth tennis programs",
+    title: "Tennis Lessons in Arizona | Tennis Coaching & Camps | Team Hippa Tennis Academy",
+    description: "Join Team Hippa top Arizona Tennis Academy. Premium youth and adult tennis lessons, clinics, private coaching, camps, and leagues in Phoenix and Gilbert. Book a Tennis class today!",
+    keywords: "Arizona tennis coaching, Phoenix tennis academy, pickleball lessons Arizona, Gilbert tennis classes, Scottsdale tennis camps, tennis trainers Arizona, youth tennis programs, tennis lessons gilbert, tennis lessons phoenix, tennis coaching AZ, adult tennis lessons, junior tennis lessons, private tennis coaching, Team Hippa tennis, tennis clinics Arizona",
     alternates: {
       canonical: '/arizona-tennis-academy',
     },
     openGraph: {
-      title: "Arizona Tennis Academy | Team Hippa",
+      title: "Tennis Lessons in Arizona | Team Hippa Tennis Academy",
       description: "Elite tennis lessons, clinics, camps, and private coaching in Arizona. Phoenix, Gilbert locations.",
       url: `${baseUrl}/arizona-tennis-academy`,
       siteName: "Team Hippa Tennis Academy",
@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Arizona Tennis Academy | Team Hippa",
+      title: "Tennis Lessons in Arizona | Team Hippa Tennis Academy",
       description: "Arizona’s best tennis training for youth and adults.",
       images: ["/images/arizona-tennis-academy.jpg"],
     },
@@ -67,7 +67,7 @@ function generateStructuredData() {
       {
         "@type": "SportsActivityLocation",
         "@id": `${baseUrl}/arizona-tennis-academy`,
-        name: "Arizona Tennis Academy – Team Hippa",
+        name: "Tennis Lessons in Arizona | Tennis Coaching & Camps | Team Hippa Tennis Academy",
         description: "Premier tennis coaching, lessons, and camps across Phoenix,and Gilbert, Arizona.",
         url: `${baseUrl}/arizona-tennis-academy`,
         telephone: "+1-602-341-3361",
