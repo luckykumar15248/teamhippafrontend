@@ -395,6 +395,55 @@ export const GILBERT_FAQS = [
   },
 ];
 
+export const PHOENIX_JUNIOR_FAQS = [
+  {
+    question: "What should my child bring to their first tennis lesson?",
+    answer:
+      "For the first class, bring comfortable athletic clothing, tennis shoes, a water bottle, and sunscreen. We provide racquets and tennis balls for beginner classes, so no need to buy equipment right away. Our coaches can also help recommend the right racquet size once your child joins."
+  },
+  {
+    question: "How do I know which junior tennis program is right for my child?",
+    answer:
+      "We recommend starting with a free trial class, where our coaches can assess your child's skill level and suggest the perfect program. Age and experience are both considered when placing players into the right group."
+  },
+  {
+    question: "Do you offer private or semi-private tennis lessons for kids?",
+    answer:
+      "Yes! We offer both private and semi-private junior tennis lessons for players seeking individualized attention or faster skill development. These can complement our group programs or be taken on their own."
+  },
+  {
+    question: "What is your class cancellation or rescheduling policy?",
+    answer:
+      "We offer flexible rescheduling with at least 24-hour notice. For monthly programs, make-up classes are available if your child misses a session due to illness, travel, or other conflicts."
+  },
+  {
+    question: "What happens in case of rain or extreme heat in Phoenix?",
+    answer:
+      "Your child's safety is our top priority. We monitor weather closely—if classes need to be canceled due to rain or extreme heat, we’ll notify families at least one hour in advance via email and our app. At Rose Mofford, we also have access to indoor facilities, and make-up sessions or credits will be arranged."
+  },
+  {
+    question: "My child is a complete beginner. Which class should we choose?",
+    answer:
+      "Our 'Tots (Ages 4–6)' and 'Beginners (Ages 7–10)' programs are ideal for new players. They focus on fun, coordination, and basic tennis skills, helping your child build confidence and enjoy the game from day one."
+  },
+  {
+    question: "What is the coach-to-player ratio in your junior classes?",
+    answer:
+      "We keep classes small to ensure quality instruction and personalized feedback. Our junior programs typically maintain a 1:4–6 coach-to-player ratio, so every child receives the attention they need to improve."
+  },
+  {
+    question: "Do you offer competitive or advanced junior tennis programs?",
+    answer:
+      "Yes, we have advanced and pre-competitive junior programs for players who are ready to take their skills to the next level. These focus on match play, strategy, and tournament preparation under professional guidance."
+  },
+  {
+    question: "Where are your junior tennis lessons held in Phoenix?",
+    answer:
+      "Most of our junior programs take place at the Rose Mofford Sports Complex and nearby partner courts in Phoenix. Specific location details will be shared upon registration."
+  }
+];
+
+
 export const ARIZONA_TENNIS_ACADEMY = [
   {
     question: "What locations in Arizona do you serve?",
@@ -439,32 +488,33 @@ export const WINTER_CAMP_FAQS = [
   {
     question: "Who can join the Winter Tennis Camp?",
     answer:
-      "The camp is open to players of all ages and skill levels – kids, teens, and adults. Beginners, intermediate, and advanced players are all welcome.",
+      "The camp is open to juniors of all ages and skill levels – Whether you are a beginner, experienced, or advanced player, everyone is are all welcome.",
   },
   {
     question: "Where will the camp take place?",
     answer:
-      "The camp will be held at City Tennis Academy, New Delhi, with world-class facilities including multiple courts, fitness areas, and a recreational lounge.",
+      "The camp will be held at the Freestone Rec Center in Gilbert, AZ. Besides the tennis courts, we have access to an entire indoor facility featuring a Gym, climbing wall, pool tables, break rooms, and more. Perfect for kids to enjoy their time, even during lunch break.",
   },
   {
     question: "What are the dates for the camp?",
     answer:
-      "The Winter Camp runs from December 15th to December 30th, 2025. You can choose full camp participation or join on selected days.",
+      "The Winter Camp runs in two separate weeks from Dec 22 - 24th (3 days), and Dec 29 - Jan 2 (excl. Jan 1)(4 days)",
   },
   {
     question: "What is included in the camp fee?",
-    answer:
-      "The fee covers professional coaching, fitness training, match play, fun activities, camp t-shirt, and refreshments. Accommodation and meals are available as add-ons.",
+    answer:   "The fee covers tennis training, fitness training, lunch and access to the Rec center.",
   },
   {
     question: "How do I register for the camp?",
-    answer:
-      "You can register directly on our website by clicking the 'Register Now' button or by contacting our academy via phone/email. Early bird discounts are available for advance bookings.",
+    answer:    "You can register directly on our website by clicking the 'Register Now' button or by contacting our academy via phone/email.",
   },
   {
-    question: "Do you offer private lessons during the camp?",
-    answer:
-      "Yes, players can book additional private or semi-private lessons with our coaches during the camp for more focused training.",
+ question: "Is a daily drop-in possible?",
+ answer: "Yes. For daily drop-ins, please contact us directly to sign up for your requested dates.",
+  },
+  {
+ question: "Will there be transportation?",
+ answer: "Transportation will be offered for a surcharge for select locations in Phoenix and Scottsdale. To book transportation, please select it during the checkout process.",
   },
 ];
 
@@ -562,5 +612,17 @@ export const CAMP_FEATURES = [
     title: "Fun & Awards",
     desc: "Trophies, medals & a fun closing ceremony.",
   },
+];
+
+export const PHOENIX_COURSES = [
+  {
+    id: 27,
+    title: "Junior Beginners | Phoenix",
+    description: "Start from the basics and learn the game.",
+    ageRange: "Up to 18",
+    image: "/images/tennis-journey.jpeg",
+    courseURL: "/book-now/courses/junior-beginners-phoenix",
+  },
+  // ...other courses
 ];
 

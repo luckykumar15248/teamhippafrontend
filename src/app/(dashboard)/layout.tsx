@@ -122,6 +122,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className, onClose }) => {
       label: "Blog Media Management", 
       icon: <WaitlistIcon />,
     },
+    {
+      href: "/admin/camps",
+      label: "Camps Management", 
+      icon: <WaitlistIcon />,
+    },
   ];
 
   const userLinks = [

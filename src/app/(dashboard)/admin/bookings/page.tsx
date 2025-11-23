@@ -41,7 +41,7 @@ interface AdminBookingDetails {
     paymentTransactions: AdminPaymentTransaction[];
     
     // Unified Fields
-    bookingType: 'COURSE' | 'PACKAGE';
+    bookingType: 'COURSE' | 'PACKAGE' | 'CAMP';
     itemName: string;
     bookedDates?: string[];
     includedCourses?: string[];
@@ -385,6 +385,7 @@ const AdminAllBookingsPage: React.FC = () => {
                         <option value="">All Types</option>
                         <option value="COURSE">Course</option>
                         <option value="PACKAGE">Package</option>
+                        <option value="CAMP">Camp</option>
                     </select>
 
                      <div>

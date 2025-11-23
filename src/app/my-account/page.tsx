@@ -526,8 +526,11 @@ const UserDashboardPage: React.FC = () => {
 
       setUser(profileRes.data);
       setAllUpcomingBookings(upcomingRes.data || []);
+      console.log("Upcoming Bookings:", upcomingRes.data);
       setAllPastBookings(pastRes.data || []);
+      console.log("Past Bookings:", pastRes.data);
       setPackages(packagesRes.data || []);
+      console.log("Purchased Packages:", packagesRes.data);
       setNotifications(notificationsRes.data || []);
     } catch {
       toast.error("Could not load all dashboard data.");
@@ -554,6 +557,31 @@ const UserDashboardPage: React.FC = () => {
     },
     [apiUrl]
   );
+
+  const fetchAvailableDatesForMonth = async (scheduleId: number, month: Date) => {
+    setIsCalendarLoading(true);
+    try {
+      const year = month.getFullYear();
+      const monthNum = month.getMonth() + 1;
+      const response = await axios.get(
+        `${apiUrl}/api/public/booking-data/availability/schedule/${scheduleId}`,
+        {
+          params: { year, month: monthNum },
+        }
+      );
+      setAvailableDates(response.data || []);
+    } catch {
+      toast.error("Could not load available dates for this schedule.");
+      setAvailableDates([]);
+    } finally {
+      setIsCalendarLoading(false);
+    }
+  };
+
+  const fetchAvailableDates = async (scheduleId: number) => {
+    if (!scheduleId) return;
+    await fetchAvailableDatesForMonth(scheduleId, currentMonth);
+  };
 
   const handleMarkNotificationAsRead = async (id: number) => {
     const headers = getAuthHeaders();
@@ -664,27 +692,6 @@ const UserDashboardPage: React.FC = () => {
     }
   };
 
-  const fetchAvailableDates = async (scheduleId: number) => {
-    if (!scheduleId) return;
-    setIsCalendarLoading(true);
-    try {
-      const year = currentMonth.getFullYear();
-      const month = currentMonth.getMonth() + 1;
-      const response = await axios.get(
-        `${apiUrl}/api/public/booking-data/availability/schedule/${scheduleId}`,
-        {
-          params: { year, month },
-        }
-      );
-      setAvailableDates(response.data || []);
-    } catch {
-      toast.error("Could not load available dates for this schedule.");
-      setAvailableDates([]);
-    } finally {
-      setIsCalendarLoading(false);
-    }
-  };
-
   const handleScheduleSubmit = async () => {
     if (
       !selectedPackage ||
@@ -763,27 +770,37 @@ const UserDashboardPage: React.FC = () => {
   }, [currentMonth]);
 
   const handlePrevMonth = () => {
-    const prevMonth = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth() - 1,
-      1
-    );
-    setCurrentMonth(prevMonth);
-    if (selectedScheduleId) {
-      fetchAvailableDates(selectedScheduleId);
-    }
+    setCurrentMonth(prevMonth => {
+      const newMonth = new Date(
+        prevMonth.getFullYear(),
+        prevMonth.getMonth() - 1,
+        1
+      );
+      
+      // Fetch after state is guaranteed to be updated
+      if (selectedScheduleId) {
+        fetchAvailableDatesForMonth(selectedScheduleId, newMonth);
+      }
+      
+      return newMonth;
+    });
   };
 
   const handleNextMonth = () => {
-    const nextMonth = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth() + 1,
-      1
-    );
-    setCurrentMonth(nextMonth);
-    if (selectedScheduleId) {
-      fetchAvailableDates(selectedScheduleId);
-    }
+    setCurrentMonth(prevMonth => {
+      const newMonth = new Date(
+        prevMonth.getFullYear(),
+        prevMonth.getMonth() + 1,
+        1
+      );
+      
+      // Fetch after state is guaranteed to be updated
+      if (selectedScheduleId) {
+        fetchAvailableDatesForMonth(selectedScheduleId, newMonth);
+      }
+      
+      return newMonth;
+    });
   };
 
   if (isLoading || !user) {
@@ -1051,8 +1068,8 @@ const UserDashboardPage: React.FC = () => {
       </div>
 
       {isScheduleModalOpen && selectedPackage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
+       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-screen overflow-y-auto">
             <h3 className="text-xl font-bold mb-4">
               Schedule a Class from {selectedPackage.packageName}
             </h3>

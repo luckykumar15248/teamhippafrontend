@@ -16,31 +16,30 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import SportsHeroSection from '../../../components/SportsHeroSection';
 import FAQ from '../../../components/FAQ';
-import { Button } from '../../../components/Button';
 
 import WaitlistForm from '../../../components/WaitlistForm/WaitlistForm';
 import { Waitlist } from '../../WaitList';
+import WinterCampShortDetails from '../../../components/WinterCampShortDetails/WinterCampShortDetails';
 import {
-  WINTER_CAMP_FAQS,
+ WINTER_CAMP_FAQS,
   PROGRAMS_MASTER,
   SCHEDULE,
   CAMP_FEATURES,
 } from "@/untils/constant";
+import Link from "next/link";
 export default function WinterCampPageClient() {
-  const [activeTab, setActiveTab] = useState('history');
+ // const [activeTab, , setActiveTab}] = useState('history');
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
     const facilities = [
-  { src: "/images/courts-one.jpg", title: "Indoor Clay Courts" },
-  { src: "/images/outdoor-tennis.jpg", title: "Outdoor Green Courts" },
+  { src: "/images/Freestone-Recreation-Center.jpg", title: "Freestone-Recreation-Center" },
+  { src: "/images/Freestone-Recreation-Center-indor-tennis.jpg", title: "Indoor Courts" },
+  { src: "/images/Freestone-Recreation-Center-outdoor-tennis-court.jpeg", title: "Outdoor Courts" },
   { src: "/images/gym-two.jpg", title: "High-Tech Training Arena" },
   { src: "/images/gym.jpg", title: "Fitness & Gym Area" },
 ];
 
 
-   const handleClick = () => {
-    alert('Registration Open Soon!');
-      window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  {/*
   const renderTabContent = () => {
     switch (activeTab) {
       case 'history':
@@ -52,7 +51,7 @@ export default function WinterCampPageClient() {
       default:
         return null;
     }
-  };
+  };*/}
 
   return (
     <>
@@ -62,6 +61,8 @@ export default function WinterCampPageClient() {
         description="Train with top coaches, improve your skills, and enjoy the winter vibes."
         showCallButton
       />
+
+      
 
       {/* Your camp info, schedule, amenities, FAQ, etc. 
       
@@ -148,31 +149,9 @@ export default function WinterCampPageClient() {
                 </div>
               </section>
               */}
-              <section className="py-12 px-6 lg:px-16 bg-gradient-to-r from-[#b0db72] to-[#64a506] text-white">
-                <div className="max-w-screen-xl mx-auto text-center">
-                  <h3 className="text-3xl sm:text-5xl font-semibold mb-8">
-                    Why Join Our Winter Camp?
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                    {CAMP_FEATURES.map((feature, index) => (
-                      <div
-                        key={index}
-                        className="p-6 bg-white/10 rounded-2xl shadow-md"
-                      >
-                        <span className="text-4xl flex justify-center">
-                          {feature.icon}
-                        </span>
-                        <h4 className="text-xl font-semibold mt-4">
-                          {feature.title}
-                        </h4>
-                        <p className="text-base sm:text-lg font-normal mt-2">
-                          {feature.desc}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
+
+              
+              <WinterCampShortDetails />
               <section className="bg-white w-full bg-gray-white py-4 sm:py-8 md:py-12 px-6 lg:px-16">
                 <div className="mx-auto max-w-screen-2xl">
                   <h3 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-14">
@@ -225,12 +204,15 @@ export default function WinterCampPageClient() {
                 </div>
               </section>
       
-              <section className="py-16 bg-gray-50">
-                <div className="w-full">
-                  <h2 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-12">
-                    Facilities
-                  </h2>
-                  <Swiper
+              <section className="max-w-7xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">
+        Facilities
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* Left Side — Swiper Image Carousel */}
+        <div className="w-full">
+          <Swiper
                     modules={[Navigation, Pagination]}
                     spaceBetween={20}
                     slidesPerView={1.2}
@@ -262,9 +244,54 @@ export default function WinterCampPageClient() {
                       </SwiperSlide>
                     ))}
                   </Swiper>
+        </div>
+
+        {/* Right Side — Google Map & Contact Info */}
+        <div className="space-y-6">
+          <div className="rounded-2xl overflow-hidden shadow-lg h-[300px]">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.7544773498735!2d-111.76679708696534!3d33.364119980101165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba92dac3c8385%3A0x67a5fd75b68390bb!2sFreestone%20Recreation%20Center!5e0!3m2!1sen!2sin!4v1762349687500!5m2!1sen!2sin" width="600" height="450" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-700">Contact Us</h3>
+            <p className="text-gray-600 mb-1">
+              📍 <strong>Address:</strong> 1141 E Guadalupe Rd, Gilbert, AZ 85234, United States
+            </p>
+            <p className="text-gray-600 mb-1">
+              📞 <strong>Phone:</strong> (+1) 602-341-3361
+            </p>
+            <p className="text-gray-600">
+              ✉️ <strong>Email:</strong> info@teamhippa.com
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+                    <section className="py-12 px-6 lg:px-16 bg-gradient-to-r from-[#b0db72] to-[#64a506] text-white">
+                <div className="max-w-screen-xl mx-auto text-center">
+                  <h3 className="text-3xl sm:text-5xl font-semibold mb-8">
+                    Why Join Our Winter Camp?
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                    {CAMP_FEATURES.map((feature, index) => (
+                      <div
+                        key={index}
+                        className="p-6 bg-white/10 rounded-2xl shadow-md"
+                      >
+                        <span className="text-4xl flex justify-center">
+                          {feature.icon}
+                        </span>
+                        <h4 className="text-xl font-semibold mt-4">
+                          {feature.title}
+                        </h4>
+                        <p className="text-base sm:text-lg font-normal mt-2">
+                          {feature.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </section>
-      
               <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-gray-100">
                 <div className="max-w-screen-2xl mx-auto">
                   <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-2">
@@ -331,12 +358,15 @@ export default function WinterCampPageClient() {
                   </p>
       
                   <div className="flex justify-center">
-                    <Button
-                      onClick={handleClick}
-                      className="bg-gray-100 !text-[#64a506] px-6 py-3 !rounded-full font-medium shadow-md hover:shadow-lg hover:bg-white transition-all duration-300"
-                    >
-                      Register Now
-                    </Button>
+                    
+                      <div className="flex justify-center mt-10">
+          <Link
+            href="https://teamhippa.com/booking/camp/tennis-winter-camp"
+            className="inline-block bg-[#64a506] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-[#538604] hover:shadow-xl transition-all duration-300"
+          >
+            Register Now
+          </Link>
+        </div>
                   </div>
                 </div>
               </section>
