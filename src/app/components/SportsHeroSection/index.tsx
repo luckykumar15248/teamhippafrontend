@@ -39,7 +39,7 @@ const SportsHeroSection = ({
         {showCallButton && (
           <div className="flex justify-center mt-5">
             <Link
-              href="tel:+1234567890"
+              href="tel:+16023413361"
               className="text-white px-4 py-2 bg-[#b0db72] hover:bg-[#64a506] rounded w-fit text-sm font-normal flex gap-2 items-center relative"
             >
               <PhoneIcon />

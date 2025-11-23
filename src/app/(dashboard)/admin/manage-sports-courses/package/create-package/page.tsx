@@ -488,7 +488,7 @@ const ManagePackagesPage: React.FC = () => {
           uploadFormData.append('files', source.file);
         });
         
-        const uploadResponse = await axios.post('api-frontend/upload', uploadFormData, {
+        const uploadResponse = await axios.post('/api-frontend/upload', uploadFormData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         
