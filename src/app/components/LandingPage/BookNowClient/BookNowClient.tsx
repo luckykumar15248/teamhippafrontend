@@ -414,7 +414,7 @@ router.push(`/book-now/courses/${course.slug}`);
 
           {groupedCourses.map(([categoryName, { courses: courseList }]) => (
             <section key={categoryName}>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900  dark:text-white mb-6">
                 {categoryName}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

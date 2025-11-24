@@ -77,7 +77,7 @@ const PackagesPage: React.FC = () => {
         title="Our Packages"
         description="Discover value-packed bundles that combine our best courses to accelerate your skills."
       />
-      <div className="space-y-12 container mx-auto sm:px-6 lg:px-8 py-4 sm:py-8 md:py-12">
+      <div className="space-y-12 container mx-auto sm:px-6 lg:px-8 py-4 sm:py-8 md:py-12 bg-white dark:bg-black">
         
         {/* --- LOCATION FILTER TABS --- */}
         <div className="mb-8 flex justify-center border-b border-gray-200">
@@ -88,8 +88,8 @@ const PackagesPage: React.FC = () => {
                         onClick={() => setSelectedLocation(location)}
                         className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg ${
                             selectedLocation === location
-                            ? 'border-indigo-500 text-indigo-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            ? 'border-[#64a506] text-[#64a506]'
+                            : 'border-transparent text-gray-500  hover:text-gray-700 hover:border-gray-300'
                         }`}
                     >
                         {location}
@@ -124,36 +124,36 @@ const PackagesPage: React.FC = () => {
         )}
       </div>
       
-      <section className="bg-gray-50 py-4 sm:py-8 md:py-12">
+      <section className="bg-gray-50 dark:bg-black  py-4 sm:py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-4">
+          <h2 className="text-4xl sm:text-5xl font-semibold text-black dark:text-white mb-4">
             Why Choose Our Packages?
           </h2>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-lg text-gray-600 dark:text-white mb-8">
             Our programs are carefully curated to meet the needs of beginners to
             advanced players. With certified coaches, flexible schedules, and
             personalized guidance, we ensure you progress confidently.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 bg-white dark:bg-black dark:border dark:border-white rounded-lg shadow">
               <h4 className="text-xl font-semibold mb-2">Certified Coaches</h4>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-white">
                 Train under experienced professionals with national and
                 international exposure.
               </p>
             </div>
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 bg-white dark:bg-black dark:border dark:border-white rounded-lg shadow">
               <h4 className="text-xl font-semibold mb-2">
                 Structured Curriculum
               </h4>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-white">
                 Progressive training plans tailored to your skill level and
                 goals.
               </p>
             </div>
-            <div className="p-6 bg-white rounded-lg shadow">
+            <div className="p-6 bg-white dark:bg-black dark:border dark:border-white rounded-lg shadow">
               <h4 className="text-xl font-semibold mb-2">Affordable Bundles</h4>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-white">
                 Get maximum value from competitively priced packages.
               </p>
             </div>
@@ -161,23 +161,23 @@ const PackagesPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white py-4 sm:py-8 md:py-12">
+      <section className="bg-white dark:bg-black py-4 sm:py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">Success Stories</h2>
-          <p className="text-lg text-gray-600 mb-10">
+          <h2 className="text-4xl sm:text-5xl font-semibold text-black dark:text-white mb-6">Success Stories</h2>
+          <p className="text-lg text-gray-600 dark:text-white mb-10">
             Hear from our students who trained with us and achieved their
             dreams.
           </p>
           <div className="grid md:grid-cols-2 gap-8 text-left">
-            <div className="p-6 bg-gray-100 rounded-lg">
-              <p className="text-gray-700 italic">
+            <div className="p-6 bg-gray-100 dark:bg-black dark:border dark:border-white rounded-lg">
+              <p className="text-gray-700 dark:text-white italic">
                 &quot;Joining this academy changed my game! I went from amateur to
                 tournament-ready in 6 months.&quot;
               </p>
               <p className="mt-4 font-semibold">— Rohan, Student</p>
             </div>
-            <div className="p-6 bg-gray-100 rounded-lg">
-              <p className="text-gray-700 italic">
+            <div className="p-6 bg-gray-100  dark:bg-black dark:border dark:border-white rounded-lg">
+              <p className="text-gray-700 dark:text-white italic">
                 &quot;Their customized packages helped my daughter train at her pace
                 while keeping up with school.&quot;
               </p>
@@ -187,27 +187,27 @@ const PackagesPage: React.FC = () => {
         </div>
       </section>
       
-      <section className="bg-gray-50 py-4 sm:py-8 md:py-12">
+      <section className="bg-gray-50 dark:bg-black dark:text-white py-4 sm:py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-6 text-left">
-            <div className="p-4">
+            <div className="p-4 dark:border dark:border-white dark:rounded">
               <h4 className="text-xl font-semibold mb-2">Browse Packages and Courses</h4>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-white">
                 Explore various training bundles designed for different skill
                 levels.
               </p>
             </div>
-            <div className="p-4">
+            <div className="p-4 dark:border dark:border-white dark:rounded">
               <h4 className="text-xl font-semibold mb-2">Enroll and Purchase Package</h4>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-white">
                 Get a feel for our training sessions with a no-obligation free
                 trial.
               </p>
             </div>
-            <div className="p-4">
+            <div className="p-4 dark:border dark:border-white dark:rounded">
               <h4 className="text-xl font-semibold mb-2">Book into the class, and your attendance is confirmed</h4>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-white">
                 Choose your schedule and begin your tennis journey with our
                 expert coaches.
               </p>
@@ -216,12 +216,12 @@ const PackagesPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 px-4 bg-white text-center">
-        <div className="max-w-3xl mx-auto">
-          <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-4">
+      <section className="py-16 px-4 bg-white dark:bg-black text-center">
+        <div className="max-w-3xl mx-auto ">
+          <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black dark:text-white mb-4">
             Flexible Training Schedules
           </h3>
-          <p className="text-base sm:text-lg text-gray-600 font-normal mb-6">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-white font-normal mb-6">
             Morning and evening batches available. Join at your convenience.
           </p>
           <div className="flex justify-center">

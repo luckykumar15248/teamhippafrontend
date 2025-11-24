@@ -24,15 +24,15 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   const router = useRouter();
 
   return (
-    <div className="bg-white text-gray-800 min-h-screen py-10 px-4 md:px-16">
+    <div className="bg-white dark:bg-black text-gray-800 min-h-screen py-10 px-4 md:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="mb-4">
-          <p className="text-base sm:text-lg text-black font-medium">
+          <p className="text-base sm:text-lg text-black dark:text-white font-medium">
             Courses /{" "}
             <span className="text-lg text-[#b0db72] font-bold">{course.sportName}</span>
           </p>
-          <h1 className="text-4xl font-bold mt-4 text-black mb-2">{course.name}</h1>
-          <p className="text-base sm:text-lg text-gray-600 font-normal">{course.shortDescription}</p>
+          <h1 className="text-4xl font-bold mt-4 text-black dark:text-white mb-2">{course.name}</h1>
+          <p className="text-base sm:text-lg text-gray-600 dark:text-white font-normal">{course.shortDescription}</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12">
@@ -84,11 +84,11 @@ export default function CourseDetailClient({ course }: { course: Course }) {
           {/* Course Info */}
           <div className="space-y-2 lg:w-[40%]">
             <h3 className="text-2xl font-bold text-[#b0db72] mb-2">Price : $ {course.basePriceInfo}</h3>
-            <p className="text-base sm:text-lg text-gray-600 font-normal">Inclusive of all taxes</p>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-white font-normal">Inclusive of all taxes</p>
 
-            <div className="bg-white p-6 rounded-xl border border-[#b0db72] shadow-md">
-              <h3 className="text-xl font-semibold mb-4">Course Info</h3>
-              <ul className="space-y-2 text-base sm:text-lg text-gray-600 font-normal">
+            <div className="bg-white dark:bg-black p-6 rounded-xl border border-[#b0db72] shadow-md">
+              <h3 className="text-xl dark:text-white font-semibold mb-4">Course Info</h3>
+              <ul className="space-y-2 text-base sm:text-lg text-gray-600 dark:text-white font-normal">
                 <li>
                   <strong>Sport:</strong> <span className="text-base">{course.sportName}</span>
                 </li>
@@ -115,12 +115,12 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         </div>
 
         {/* About Section */}
-        <div className="bg-white text-gray-800 py-10">
+        <div className="bg-white dark:bg-black text-gray-800 dark:text-black py-10">
           <div className="max-w-7xl mx-auto">
             <div className="p-6 rounded-xl border border-[#b0db72]">
-              <h2 className="text-2xl font-semibold !text-black mb-3">About this Course</h2>
+              <h2 className="text-2xl font-semibold !text-black dark:!text-white mb-3">About this Course</h2>
               <div
-                className="prose prose-sm max-w-none text-gray-700"
+                className="prose prose-sm max-w-none text-gray-700 dark:text-white"
                 dangerouslySetInnerHTML={{ __html: course.description }}
               />
             </div>
