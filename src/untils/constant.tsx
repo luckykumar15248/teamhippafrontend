@@ -15,11 +15,11 @@ import {
 export const NAV_LINKS = [
   { href: "/book-now", label: "Book Now" },
   { href: "/sports/tennis", label: "Tennis" },
-  { href: "/sports/pickleball", label: "Pickleball" },
+  //{ href: "/sports/pickleball", label: "Pickleball" },
   { href: "/packages", label: "Packages" },
   { href: "/gallery", label: "Gallery" },
-  { href: "/blog", label: "Blog" },
-  { href: "/tournaments", label: "Tournaments" },
+   { href: "/blog", label: "Blog" },
+   { href: "/tournaments", label: "Tournaments" },
   { href: "/about-us", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ];
@@ -157,6 +157,88 @@ export const CHOICE_ITEMS = [
   "A strong academy culture",
   "Proven experience building community",
   "A vision for growing the sport locally and nationally through our very own software and online-presence",
+];
+export const PHOENIX_JUNIOR_FAQS = [
+  {
+    question: "What should my child bring to their first tennis lesson?",
+    answer:
+      "For the first class, bring comfortable athletic clothing, tennis shoes, a water bottle, and sunscreen. We provide racquets and tennis balls for beginner classes, so no need to buy equipment right away. Our coaches can also help recommend the right racquet size once your child joins."
+  },
+  {
+    question: "How do I know which junior tennis program is right for my child?",
+    answer:
+      "We recommend starting with a free trial class, where our coaches can assess your child's skill level and suggest the perfect program. Age and experience are both considered when placing players into the right group."
+  },
+  {
+    question: "Do you offer private or semi-private tennis lessons for kids?",
+    answer:
+      "Yes! We offer both private and semi-private junior tennis lessons for players seeking individualized attention or faster skill development. These can complement our group programs or be taken on their own."
+  },
+  {
+    question: "What is your class cancellation or rescheduling policy?",
+    answer:
+      "We offer flexible rescheduling with at least 24-hour notice. For monthly programs, make-up classes are available if your child misses a session due to illness, travel, or other conflicts."
+  },
+  {
+    question: "What happens in case of rain or extreme heat in Phoenix?",
+    answer:
+      "Your child's safety is our top priority. We monitor weather closely—if classes need to be canceled due to rain or extreme heat, we’ll notify families at least one hour in advance via email and our app. At Rose Mofford, we also have access to indoor facilities, and make-up sessions or credits will be arranged."
+  },
+  {
+    question: "My child is a complete beginner. Which class should we choose?",
+    answer:
+      "Our 'Tots (Ages 4–6)' and 'Beginners (Ages 7–10)' programs are ideal for new players. They focus on fun, coordination, and basic tennis skills, helping your child build confidence and enjoy the game from day one."
+  },
+  {
+    question: "What is the coach-to-player ratio in your junior classes?",
+    answer:
+      "We keep classes small to ensure quality instruction and personalized feedback. Our junior programs typically maintain a 1:4–6 coach-to-player ratio, so every child receives the attention they need to improve."
+  },
+  {
+    question: "Do you offer competitive or advanced junior tennis programs?",
+    answer:
+      "Yes, we have advanced and pre-competitive junior programs for players who are ready to take their skills to the next level. These focus on match play, strategy, and tournament preparation under professional guidance."
+  },
+  {
+    question: "Where are your junior tennis lessons held in Phoenix?",
+    answer:
+      "Most of our junior programs take place at the Rose Mofford Sports Complex and nearby partner courts in Phoenix. Specific location details will be shared upon registration."
+  }
+];
+
+export const ARIZONA_TENNIS_ACADEMY = [
+  {
+    question: "What locations in Arizona do you serve?",
+    answer:
+      "Our primary training facilities are conveniently located to serve players throughout the Valley, with a focus on Phoenix and Gilbert. We welcome players from neighboring communities, including Chandler, Mesa, and Scottsdale.",
+  },
+  {
+    question: "Can I take both tennis and pickleball lessons at Team Hippa?",
+    answer:
+      "Absolutely! We are one of the few academies in Arizona that specializes in both sports. Many of our players enjoy training in both, as the skills are complementary. Switching between tennis and pickleball is a great way to improve your overall racquet skills and have more fun on the court.",
+  },
+  {
+    question: "What is your policy for bad weather, like extreme heat or rain?",
+    answer:
+      "Your safety is our priority. In cases of extreme heat, rain, or other unsafe weather conditions, we will cancel the session and notify you as early as possible. We will then work with you to schedule a make-up class at a convenient time.",
+  },
+  {
+    question: "What types of tennis lessons are available in Gilbert?",
+    answer:
+      "Team Hippa offers extensive group programs, private lessons, semi-private, as well as focused hitting sessions. We cater to all ages (kids, teens, adults, seniors) and skill levels (beginner, intermediate, advanced).",
+  },
+  {
+    question: "How do I know which group/level to attend?",
+    answer:
+      "You can contact us directly and we'll help to match you with the right group, based on your experience.",
+  },
+  {
+    question:
+      "Are there options for kids and junior tennis lessons in Gilbert?",
+    answer:
+      "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
+  }
+  
 ];
 
 export const PICKLEBALL_FAQS = [
@@ -395,90 +477,6 @@ export const GILBERT_FAQS = [
   },
 ];
 
-export const PHOENIX_JUNIOR_FAQS = [
-  {
-    question: "What should my child bring to their first tennis lesson?",
-    answer:
-      "For the first class, bring comfortable athletic clothing, tennis shoes, a water bottle, and sunscreen. We provide racquets and tennis balls for beginner classes, so no need to buy equipment right away. Our coaches can also help recommend the right racquet size once your child joins."
-  },
-  {
-    question: "How do I know which junior tennis program is right for my child?",
-    answer:
-      "We recommend starting with a free trial class, where our coaches can assess your child's skill level and suggest the perfect program. Age and experience are both considered when placing players into the right group."
-  },
-  {
-    question: "Do you offer private or semi-private tennis lessons for kids?",
-    answer:
-      "Yes! We offer both private and semi-private junior tennis lessons for players seeking individualized attention or faster skill development. These can complement our group programs or be taken on their own."
-  },
-  {
-    question: "What is your class cancellation or rescheduling policy?",
-    answer:
-      "We offer flexible rescheduling with at least 24-hour notice. For monthly programs, make-up classes are available if your child misses a session due to illness, travel, or other conflicts."
-  },
-  {
-    question: "What happens in case of rain or extreme heat in Phoenix?",
-    answer:
-      "Your child's safety is our top priority. We monitor weather closely—if classes need to be canceled due to rain or extreme heat, we’ll notify families at least one hour in advance via email and our app. At Rose Mofford, we also have access to indoor facilities, and make-up sessions or credits will be arranged."
-  },
-  {
-    question: "My child is a complete beginner. Which class should we choose?",
-    answer:
-      "Our 'Tots (Ages 4–6)' and 'Beginners (Ages 7–10)' programs are ideal for new players. They focus on fun, coordination, and basic tennis skills, helping your child build confidence and enjoy the game from day one."
-  },
-  {
-    question: "What is the coach-to-player ratio in your junior classes?",
-    answer:
-      "We keep classes small to ensure quality instruction and personalized feedback. Our junior programs typically maintain a 1:4–6 coach-to-player ratio, so every child receives the attention they need to improve."
-  },
-  {
-    question: "Do you offer competitive or advanced junior tennis programs?",
-    answer:
-      "Yes, we have advanced and pre-competitive junior programs for players who are ready to take their skills to the next level. These focus on match play, strategy, and tournament preparation under professional guidance."
-  },
-  {
-    question: "Where are your junior tennis lessons held in Phoenix?",
-    answer:
-      "Most of our junior programs take place at the Rose Mofford Sports Complex and nearby partner courts in Phoenix. Specific location details will be shared upon registration."
-  }
-];
-
-
-export const ARIZONA_TENNIS_ACADEMY = [
-  {
-    question: "What locations in Arizona do you serve?",
-    answer:
-      "Our primary training facilities are conveniently located to serve players throughout the Valley, with a focus on Phoenix and Gilbert. We welcome players from neighboring communities, including Chandler, Mesa, and Scottsdale.",
-  },
-  {
-    question: "Can I take both tennis and pickleball lessons at Team Hippa?",
-    answer:
-      "Absolutely! We are one of the few academies in Arizona that specializes in both sports. Many of our players enjoy training in both, as the skills are complementary. Switching between tennis and pickleball is a great way to improve your overall racquet skills and have more fun on the court.",
-  },
-  {
-    question: "What is your policy for bad weather, like extreme heat or rain?",
-    answer:
-      "Your safety is our priority. In cases of extreme heat, rain, or other unsafe weather conditions, we will cancel the session and notify you as early as possible. We will then work with you to schedule a make-up class at a convenient time.",
-  },
-  {
-    question: "What types of tennis lessons are available in Gilbert?",
-    answer:
-      "Team Hippa offers extensive group programs, private lessons, semi-private, as well as focused hitting sessions. We cater to all ages (kids, teens, adults, seniors) and skill levels (beginner, intermediate, advanced).",
-  },
-  {
-    question: "How do I know which group/level to attend?",
-    answer:
-      "You can contact us directly and we'll help to match you with the right group, based on your experience.",
-  },
-  {
-    question:
-      "Are there options for kids and junior tennis lessons in Gilbert?",
-    answer:
-      "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
-  }
-  
-];
-
 export const WINTER_CAMP_FAQS = [
   {
     question: "What is the Winter Tennis Camp all about?",
@@ -589,7 +587,7 @@ export const SCHEDULE = [
     title: "Cooldown and Pick-Up",
     desc: "Transportation Available both ways from Scottsdale, Phoenix and PV (Surcharge)",
     icon: "🌅",
-  }
+  },
 ];
 export const CAMP_FEATURES = [
   {

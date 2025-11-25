@@ -63,6 +63,15 @@ const Footer: React.FC = () => {
         <ul className="space-y-2">
           <li>
             <Link
+              href="https://teamhippa.com/sports/pickleball"
+              className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
+            >
+              Pickleball Courts & Coaching in Gilbert and Phoenix, AZ
+            </Link>
+          </li>
+
+          <li>
+            <Link
               href="https://teamhippa.com/tennis-gilbert"
               className="text-base font-medium text-white hover:text-[#b0db72] transition-colors duration-150"
             >

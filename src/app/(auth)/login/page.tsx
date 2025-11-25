@@ -110,7 +110,7 @@ const LoginPage = () => {
          <div className="p-10 w-full md:w-1/2">
           <div>
             <h2 className="text-3xl font-semibold text-[#b0db72]">
-              Create an Account
+              Sign In
             </h2>
             <p className="mt-2 text-base font-semibold text-gray-600">
               Enter your information to get started.
@@ -166,8 +166,9 @@ const LoginPage = () => {
             Sign in
           </Button>
         </form>
-
+          
           <div className="mt-6">
+            {/*
              <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300" />
@@ -197,6 +198,7 @@ const LoginPage = () => {
                   Sign up with Apple
                 </Button>
             </div>
+            */}
             <p className="mt-4 text-center text-sm text-gray-600">
               <Link href="/register">
                  Not a member?{" "}
@@ -206,6 +208,8 @@ const LoginPage = () => {
               </Link>
             </p>
           </div>
+          
+          
         </div>
       </div>
     </div>

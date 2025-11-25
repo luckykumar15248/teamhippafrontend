@@ -15,6 +15,9 @@ export default function PrivacyPolicy() {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
             Privacy Policy
           </h1>
+          <p className="text-lg sm:text-xl text-white font-medium"  >
+            Coming Soon
+            </p>
         </div>
       </section>
       <section className="w-full -mt-16 z-10 px-4 pb-6 md:pb-12">
@@ -26,11 +29,11 @@ export default function PrivacyPolicy() {
             <p className="text-base sm:text-lg text-gray-600 font-normal">
               Suggested text: Our website address is:&nbsp;
               <Link
-                href="http://52.33.220.13."
+                href="https://teamhippa.com"
                 target="_blank"
                 className="text-blue-600 hover:underline"
               >
-                http://52.33.220.13.
+                https://teamhippa.com
               </Link>
             </p>
           </div>

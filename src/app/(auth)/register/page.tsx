@@ -205,7 +205,7 @@ const RegisterPage: React.FC = () => {
                 </span>
               </div>
             </div>
-
+            {/*
             <div className="mt-6 grid grid-cols-1 gap-3">
                 <Button
                   type="button"
@@ -223,7 +223,7 @@ const RegisterPage: React.FC = () => {
                   <AppleIcon className="min-w-4 min-h-4" />
                   Sign up with Apple
                 </Button>
-            </div>
+            </div> */}
             <p className="mt-4 text-center text-sm text-gray-600">
               <Link href="/login">
                 Already have an account?{" "}
