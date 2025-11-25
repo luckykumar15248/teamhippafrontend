@@ -23,18 +23,18 @@ export default function FAQ({ title, subtitle, data }: FAQProps) {
  <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
       <div className="mx-auto max-w-screen-2xl">
               {title && (
-        <h2 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black mb-8">         
+        <h2 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black dark:text-white mb-8">         
           Frequently Asked Questions
         </h2>
       )}
 
       <div className="flex flex-col sm:flex-row gap-6 w-full">
         <div className="w-full sm:w-[40%]">
-          <h3 className="text-2xl text-left font-semibold text-black mb-1">
+          <h3 className="text-2xl text-left font-semibold text-black dark:text-white mb-1">
             {title}
           </h3>
           {subtitle && (
-            <p className="text-lg text-left font-medium text-gray-700">{subtitle}</p>
+            <p className="text-lg text-left font-medium text-gray-700 dark:text-white">{subtitle}</p>
           )}
         </div>
 
