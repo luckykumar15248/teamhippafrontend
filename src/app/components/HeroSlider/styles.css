@@ -1,0 +1,201 @@
+/* styles.css */
+.custom-swiper {
+    width: 100%;
+    padding: 0 20px;
+    position: relative;
+}
+
+/* Ensure swiper container has proper dimensions */
+.custom-swiper .swiper-container {
+    overflow: visible !important;
+}
+
+.custom-swiper .swiper-wrapper {
+    align-items: center;
+}
+
+.custom-swiper .swiper-slide {
+    transition: all 0.5s ease;
+    opacity: 0.7;
+    transform: scale(0.95);
+    filter: brightness(0.8);
+    height: auto;
+}
+
+.custom-swiper .swiper-slide-active {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+    z-index: 10;
+}
+
+.custom-swiper .swiper-slide-prev,
+.custom-swiper .swiper-slide-next {
+    opacity: 0.8;
+    transform: scale(0.98);
+    filter: brightness(0.9);
+}
+
+/* Navigation buttons positioning */
+.custom-swiper .swiper-button-next {
+    right: 10px !important;
+}
+
+.custom-swiper .swiper-button-prev {
+    left: 10px !important;
+}
+
+/* Navigation button styles */
+.custom-swiper .swiper-button-next,
+.custom-swiper .swiper-button-prev {
+    background: rgba(0, 0, 0, 0.3) !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease !important;
+}
+
+.custom-swiper .swiper-button-next:hover,
+.custom-swiper .swiper-button-prev:hover {
+    background: rgba(0, 0, 0, 0.5) !important;
+    transform: scale(1.1) !important;
+}
+
+.custom-swiper .swiper-button-next:after,
+.custom-swiper .swiper-button-prev:after {
+    display: none !important;
+}
+
+.custom-swiper .swiper-button-next svg,
+.custom-swiper .swiper-button-prev svg {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Hide navigation on mobile */
+@media (max-width: 768px) {
+    .custom-swiper .swiper-button-next,
+    .custom-swiper .swiper-button-prev {
+        display: none !important;
+    }
+    
+    .custom-swiper {
+        padding: 0 10px;
+    }
+    
+    /* Better touch scrolling */
+    .custom-swiper .swiper-wrapper {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Pagination dots */
+.custom-swiper .swiper-pagination {
+    position: absolute;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.custom-swiper .swiper-pagination-bullet {
+    width: 10px !important;
+    height: 10px !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    opacity: 0.5 !important;
+    margin: 0 !important;
+    transition: all 0.3s ease !important;
+    display: block !important;
+}
+
+.custom-swiper .swiper-pagination-bullet-active {
+    background: white !important;
+    opacity: 1 !important;
+    transform: scale(1.2) !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .custom-swiper .swiper-button-next,
+    .custom-swiper .swiper-button-prev {
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .custom-swiper .swiper-button-next:hover,
+    .custom-swiper .swiper-button-prev:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .custom-swiper .swiper-slide {
+        filter: brightness(0.7);
+    }
+    
+    .custom-swiper .swiper-slide-active {
+        filter: brightness(1);
+    }
+    
+    .custom-swiper .swiper-pagination-bullet {
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+}
+
+/* Ensure loop works properly */
+.custom-swiper .swiper-slide-duplicate {
+    opacity: 0.7 !important;
+    transform: scale(0.95) !important;
+    filter: brightness(0.8) !important;
+}
+
+.custom-swiper .swiper-slide-duplicate-active {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    filter: brightness(1) !important;
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+    .custom-swiper .swiper-wrapper {
+        -webkit-transform: translate3d(0,0,0);
+    }
+}
+
+/* Ensure proper height on all screens */
+@media (max-width: 640px) {
+    .custom-swiper .swiper-slide {
+        height: 400px !important;
+    }
+}
+
+@media (min-width: 641px) {
+    .custom-swiper .swiper-slide {
+        height: 550px !important;
+    }
+}
+
+/* Loading animation */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.custom-swiper .loading-slide {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+    .custom-swiper .loading-slide {
+        background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+    }
+}

@@ -160,7 +160,7 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
     try {
       parsedContent = JSON.parse(contentObject) as EditorContent;
     } catch {
-      return <div className="prose lg:prose-xl max-w-none">{contentObject}</div>;
+      return <div className="prose lg:prose-xl max-w-none dark:prose-invert">{contentObject}</div>;
     }
   } else parsedContent = contentObject;
 
@@ -174,7 +174,7 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
         return (
           <Tag
             key={index}
-            className="font-bold my-4 text-2xl"
+            className="font-bold my-4 text-2xl dark:text-white"
             dangerouslySetInnerHTML={{ __html: block.data.text }}
           />
         );
@@ -184,7 +184,7 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
         return (
           <p
             key={index}
-            className="mb-4 leading-relaxed"
+            className="mb-4 leading-relaxed dark:text-gray-300"
             dangerouslySetInnerHTML={{ __html: block.data.text }}
           />
         );
@@ -196,10 +196,10 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
             <img
               src={block.data.file?.url}
               alt={block.data.caption || "Image"}
-              className="w-full rounded-lg shadow-md"
+              className="w-full rounded-lg shadow-md dark:shadow-gray-900"
             />
             {block.data.caption && (
-              <figcaption className="text-center text-sm text-gray-500 mt-2">
+              <figcaption className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
                 {block.data.caption}
               </figcaption>
             )}
@@ -215,7 +215,7 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
             key={index}
             className={`${
               isOrdered ? "list-decimal" : "list-disc"
-            } pl-6 space-y-1 mb-4`}
+            } pl-6 space-y-1 mb-4 dark:text-gray-300`}
           >
             {block.data.items.map((item, i) => {
               const text =
@@ -236,13 +236,15 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
             {block.data.items.map((item, i) => (
               <li key={i} className="flex items-start gap-2">
                 {item.checked ? (
-                  <Check className="text-green-600 w-5 h-5 mt-1" />
+                  <Check className="text-green-600 dark:text-green-400 w-5 h-5 mt-1" />
                 ) : (
-                  <div className="w-5 h-5 border rounded mt-1" />
+                  <div className="w-5 h-5 border rounded mt-1 dark:border-gray-600" />
                 )}
                 <span
                   dangerouslySetInnerHTML={{ __html: item.text }}
-                  className={item.checked ? "line-through text-gray-500" : ""}
+                  className={`dark:text-gray-300 ${
+                    item.checked ? "line-through text-gray-500 dark:text-gray-500" : ""
+                  }`}
                 />
               </li>
             ))}
@@ -254,11 +256,11 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
         return (
           <blockquote
             key={index}
-            className="border-l-4 border-gray-400 pl-4 italic my-4 text-gray-700"
+            className="border-l-4 border-gray-400 dark:border-gray-600 pl-4 italic my-4 text-gray-700 dark:text-gray-300"
           >
             <p dangerouslySetInnerHTML={{ __html: block.data.text }} />
             {block.data.caption && (
-              <cite className="block mt-2 text-sm text-gray-500">
+              <cite className="block mt-2 text-sm text-gray-500 dark:text-gray-400">
                 — {block.data.caption}
               </cite>
             )}
@@ -270,15 +272,15 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
         return (
           <table
             key={index}
-            className="w-full border border-gray-300 my-6 border-collapse"
+            className="w-full border border-gray-300 dark:border-gray-600 my-6 border-collapse"
           >
             <tbody>
               {block.data.content.map((row, i) => (
-                <tr key={i}>
+                <tr key={i} className="dark:border-gray-600">
                   {row.map((cell, j) => (
                     <td
                       key={j}
-                      className="border border-gray-300 p-2"
+                      className="border border-gray-300 dark:border-gray-600 p-2 dark:text-gray-300 dark:bg-gray-800"
                       dangerouslySetInnerHTML={{ __html: cell }}
                     />
                   ))}
@@ -293,7 +295,7 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
         return (
           <pre
             key={index}
-            className="bg-gray-900 text-green-300 p-4 rounded-lg overflow-x-auto my-4"
+            className="bg-gray-900 dark:bg-gray-800 text-green-300 dark:text-green-400 p-4 rounded-lg overflow-x-auto my-4 border border-gray-700"
           >
             <code>{block.data.code}</code>
           </pre>
@@ -302,17 +304,17 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
       // --- Link Tool ---
       case "linkTool":
         return (
-          <div key={index} className="my-6 border rounded-md p-4 bg-gray-50">
+          <div key={index} className="my-6 border rounded-md p-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
             <a
               href={block.data.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-blue-600 hover:underline"
+              className="font-semibold text-blue-600 dark:text-blue-400 hover:underline"
             >
               {block.data.meta?.title || block.data.link}
             </a>
             {block.data.meta?.description && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {block.data.meta.description}
               </p>
             )}
@@ -328,7 +330,7 @@ const renderBlockContent = (contentObject: EditorContent | string) => {
 
       // --- Delimiter ---
       case "delimiter":
-        return <hr key={index} className="my-8 border-gray-300" />;
+        return <hr key={index} className="my-8 border-gray-300 dark:border-gray-700" />;
 
       default:
         return null;
@@ -347,59 +349,60 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const post = response.data;
 
     return (
-      <><script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(generateStructuredData(post)) }}
-/>
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(generateStructuredData(post)) }}
+        />
 
-      <article className="bg-white">
-        {/* --- Header Image --- */}
-        {post.featuredImageUrl && (
-          <header className="relative h-96">
-            <img
-              src={post.featuredImageUrl}
-              alt={post.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-opacity-40 flex flex-col justify-center items-center text-center p-4">
-              <h1 className="text-4xl md:text-6xl font-extrabold text-white">
-                {post.title}
-              </h1>
-              <p className="mt-4 text-lg text-gray-300">
-                By {post.authorName} on{" "}
-                {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-            </div>
-          </header>
-        )}
+        <article className="bg-white dark:bg-gray-900">
+          {/* --- Header Image --- */}
+          {post.featuredImageUrl && (
+            <header className="relative h-96">
+              <img
+                src={post.featuredImageUrl}
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0  bg-opacity-40 flex flex-col justify-center items-center text-center p-4">
+                <h1 className="text-4xl md:text-6xl font-extrabold text-white">
+                  {post.title}
+                </h1>
+                <p className="mt-4 text-lg text-gray-300">
+                  By {post.authorName} on{" "}
+                  {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              </div>
+            </header>
+          )}
 
-        {/* --- Content Section --- */}
-        <section className="py-8 md:py-12 px-6 lg:px-16">
-          <div className="max-w-screen-lg mx-auto space-y-10">
-            <div className="custom-post">
-              {renderBlockContent(post.content)}
-            </div>
+          {/* --- Content Section --- */}
+          <section className="py-8 md:py-12 px-6 lg:px-16">
+            <div className="max-w-screen-lg mx-auto space-y-10">
+              <div className="custom-post">
+                {renderBlockContent(post.content)}
+              </div>
 
-            <div className="mt-8 border-t pt-8">
-              <h3 className="text-3xl font-bold text-gray-900">Comments</h3>
-              <p className="text-base text-gray-600 mt-2">
-                Comments are coming soon!
-              </p>
+              <div className="mt-8 border-t dark:border-gray-700 pt-8">
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-white">Comments</h3>
+                <p className="text-base text-gray-600 dark:text-gray-400 mt-2">
+                  Comments are coming soon!
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
-      </article>
+          </section>
+        </article>
       </>
     );
   } catch {
     return (
-      <div className="text-center py-20">
-        <h1 className="text-4xl font-bold">Post Not Found</h1>
-        <p className="mt-4 text-gray-600">
+      <div className="text-center py-20 bg-white dark:bg-gray-900 min-h-screen">
+        <h1 className="text-4xl font-bold dark:text-white">Post Not Found</h1>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">
           Sorry, we couldn&apos;t find the post you were looking for.
         </p>
       </div>

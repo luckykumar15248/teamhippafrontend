@@ -11,6 +11,7 @@ import PackageCard from "@/app/components/PackageCard";
 import { Button } from "@/app/components/Button";
 import FAQ from "@/app/components/FAQ";
 import Meta from "../components/Meta";
+import GoogleReviewsWidget from "@/app/components/GoogleReviewsWidget/GoogleReviewsWidget";
 
 // --- Type Definitions ---
 interface Package {
@@ -29,9 +30,28 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8091';
 const PackagesPage: React.FC = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [locations] = useState<string[]>(['Gilbert', 'Phoenix']); // Your locations
-  const [selectedLocation, setSelectedLocation] = useState<string>('Gilbert'); // Default location
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [locations] = useState<string[]>(['Gilbert', 'Phoenix']);
+  const [selectedLocation, setSelectedLocation] = useState<string>('Gilbert');
   const router = useRouter();
+
+  // Detect dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      const isDark = 
+        window.matchMedia('(prefers-color-scheme: dark)').matches ||
+        document.documentElement.classList.contains('dark');
+      setIsDarkMode(isDark);
+    };
+
+    checkDarkMode();
+    
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => checkDarkMode();
+    mediaQuery.addEventListener('change', handleChange);
+    
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   const handleTrialClick = () => {
     router.push("/book-now");
@@ -41,7 +61,6 @@ const PackagesPage: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Updated API call to fetch packages based on the selected location
         const response = await axios.get(`${apiUrl}/api/public/packages/packages-by-location`, {
             params: {
                 location: selectedLocation,
@@ -51,15 +70,14 @@ const PackagesPage: React.FC = () => {
       } catch (error) {
         console.error("Failed to fetch packages:", error);
         toast.error("Could not load our packages. Please try again later.");
-        setPackages([]); // Clear packages on error
+        setPackages([]);
       } finally {
         setIsLoading(false);
       }
     };
     fetchData();
-  }, [selectedLocation]); // Re-fetch data when selectedLocation changes
+  }, [selectedLocation]);
 
-  // Use slug in URL for SEO, but we'll use ID internally for data fetching
   const handleNavigate = (packageId: number, packageSlug: string) => {
     router.push(`/packages/${packageSlug}`);
   };
@@ -77,83 +95,136 @@ const PackagesPage: React.FC = () => {
         title="Our Packages"
         description="Discover value-packed bundles that combine our best courses to accelerate your skills."
       />
-      <div className="space-y-12 container mx-auto sm:px-6 lg:px-8 py-4 sm:py-8 md:py-12 bg-white dark:bg-black">
+      
+      {/* Main Packages Section */}
+      <div className={`space-y-12 container mx-auto sm:px-6 lg:px-8 py-4 sm:py-8 md:py-12 ${
+        isDarkMode ? 'bg-gray-900' : 'bg-white'
+      }`}>
         
-        {/* --- LOCATION FILTER TABS --- */}
-        <div className="mb-8 flex justify-center border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8" aria-label="Locations">
-                {locations.map((location) => (
-                    <button
-                        key={location}
-                        onClick={() => setSelectedLocation(location)}
-                        className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg ${
-                            selectedLocation === location
-                            ? 'border-[#64a506] text-[#64a506]'
-                            : 'border-transparent text-gray-500  hover:text-gray-700 hover:border-gray-300'
-                        }`}
-                    >
-                        {location}
-                    </button>
-                ))}
-            </nav>
+        {/* Location Filter Tabs */}
+        <div className={`mb-8 flex justify-center border-b ${
+          isDarkMode ? 'border-gray-700' : 'border-gray-200'
+        }`}>
+          <nav className="-mb-px flex space-x-8" aria-label="Locations">
+            {locations.map((location) => (
+              <button
+                key={location}
+                onClick={() => setSelectedLocation(location)}
+                className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg transition-colors duration-200 ${
+                  selectedLocation === location
+                    ? `border-[#64a506] ${
+                        isDarkMode ? 'text-green-400' : 'text-[#64a506]'
+                      }`
+                    : `border-transparent ${
+                        isDarkMode 
+                          ? 'text-gray-400 hover:text-gray-300 hover:border-gray-600' 
+                          : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`
+                }`}
+              >
+                {location}
+              </button>
+            ))}
+          </nav>
         </div>
 
+        {/* Packages Grid or Loading/Empty States */}
         {isLoading ? (
-             <div className="flex justify-center items-center h-64">
-               <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
-             </div>
+          <div className="flex justify-center items-center h-64">
+            <div className={`animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 ${
+              isDarkMode ? 'border-green-500' : 'border-[#64a506]'
+            }`}></div>
+          </div>
         ) : packages.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {packages.map((pkg) => (
               <PackageCard 
                 key={pkg.id} 
                 pkg={pkg} 
-                onNavigate={(id, slug) => handleNavigate(id, slug)} // Pass both ID and slug
+                onNavigate={(id, slug) => handleNavigate(id, slug)}
+          
               />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-lg shadow">
-            <h3 className="text-xl font-semibold text-gray-700">
+          <div className={`text-center py-16 rounded-lg shadow ${
+            isDarkMode 
+              ? 'bg-gray-800 border border-gray-700' 
+              : 'bg-white'
+          }`}>
+            <h3 className={`text-xl font-semibold ${
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            }`}>
               No Packages Currently Available for {selectedLocation}
             </h3>
-            <p className="mt-2 text-gray-500">
+            <p className={`mt-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}>
               Please check back soon or select another location.
             </p>
           </div>
         )}
       </div>
       
-      <section className="bg-gray-50 dark:bg-black  py-4 sm:py-8 md:py-12">
+      {/* Why Choose Our Packages Section */}
+      <section className={`py-4 sm:py-8 md:py-12 ${
+        isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+      }`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl sm:text-5xl font-semibold text-black dark:text-white mb-4">
+          <h2 className={`text-4xl sm:text-5xl font-semibold mb-4 ${
+            isDarkMode ? 'text-white' : 'text-black'
+          }`}>
             Why Choose Our Packages?
           </h2>
-          <p className="text-lg text-gray-600 dark:text-white mb-8">
+          <p className={`text-lg mb-8 ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
             Our programs are carefully curated to meet the needs of beginners to
             advanced players. With certified coaches, flexible schedules, and
             personalized guidance, we ensure you progress confidently.
           </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-            <div className="p-6 bg-white dark:bg-black dark:border dark:border-white rounded-lg shadow">
-              <h4 className="text-xl font-semibold mb-2">Certified Coaches</h4>
-              <p className="text-gray-600 dark:text-white">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 text-left">
+            <div className={`p-6 rounded-lg shadow transition-transform duration-300 hover:scale-[1.02] ${
+              isDarkMode 
+                ? 'bg-gray-900 border border-gray-700 hover:border-green-500/30' 
+                : 'bg-white hover:shadow-lg'
+            }`}>
+              <h4 className={`text-xl font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                Certified Coaches
+              </h4>
+              <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
                 Train under experienced professionals with national and
                 international exposure.
               </p>
             </div>
-            <div className="p-6 bg-white dark:bg-black dark:border dark:border-white rounded-lg shadow">
-              <h4 className="text-xl font-semibold mb-2">
+            <div className={`p-6 rounded-lg shadow transition-transform duration-300 hover:scale-[1.02] ${
+              isDarkMode 
+                ? 'bg-gray-900 border border-gray-700 hover:border-green-500/30' 
+                : 'bg-white hover:shadow-lg'
+            }`}>
+              <h4 className={`text-xl font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 Structured Curriculum
               </h4>
-              <p className="text-gray-600 dark:text-white">
+              <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
                 Progressive training plans tailored to your skill level and
                 goals.
               </p>
             </div>
-            <div className="p-6 bg-white dark:bg-black dark:border dark:border-white rounded-lg shadow">
-              <h4 className="text-xl font-semibold mb-2">Affordable Bundles</h4>
-              <p className="text-gray-600 dark:text-white">
+            <div className={`p-6 rounded-lg shadow transition-transform duration-300 hover:scale-[1.02] ${
+              isDarkMode 
+                ? 'bg-gray-900 border border-gray-700 hover:border-green-500/30' 
+                : 'bg-white hover:shadow-lg'
+            }`}>
+              <h4 className={`text-xl font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                Affordable Bundles
+              </h4>
+              <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
                 Get maximum value from competitively priced packages.
               </p>
             </div>
@@ -161,73 +232,157 @@ const PackagesPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white dark:bg-black py-4 sm:py-8 md:py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl sm:text-5xl font-semibold text-black dark:text-white mb-6">Success Stories</h2>
-          <p className="text-lg text-gray-600 dark:text-white mb-10">
-            Hear from our students who trained with us and achieved their
-            dreams.
-          </p>
-          <div className="grid md:grid-cols-2 gap-8 text-left">
-            <div className="p-6 bg-gray-100 dark:bg-black dark:border dark:border-white rounded-lg">
-              <p className="text-gray-700 dark:text-white italic">
-                &quot;Joining this academy changed my game! I went from amateur to
-                tournament-ready in 6 months.&quot;
-              </p>
-              <p className="mt-4 font-semibold">— Rohan, Student</p>
+     {/* --- Google Reviews Section --- */}
+      <section className="bg-gray-50 py-20 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4 dark:text-white">
+              What Families Say
+            </h2>
+            <p className="text-lg text-gray-700 mb-8 dark:text-gray-300">
+              Read genuine reviews from parents and players on Google
+            </p>
+          </div>
+          
+          {/* EmbedReviews Widget */}
+          <div className="max-w-6xl mx-auto">
+            <div 
+              className="embedsocial-reviews" 
+              data-ref="1c1b7f2c374a3a7e8144775a7c2b2273"
+              data-width="100%"
+            > 
+              <GoogleReviewsWidget />
             </div>
-            <div className="p-6 bg-gray-100  dark:bg-black dark:border dark:border-white rounded-lg">
-              <p className="text-gray-700 dark:text-white italic">
-                &quot;Their customized packages helped my daughter train at her pace
-                while keeping up with school.&quot;
-              </p>
-              <p className="mt-4 font-semibold">— Priya, Parent</p>
-            </div>
+          </div>
+
+          {/* Quick Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+            <a
+              href="https://www.google.com/maps/place/Team+Hippa+-+Tennis+Academy/@33.0264402,-111.6789136,15z/data=!4m8!3m7!1s0xda8ab47fa7a90cd:0xf4d832507b1651bb!8m2!3d33.0264402!4d-111.6789136!9m1!1b1!16s%2Fg%2F11wwm9klzg?entry=ttu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 transition-colors shadow-lg dark:bg-green-700 dark:hover:bg-green-600"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-8 8z"/>
+              </svg>
+              Read All Reviews on Google
+            </a>
+            <a
+              href="https://www.google.com/maps/place/Team+Hippa+-+Tennis+Academy/@33.0264402,-111.6789136,15z/data=!4m8!3m7!1s0xda8ab47fa7a90cd:0xf4d832507b1651bb!8m2!3d33.0264402!4d-111.6789136!9m1!1b1!16s%2Fg%2F11wwm9klzg?entry=ttu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 border-2 border-green-600 text-green-600 px-8 py-4 rounded-lg hover:bg-green-50 transition-colors dark:border-green-500 dark:text-green-400 dark:hover:bg-green-900"
+            >
+              Write a Review
+            </a>
           </div>
         </div>
       </section>
       
-      <section className="bg-gray-50 dark:bg-black dark:text-white py-4 sm:py-8 md:py-12">
+      {/* How It Works Section */}
+      <section className={`py-4 sm:py-8 md:py-12 ${
+        isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
+      }`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl sm:text-5xl font-semibold text-black mb-6">How It Works</h2>
-          <div className="grid md:grid-cols-3 gap-6 text-left">
-            <div className="p-4 dark:border dark:border-white dark:rounded">
-              <h4 className="text-xl font-semibold mb-2">Browse Packages and Courses</h4>
-              <p className="text-gray-600 dark:text-white">
-                Explore various training bundles designed for different skill
-                levels.
+          <h2 className={`text-4xl sm:text-5xl font-semibold mb-6 ${
+            isDarkMode ? 'text-white' : 'text-black'
+          }`}>
+            How It Works
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-left max-w-5xl mx-auto">
+            <div className={`p-6 rounded-lg shadow ${
+              isDarkMode 
+                ? 'bg-gray-900 border border-gray-700' 
+                : 'bg-white'
+            }`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${
+                isDarkMode 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : 'bg-green-100 text-[#64a506]'
+              }`}>
+                <span className="text-xl font-bold">1</span>
+              </div>
+              <h4 className={`text-xl font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                Browse Packages and Courses
+              </h4>
+              <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                Explore various training bundles designed for different skill levels.
               </p>
             </div>
-            <div className="p-4 dark:border dark:border-white dark:rounded">
-              <h4 className="text-xl font-semibold mb-2">Enroll and Purchase Package</h4>
-              <p className="text-gray-600 dark:text-white">
-                Get a feel for our training sessions with a no-obligation free
-                trial.
+            <div className={`p-6 rounded-lg shadow ${
+              isDarkMode 
+                ? 'bg-gray-900 border border-gray-700' 
+                : 'bg-white'
+            }`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${
+                isDarkMode 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : 'bg-green-100 text-[#64a506]'
+              }`}>
+                <span className="text-xl font-bold">2</span>
+              </div>
+              <h4 className={`text-xl font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                Enroll and Purchase Package
+              </h4>
+              <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                Get a feel for our training sessions with a no-obligation free trial.
               </p>
             </div>
-            <div className="p-4 dark:border dark:border-white dark:rounded">
-              <h4 className="text-xl font-semibold mb-2">Book into the class, and your attendance is confirmed</h4>
-              <p className="text-gray-600 dark:text-white">
-                Choose your schedule and begin your tennis journey with our
-                expert coaches.
+            <div className={`p-6 rounded-lg shadow ${
+              isDarkMode 
+                ? 'bg-gray-900 border border-gray-700' 
+                : 'bg-white'
+            }`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${
+                isDarkMode 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : 'bg-green-100 text-[#64a506]'
+              }`}>
+                <span className="text-xl font-bold">3</span>
+              </div>
+              <h4 className={`text-xl font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                Book Classes & Confirm Attendance
+              </h4>
+              <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                Choose your schedule and begin your tennis journey with our expert coaches.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 px-4 bg-white dark:bg-black text-center">
-        <div className="max-w-3xl mx-auto ">
-          <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black dark:text-white mb-4">
+      {/* CTA Section */}
+      <section className={`py-16 px-4 text-center ${
+        isDarkMode 
+          ? 'bg-gradient-to-r from-gray-900 to-gray-800' 
+          : 'bg-gradient-to-r from-green-50 to-white'
+      }`}>
+        <div className="max-w-3xl mx-auto">
+          <h3 className={`text-4xl sm:text-5xl font-semibold text-center mb-4 ${
+            isDarkMode ? 'text-white' : 'text-black'
+          }`}>
             Flexible Training Schedules
           </h3>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-white font-normal mb-6">
+          <p className={`text-base sm:text-lg font-normal mb-6 ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
             Morning and evening batches available. Join at your convenience.
           </p>
           <div className="flex justify-center">
             <Button
               onClick={handleTrialClick}
-              className="text-white px-6 py-3 transition"
+              className={`px-8 py-3 rounded-full font-semibold shadow-lg transition-all duration-300 transform hover:scale-105 ${
+                isDarkMode 
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : 'bg-[#64a506] hover:bg-[#559105] text-white'
+              }`}
             >
               Book Now
             </Button>
@@ -237,8 +392,9 @@ const PackagesPage: React.FC = () => {
 
       <FAQ
         title="The fastest growing Tennis Academy"
-        subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
+        subtitle="Feel free to ping us in case there is any doubts you have. Our team will love to help you out."
         data={ABOUT_FAQS}
+  
       />
     </>
   );

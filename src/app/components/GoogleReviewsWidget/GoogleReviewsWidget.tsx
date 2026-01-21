@@ -5,14 +5,7 @@ import React from "react";
 const GoogleReviewsWidget = () => {
   return (
     <div>
-       <div className="text-center mb-16">
-      <h2 className="text-4xl font-bold text-gray-900 mb-4">
-        See What Families Are Saying
-      </h2>
-      <p className="text-lg text-gray-700 mb-8">
-        Read genuine reviews from parents and players on Google
-      </p>
-    </div>
+       
       <div
         dangerouslySetInnerHTML={{
           __html: `

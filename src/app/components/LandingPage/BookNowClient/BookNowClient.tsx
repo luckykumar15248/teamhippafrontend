@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -12,7 +11,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import SportsHeroSection from "../../../components/SportsHeroSection";
 import { Button } from "../../../components/Button";
-
 
 // --- Type Definitions (Updated to match API response) ---
 interface Course {
@@ -92,13 +90,13 @@ const DetailsModal: React.FC<DetailsModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
       <div
-        className={`bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col ${animationClasses}`}
+        className={`bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col ${animationClasses}`}
       >
-        <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white z-10">
-          <h2 className="text-2xl font-bold text-gray-900">{item.name}</h2>
+        <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-800 z-10">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{item.name}</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-800"
+            className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <XIcon />
           </button>
@@ -116,7 +114,7 @@ const DetailsModal: React.FC<DetailsModalProps> = ({
                       "https://placehold.co/600x400/a7a2ff/333333?text=TeamHippa"
                 }
                 alt={item.name}
-                className="w-full h-64 object-cover rounded-lg mb-4 shadow"
+                className="w-full h-64 object-cover rounded-lg mb-4 shadow dark:shadow-gray-900"
               />
               <div className="grid grid-cols-4 gap-2">
                 {("imagePaths" in item ? item.imagePaths : item.imageUrls)
@@ -137,34 +135,34 @@ const DetailsModal: React.FC<DetailsModalProps> = ({
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                     item.type === "package"
-                      ? "bg-purple-100 text-purple-800"
-                      : "bg-blue-100 text-blue-800"
+                      ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                      : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                   }`}
                 >
                   {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
                 </span>
-                <span className="text-2xl font-bold text-gray-800">
+                <span className="text-2xl font-bold text-gray-800 dark:text-white">
                   {item.type === "course"
                     ? (item as Course).basePriceInfo
                     : `₹${(item as Package).price.toFixed(2)}`}
                 </span>
               </div>
               <div
-                className="prose prose-sm max-w-none text-gray-600"
+                className="prose prose-sm max-w-none text-gray-600 dark:text-gray-300 prose-headings:dark:text-white prose-strong:dark:text-white"
                 dangerouslySetInnerHTML={{ __html: item.description }}
               />
               {"duration" in item && (
-                <div className="text-sm text-gray-500">
-                  <strong>Duration:</strong> {item.duration}
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  <strong className="dark:text-white">Duration:</strong> {item.duration}
                 </div>
               )}
             </div>
           </div>
         </div>
-        <div className="p-6 bg-gray-50 border-t sticky bottom-0">
+        <div className="p-6 bg-gray-50 dark:bg-gray-700 border-t dark:border-gray-600 sticky bottom-0">
           <button
             onClick={() => onBookNow(item)}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 dark:bg-indigo-700 dark:hover:bg-indigo-600"
           >
             Book Now
           </button>
@@ -187,11 +185,10 @@ const CourseCard: React.FC<CourseCardProps> = ({
   onViewDetails,
 }) => {
   const imageUrls = course.imagePaths || [];
-
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300">
+    <section className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300 dark:shadow-gray-900">
       <div className="relative group">
         <Swiper
           modules={[Pagination]}
@@ -220,26 +217,26 @@ const CourseCard: React.FC<CourseCardProps> = ({
       </div>
 
       <div className="p-6 flex-grow flex flex-col">
-            <h3 className="text-xl font-semibold text-black line-clamp-1">
+        <h3 className="text-xl font-semibold text-black dark:text-white line-clamp-1">
           {course.name}
         </h3>
-            <p className="mt-2 text-base sm:text-lg text-gray-600 font-normal line-clamp-2">
+        <p className="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300 font-normal line-clamp-2">
           {course.shortDescription}
         </p>
-            <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
-              <span className="text-lg font-bold text-black">
+        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col gap-2">
+          <span className="text-lg font-bold text-black dark:text-white">
             ${course.basePriceInfo || "Contact for Price"}
           </span>
-              <div className="flex justify-between gap-2">
+          <div className="flex justify-between gap-2">
             <Button
               onClick={() => onViewDetails(course)}
-                  className="!text-[#b0db72] hover:!text-white bg-transparent border border-[#b0db72] w-full whitespace-nowrap"
+              className="!text-[#b0db72] hover:!text-white bg-transparent border border-[#b0db72] w-full whitespace-nowrap dark:!text-[#9acd50] dark:border-[#9acd50] dark:hover:!text-gray-900"
             >
               View Details
             </Button>
             <Button
               onClick={() => onBookNow(course.id)}
-                  className="text-white px-4 py-2 rounded w-full whitespace-nowrap"
+              className="text-white px-4 py-2 rounded w-full whitespace-nowrap bg-[#b0db72] hover:bg-[#9acd50] dark:bg-[#7cb342] dark:hover:bg-[#64a506]"
             >
               Book Now
             </Button>
@@ -261,6 +258,7 @@ const BookNowClient: React.FC = () => {
     null
   );
   const router = useRouter();
+  
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -268,8 +266,7 @@ const BookNowClient: React.FC = () => {
         const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
           axios.get(`${apiUrl}/api/public_api/courses`),
           axios.get(`${apiUrl}/api/public/categories`),
-          axios.get(`${apiUrl}/api/public/course-category-mappings`
-          ),
+          axios.get(`${apiUrl}/api/public/course-category-mappings`),
         ]);
         console.log("Courses response:", coursesRes.data);
 
@@ -350,29 +347,20 @@ const BookNowClient: React.FC = () => {
     return allGroupedCourses;
   }, [courses, categories, mappings, selectedCategoryId]);
 
-  /*  const handleViewDetails = (item: SelectableItem) => {
-        setSelectedItem(item);
-        router.push(`/course-categories/${item}`);
-        console.log("item is",item );
-    };*/
-
   const handleViewDetails = (course: Course) => {
-router.push(`/book-now/courses/${course.slug}`);
-  //router.push(`/book-now/courses/${course.id}`);
+    router.push(`/book-now/courses/${course.slug}`);
   };
 
   const handleBookNow = (item: SelectableItem) => {
     console.log(`Navigating to book ${item.type} with ID ${item.id}`);
     toast.info(`Redirecting to book "${item.name}"...`);
-    // router.push(`/booking?type=${item.type}&id=${item.id}`);
-    console.log("item type is", item.type);
     router.push(`/booking/course/${item.id}`);
   };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className="flex justify-center items-center h-screen bg-white dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500 dark:border-indigo-400"></div>
       </div>
     );
   }
@@ -384,15 +372,15 @@ router.push(`/book-now/courses/${course.slug}`);
         title="Find Your Passion"
         description="Explore our wide range of professional sports courses and packages designed for all skill levels."
       />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white dark:bg-gray-900">
         <div className="space-y-16">
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             <button
               onClick={() => setSelectedCategoryId(null)}
               className={`px-4 py-2 text-sm font-semibold !rounded-full shadow-sm transition-colors ${
                 !selectedCategoryId
-                  ? "bg-green-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
+                  ? "bg-green-600 text-white dark:bg-green-700"
+                  : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               }`}
             >
               All Courses
@@ -403,8 +391,8 @@ router.push(`/book-now/courses/${course.slug}`);
                 onClick={() => setSelectedCategoryId(cat.categoryId)}
                 className={`px-4 py-2 text-sm font-semibold !rounded-full shadow-sm transition-colors ${
                   selectedCategoryId === cat.categoryId
-                    ? "bg-green-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
+                    ? "bg-green-600 text-white dark:bg-green-700"
+                    : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`}
               >
                 {cat.categoryName}
@@ -414,7 +402,7 @@ router.push(`/book-now/courses/${course.slug}`);
 
           {groupedCourses.map(([categoryName, { courses: courseList }]) => (
             <section key={categoryName}>
-              <h2 className="text-3xl font-bold text-gray-900  dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
                 {categoryName}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -432,11 +420,11 @@ router.push(`/book-now/courses/${course.slug}`);
             </section>
           ))}
           {groupedCourses.length === 0 && !isLoading && (
-            <div className="text-center py-16 bg-white rounded-lg shadow">
-              <h3 className="text-xl font-semibold text-gray-700">
+            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900">
+              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
                 No Courses Available
               </h3>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-2 text-gray-500 dark:text-gray-400">
                 No courses were found for the selected category. Please try
                 another one or view all courses.
               </p>

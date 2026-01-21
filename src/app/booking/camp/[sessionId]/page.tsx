@@ -411,37 +411,40 @@ const CampBookingPage: React.FC = () => {
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    <div className="lg:col-span-2 bg-white rounded-lg shadow-xl p-8 space-y-10">
+                    <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 space-y-10">
                         {/* Contact Information Section */}
                         <section>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">1. Your Contact Information</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4 dark:text-white">1. Your Contact Information</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 dark:text-gray-100">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Full Name *</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name *</label>
                                     <input 
                                         value={contactName} 
                                         onChange={e => setContactName(e.target.value)} 
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                        placeholder='Full Name'
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Email Address *</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address *</label>
                                     <input 
                                         type="email" 
                                         value={contactEmail} 
                                         onChange={e => setContactEmail(e.target.value)} 
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                        placeholder='Email'
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Phone Number *</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number *</label>
                                     <input 
                                         type="tel" 
                                         value={contactPhone} 
                                         onChange={e => setContactPhone(e.target.value)} 
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                        placeholder='Contact Number'
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                         required
                                     />
                                 </div>
@@ -450,46 +453,49 @@ const CampBookingPage: React.FC = () => {
 
                         {/* Participants Section */}
                         <section>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">2. Participant(s) Information</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4 dark:text-white">2. Participant(s) Information</h2>
                             <div className="space-y-6">
                                 {participants.map((p, index) => (
-                                    <div key={p.id} className="p-4 border rounded-lg bg-gray-50/50 relative">
-                                        <h3 className="font-semibold text-lg mb-4">Participant #{index + 1}</h3>
+                                    <div key={p.id} className="p-4 border dark:border-gray-700 rounded-lg bg-gray-50/50 dark:bg-gray-700/50 relative">
+                                        <h3 className="font-semibold text-lg mb-4 dark:text-gray-100">Participant #{index + 1}</h3>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="text-sm font-medium text-gray-900 dark:text-gray-100">First Name *</label>
+                                                <label className="text-sm font-medium text-gray-900 dark:text-gray-300">First Name *</label>
                                                 <input 
                                                     value={p.firstName} 
-                                                    onChange={e => handleParticipantChange(index, 'firstName', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                                    onChange={e => handleParticipantChange(index, 'firstName', e.target.value)}
+                                                    placeholder='First Name' 
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                                     required
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-100">Last Name *</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Name *</label>
                                                 <input 
                                                     value={p.lastName} 
                                                     onChange={e => handleParticipantChange(index, 'lastName', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                                    placeholder='Last Name'
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                                     required
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-100">Date of Birth *</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Date of Birth *</label>
                                                 <input 
                                                     type="date" 
                                                     value={p.dateOfBirth} 
                                                     onChange={e => handleParticipantChange(index, 'dateOfBirth', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                                    placeholder='Date of Birth'
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                                     required
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-sm block font-medium text-gray-700 dark:text-gray-100">Skill Level</label>
+                                                <label className="text-sm block font-medium text-gray-700 dark:text-gray-300">Skill Level</label>
                                                 <select 
                                                     value={p.skillLevel} 
                                                     onChange={e => handleParticipantChange(index, 'skillLevel', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:text-white dark:border-gray-600"
                                                 >
                                                     <option>Beginner</option>
                                                     <option>Intermediate</option>
@@ -497,30 +503,31 @@ const CampBookingPage: React.FC = () => {
                                                 </select>
                                             </div>
                                             <div className="sm:col-span-2">
-                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-100">Medical Notes</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Medical Notes</label>
                                                 <textarea 
                                                     value={p.medicalNotes} 
                                                     onChange={e => handleParticipantChange(index, 'medicalNotes', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                                    placeholder='Medical Note'
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                                     rows={2}
                                                 ></textarea>
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-100">Emergency Contact Name *</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Emergency Contact Name *</label>
                                                 <input 
                                                     value={p.emergencyContactName} 
                                                     onChange={e => handleParticipantChange(index, 'emergencyContactName', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                                     required
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-100">Emergency Contact Phone *</label>
+                                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Emergency Contact Phone *</label>
                                                 <input 
                                                     type="tel" 
                                                     value={p.emergencyContactPhone} 
                                                     onChange={e => handleParticipantChange(index, 'emergencyContactPhone', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400" 
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                                     required
                                                 />
                                             </div>
@@ -538,7 +545,7 @@ const CampBookingPage: React.FC = () => {
                             </div>
                             <button 
                                 onClick={addParticipant} 
-                                className="mt-4 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                                className="mt-4 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                             >
                                 {/*
                                 <PlusCircleIcon/> Add Another Participant*/}
@@ -547,20 +554,20 @@ const CampBookingPage: React.FC = () => {
                         
                         {/* Sessions Section */}
                         <section>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">3. Select Camp Session</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4 dark:text-white">3. Select Camp Session</h2>
                             {loading.sessions ? (
                                 <div className="text-center py-8">
                                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-                                    <p className="mt-4 text-gray-600">Loading sessions...</p>
+                                    <p className="mt-4 text-gray-600 dark:text-gray-300">Loading sessions...</p>
                                 </div>
                             ) : sessions.length > 0 ? (
                                 <>
                                     <div className="mb-6">
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-100">Available Sessions *</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Available Sessions *</label>
                                         <select 
                                             value={selectedSessionId || ''} 
                                             onChange={e => setSelectedSessionId(Number(e.target.value))} 
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 dark:text-gray-100"
+                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                                             required
                                         >
                                             <option value="">-- Select a Session --</option>
@@ -578,9 +585,9 @@ const CampBookingPage: React.FC = () => {
                                     </div>
 
                                     {selectedSession && (
-                                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                                            <h4 className="font-semibold text-blue-800 mb-2">Selected Session Details:</h4>
-                                            <p className="text-blue-700">
+                                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 dark:bg-blue-900/30 dark:border-blue-800">
+                                            <h4 className="font-semibold text-blue-800 mb-2 dark:text-blue-200">Selected Session Details:</h4>
+                                            <p className="text-blue-700 dark:text-blue-100">
                                                 <strong>{selectedSession.sessionName}</strong><br />
                                                 Duration: {new Date(selectedSession.startDate).toLocaleDateString()} to {new Date(selectedSession.endDate).toLocaleDateString()}<br />
                                                 Price: ${priceDetails.sessionPrice} per participant<br />
@@ -590,33 +597,33 @@ const CampBookingPage: React.FC = () => {
                                     )}
                                 </>
                             ) : (
-                                <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
-                                    <p className="text-gray-500">No sessions available for this camp.</p>
+                                <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600">
+                                    <p className="text-gray-500 dark:text-gray-400">No sessions available for this camp.</p>
                                 </div>
                             )}
                         </section>
 
                         {/* Add-Ons Section */}
                         <section>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">4. Select Add-Ons (Optional)</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4 dark:text-white">4. Select Add-Ons (Optional)</h2>
                             {loading.addons ? (
                                 <div className="text-center py-4">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
-                                    <p className="mt-2 text-gray-600">Loading add-ons...</p>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">Loading add-ons...</p>
                                 </div>
                             ) : addonGroups.length > 0 ? (
                                 <div className="space-y-6">
                                     {addonGroups.map(group => (
-                                        <div key={group.groupId} className="border rounded-lg p-6 bg-white">
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                                        <div key={group.groupId} className="border rounded-lg p-6 bg-white dark:bg-gray-700 dark:border-gray-600">
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-3 dark:text-white">
                                                 {group.groupName}
-                                                <span className="text-sm font-normal text-gray-500 ml-2">
+                                                <span className="text-sm font-normal text-gray-500 ml-2 dark:text-gray-300">
                                                     ({group.selectionType === 'SINGLE' ? 'Select one' : 'Select multiple'})
                                                 </span>
                                             </h3>
                                             <div className="space-y-2">
                                                 {group.options.map(option => (
-                                                    <div key={option.optionId} className="flex items-center justify-between p-3 border rounded hover:bg-gray-50">
+                                                    <div key={option.optionId} className="flex items-center justify-between p-3 border rounded hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-600">
                                                         <div className="flex items-center space-x-3">
                                                             {group.selectionType === 'SINGLE' ? (
                                                                 <input
@@ -635,9 +642,9 @@ const CampBookingPage: React.FC = () => {
                                                                 />
                                                             )}
                                                             <div>
-                                                                <h4 className="font-medium text-gray-900">{option.optionName}</h4>
+                                                                <h4 className="font-medium text-gray-900 dark:text-white">{option.optionName}</h4>
                                                                 {option.priceAdjustment !== 0 && (
-                                                                    <p className="text-sm text-gray-600">
+                                                                    <p className="text-sm text-gray-600 dark:text-gray-300">
                                                                         {option.priceAdjustment > 0 ? '+' : ''}${option.priceAdjustment} per participant
                                                                     </p>
                                                                 )}
@@ -650,8 +657,8 @@ const CampBookingPage: React.FC = () => {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
-                                    <p className="text-gray-500">No add-ons available for this camp.</p>
+                                <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600">
+                                    <p className="text-gray-500 dark:text-gray-400">No add-ons available for this camp.</p>
                                 </div>
                             )}
                         </section>
@@ -659,43 +666,43 @@ const CampBookingPage: React.FC = () => {
 
                     {/* Booking Summary */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6 sticky top-24">
-                            <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4 dark:text-gray-100">Booking Summary</h3>
+                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 sticky top-24">
+                            <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4 dark:text-white dark:border-gray-700">Booking Summary</h3>
                             <div className="space-y-3 text-sm">
-                                <div className="flex justify-between text-gray-700 dark:text-gray-100">
+                                <div className="flex justify-between text-gray-700 dark:text-gray-300">
                                     <span>Camp:</span>
-                                    <span className="font-semibold">{camp?.title}</span>
+                                    <span className="font-semibold dark:text-white">{camp?.title}</span>
                                 </div>
                                 {selectedSession && (
-                                    <div className="flex justify-between text-gray-700 dark:text-gray-100">
+                                    <div className="flex justify-between text-gray-700 dark:text-gray-300">
                                         <span>Session:</span>
-                                        <span className="font-semibold text-right max-w-[150px]">
+                                        <span className="font-semibold text-right max-w-[150px] dark:text-white">
                                             {selectedSession.sessionName}
                                         </span>
                                     </div>
                                 )}
-                                <div className="flex justify-between text-gray-700 dark:text-gray-100">
+                                <div className="flex justify-between text-gray-700 dark:text-gray-300">
                                     <span>Participants:</span>
-                                    <span className="font-semibold">{participants.length}</span>
+                                    <span className="font-semibold dark:text-white">{participants.length}</span>
                                 </div>
                                 
-                                <div className="border-t my-2"></div>
+                                <div className="border-t my-2 dark:border-gray-700"></div>
                                 
-                                <div className="flex justify-between text-gray-700 dark:text-gray-100">
+                                <div className="flex justify-between text-gray-700 dark:text-gray-300">
                                     <span>Session Price:</span>
-                                    <span>${(priceDetails.sessionPrice * participants.length).toFixed(2)}</span>
+                                    <span className="dark:text-white">${(priceDetails.sessionPrice * participants.length).toFixed(2)}</span>
                                 </div>
                                 
                                 {priceDetails.addOnsTotal > 0 && (
-                                    <div className="flex justify-between text-gray-700 dark:text-gray-100">
+                                    <div className="flex justify-between text-gray-700 dark:text-gray-300">
                                         <span>Add-ons:</span>
-                                        <span>+${priceDetails.addOnsTotal.toFixed(2)}</span>
+                                        <span className="dark:text-white">+${priceDetails.addOnsTotal.toFixed(2)}</span>
                                     </div>
                                 )}
                                 
-                                <div className="flex justify-between font-semibold text-gray-700 dark:text-gray-100">
+                                <div className="flex justify-between font-semibold text-gray-700 dark:text-gray-300">
                                     <span>Subtotal:</span>
-                                    <span>${priceDetails.totalSubtotal.toFixed(2)}</span>
+                                    <span className="dark:text-white">${priceDetails.totalSubtotal.toFixed(2)}</span>
                                 </div>
                                 
                                 <div className="pt-4 space-y-2">
@@ -705,26 +712,26 @@ const CampBookingPage: React.FC = () => {
                                             placeholder="Coupon Code" 
                                             value={couponCode} 
                                             onChange={e => setCouponCode(e.target.value.toUpperCase())} 
-                                            className="w-full text-sm rounded-md border border-gray-300 shadow-sm p-2" 
+                                            className="w-full text-sm rounded-md border border-gray-300 shadow-sm p-2 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:border-gray-600" 
                                         />
                                         <button 
                                             onClick={handleApplyCoupon} 
                                             disabled={couponLoading}
-                                            className="bg-gray-200 text-gray-700 px-3 py-1 text-sm font-semibold rounded-md hover:bg-gray-300"
+                                            className="bg-gray-200 text-gray-700 px-3 py-1 text-sm font-semibold rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
                                         >
                                             {couponLoading ? '...' : 'Apply'}
                                         </button>
                                     </div>
                                     {discount && (
-                                        <div className="flex justify-between text-green-600 font-semibold">
+                                        <div className="flex justify-between text-green-600 font-semibold dark:text-green-400">
                                             <span>Discount ({couponCode}):</span>
                                             <span>- ${priceDetails.discountAmount.toFixed(2)}</span>
                                         </div>
                                     )}
                                 </div>
                                 
-                                <div className="border-t my-2"></div>
-                                <div className="flex justify-between text-xl font-bold text-gray-900">
+                                <div className="border-t my-2 dark:border-gray-700"></div>
+                                <div className="flex justify-between text-xl font-bold text-gray-900 dark:text-white">
                                     <span>Total:</span>
                                     <span>${priceDetails.finalPrice.toFixed(2)}</span>
                                 </div>
@@ -732,7 +739,7 @@ const CampBookingPage: React.FC = () => {
                             <button 
                                 onClick={handleSubmit} 
                                 disabled={isSubmitting || !selectedSessionId}
-                                className="w-full mt-6 bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+                                className="w-full mt-6 bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-gray-600"
                             >
                                 {isSubmitting ? 'Processing...' : 'Continue to Payment'}
                             </button>

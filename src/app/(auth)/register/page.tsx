@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import Input from "@/app/components/Input";
 import { Button } from "@/app/components/Button";
-import { AppleIcon, GoogleIcon } from "@/app/components/Icons";
+//import { AppleIcon, GoogleIcon } from "@/app/components/Icons";
 import Image from "next/image";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -17,6 +17,7 @@ const RegisterPage: React.FC = () => {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +47,7 @@ const RegisterPage: React.FC = () => {
       const res = await axios.post(
         `${apiUrl}/api/auth/signup`,
         // ✅ FIX: Added firstName and lastName to the API request payload
-        { firstName, lastName, username, email, password },
+        { firstName, lastName, username, phoneNumber, email, password },
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -137,7 +138,17 @@ const RegisterPage: React.FC = () => {
                 disabled={isLoading}
               />
             </div>
-            
+             <Input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="text"
+              autoComplete="phoneNumber"
+              required
+              placeholder="phoneNumber"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              disabled={isLoading}
+            />
             <Input
               id="username"
               name="username"
@@ -148,7 +159,7 @@ const RegisterPage: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isLoading}
-            />
+              />
             <Input
               id="email"
               name="email"

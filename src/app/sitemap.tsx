@@ -25,6 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const blogUrls = await fetchUrls('/api/public/blog/sitemap-urls');
     const courseUrls = await fetchUrls('/api/public_api/courses/sitemap-urls');
     const packageUrls = await fetchUrls('/api/public/packages/sitemap-urls');
+    const campUrls = await fetchUrls('/api/public/camps/sitemap-urls');
 
     // Format the dynamic URLs
     const formattedBlogUrls = blogUrls.map(item => ({
@@ -42,6 +43,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(item.lastmod).toISOString(),
     }));
 
+    const formattedCampUrls = campUrls.map(item => ({
+        url: `${siteUrl}/camps/${item.loc}`,
+        lastModified: new Date(item.lastmod).toISOString(),
+    }));
+
     // Add your static pages
     const staticUrls = [
         { url: siteUrl, lastModified: new Date().toISOString() },
@@ -56,8 +62,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${siteUrl}/tennis-phoenix`, lastModified: new Date().toISOString() },
         { url: `${siteUrl}/tennis-gilbert`, lastModified: new Date().toISOString() },
         { url: `${siteUrl}/sports/pickleball`, lastModified: new Date().toISOString() },
-         { url: `${siteUrl}/sports/tennis`, lastModified: new Date().toISOString() },
-        { url: `${siteUrl}/pickleball-gilbert`, lastModified: new Date().toISOString() }
+        { url: `${siteUrl}/sports/tennis`, lastModified: new Date().toISOString() },
+        { url: `${siteUrl}/phoenix-junior-tennis`, lastModified: new Date().toISOString() },
+        { url: `${siteUrl}/gilbert-adult-tennis-clinics`, lastModified: new Date().toISOString() },
+        { url: `${siteUrl}/pickleball-gilbert`, lastModified: new Date().toISOString() },
+        { url: `${siteUrl}/private-tennis-coaching-in-phoenix-and-gilbert`, lastModified: new Date().toISOString() },
+        { url: `${siteUrl}/blog`, lastModified: new Date().toISOString() },
+        { url: `${siteUrl}/camps`, lastModified: new Date().toISOString() }
     ];
     
     // Combine all URLs
@@ -66,5 +77,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...formattedBlogUrls,
         ...formattedCourseUrls,
         ...formattedPackageUrls,
+        ...formattedCampUrls
     ];
 }

@@ -102,13 +102,13 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
 
     if (!res.ok) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="text-center py-20 text-lg text-gray-600 max-w-md mx-auto px-4">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Not Found</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <div className="text-center py-20 text-lg text-gray-600 max-w-md mx-auto px-4 dark:text-gray-300">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4 dark:text-white">Course Not Found</h2>
             <p className="mb-6">The course you are looking for does not exist or may have been moved.</p>
             <button 
               onClick={() => window.history.back()}
-              className="bg-[#b0db72] text-white px-6 py-2 rounded-lg hover:bg-[#3a702b] transition-colors"
+              className="bg-[#b0db72] text-white px-6 py-2 rounded-lg hover:bg-[#3a702b] transition-colors dark:bg-[#9acd50] dark:hover:bg-[#7cb342]"
             >
               Go Back
             </button>
@@ -123,13 +123,13 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
   } catch (error) {
     console.error('Error loading course:', error);
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center py-20 text-lg text-gray-600 max-w-md mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Course</h2>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center py-20 text-lg text-gray-600 max-w-md mx-auto px-4 dark:text-gray-300">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 dark:text-white">Error Loading Course</h2>
           <p className="mb-6">There was a problem loading the course details. Please try again later.</p>
           <button 
             onClick={() => window.location.reload()}
-            className="bg-[#b0db72] text-white px-6 py-2 rounded-lg hover:bg-[#3a702b] transition-colors"
+            className="bg-[#b0db72] text-white px-6 py-2 rounded-lg hover:bg-[#3a702b] transition-colors dark:bg-[#9acd50] dark:hover:bg-[#7cb342]"
           >
             Try Again
           </button>

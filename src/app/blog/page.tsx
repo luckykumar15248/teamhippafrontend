@@ -23,7 +23,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 const PostCard: React.FC<{ post: PostBrief }> = ({ post }) => (
   <Link
     href={`/blog/${post.slug}`}
-    className="block group bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+    className="block group bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden dark:shadow-gray-900 dark:hover:shadow-gray-800"
   >
     <div className="relative">
       <img
@@ -36,11 +36,13 @@ const PostCard: React.FC<{ post: PostBrief }> = ({ post }) => (
       />
     </div>
     <div className="p-6">
-<h3 className="text-xl font-semibold text-black line-clamp-1">        {post.title}
+      <h3 className="text-xl font-semibold text-black dark:text-white line-clamp-1">
+        {post.title}
       </h3>
-        <p className="mt-2 text-base sm:text-lg text-gray-600 font-normal line-clamp-2">
-        {post.excerpt}</p>
-      <div className="text-base text-gray-600 font-semibold">
+      <p className="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300 font-normal line-clamp-2">
+        {post.excerpt}
+      </p>
+      <div className="text-base text-gray-600 dark:text-gray-400 font-semibold mt-3">
         <span>By {post.authorName}</span> |{" "}
         <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
       </div>
@@ -83,49 +85,49 @@ const BlogPage: React.FC = () => {
         description="News, tips, and insights from our team."
         showCallButton
       />
-      <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
+      <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-white dark:bg-gray-900">
         <div className="space-y-16 max-w-screen-2xl mx-auto">
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
-          </div>
-        ) : posts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <h3 className="text-xl font-semibold text-gray-700">No Posts Found</h3>
-            <p className="mt-2 text-base sm:text-lg text-gray-600 font-normal">
-              Check back soon for new articles!
-            </p>
-          </div>
-        )}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500 dark:border-indigo-400"></div>
+            </div>
+          ) : posts.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">No Posts Found</h3>
+              <p className="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-400 font-normal">
+                Check back soon for new articles!
+              </p>
+            </div>
+          )}
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-12 space-x-4">
-            <button
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
-              disabled={page === 0}
-              className="px-4 py-2 bg-white border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-700">
-              Page {page + 1} of {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-              disabled={page >= totalPages - 1}
-              className="px-4 py-2 bg-white border rounded-md text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center mt-12 space-x-4">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="px-4 py-2 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 text-gray-700 dark:text-gray-300 transition-colors"
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Page {page + 1} of {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="px-4 py-2 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 text-gray-700 dark:text-gray-300 transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </>

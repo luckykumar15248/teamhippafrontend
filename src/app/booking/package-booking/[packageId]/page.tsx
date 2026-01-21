@@ -288,15 +288,15 @@ const PackageBookingPage: React.FC = () => {
     };
     
     return (
-        <div className="bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
             <div className="max-w-6xl mx-auto py-12 px-4">
                 <div className="text-center mb-10">
-                    <h1 className="text-4xl font-extrabold text-gray-900">Book Your Package</h1>
-                    <p className="mt-2 text-lg text-gray-600">for {pkg?.name || 'our amazing package'}</p>
+                    <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">Book Your Package</h1>
+                    <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">for {pkg?.name || 'our amazing package'}</p>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    <div className="lg:col-span-2 bg-white rounded-lg shadow-xl p-8 space-y-10">
+                    <div className="lg:col-span-2 bg-white rounded-lg shadow-xl p-8 space-y-10 dark:bg-gray-white/5">
                         <section>
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">1. Your Contact Information</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -305,7 +305,8 @@ const PackageBookingPage: React.FC = () => {
                                     <input 
                                         value={contactName} 
                                         onChange={e => setContactName(e.target.value)} 
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500" 
+                                        placeholder="Full Name"
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                     />
                                 </div>
                                 <div>
@@ -314,7 +315,8 @@ const PackageBookingPage: React.FC = () => {
                                         type="email" 
                                         value={contactEmail} 
                                         onChange={e => setContactEmail(e.target.value)} 
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500" 
+                                        placeholder='Email'
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                     />
                                 </div>
                                 <div>
@@ -323,7 +325,8 @@ const PackageBookingPage: React.FC = () => {
                                         type="tel" 
                                         value={contactPhone} 
                                         onChange={e => setContactPhone(e.target.value)} 
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500" 
+                                        placeholder='Contact Number' required
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                     />
                                 </div>
                             </div>
@@ -333,39 +336,42 @@ const PackageBookingPage: React.FC = () => {
                             <div className="space-y-6">
                                 {participants.map((p, index) => (
                                     <div key={p.id} className="p-4 border rounded-lg bg-gray-50/50 relative">
-                                        <h3 className="font-semibold text-lg mb-4">Participant #{index + 1}</h3>
+                                        <h3 className="font-semibold text-lg mb-4 dark:text-gray-900">Participant #{index + 1}</h3>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="text-sm font-medium">First Name</label>
+                                                <label className="text-sm font-medium dark:text-gray-900">First Name</label>
                                                 <input 
                                                     value={p.firstName} 
                                                     onChange={e => handleParticipantChange(index, 'firstName', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3" 
+                                                    placeholder='First Name'
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium">Last Name</label>
+                                                <label className="text-sm font-medium dark:text-gray-900">Last Name</label>
                                                 <input 
                                                     value={p.lastName} 
                                                     onChange={e => handleParticipantChange(index, 'lastName', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3" 
+                                                    placeholder='Last Name'
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-sm font-medium">Date of Birth</label>
+                                                <label className="text-sm font-medium dark:text-gray-900">Date of Birth</label>
                                                 <input 
                                                     type="date" 
                                                     value={p.dateOfBirth} 
                                                     onChange={e => handleParticipantChange(index, 'dateOfBirth', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3" 
+                                                    placeholder='Date of Birth'
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-sm block font-medium">Skill Level</label>
+                                                <label className="text-sm block font-medium dark:text-gray-900">Skill Level</label>
                                                 <select 
                                                     value={p.skillLevel} 
                                                     onChange={e => handleParticipantChange(index, 'skillLevel', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3"
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:text-black dark:placeholder:text-black dark:border-black-600"
                                                 >
                                                     <option>Beginner</option>
                                                     <option>Intermediate</option>
@@ -373,11 +379,12 @@ const PackageBookingPage: React.FC = () => {
                                                 </select>
                                             </div>
                                             <div className="sm:col-span-2">
-                                                <label className="text-sm font-medium">Medical Notes</label>
+                                                <label className="text-sm font-medium dark:text-gray-900">Medical Notes</label>
                                                 <textarea 
                                                     value={p.medicalNotes} 
                                                     onChange={e => handleParticipantChange(index, 'medicalNotes', e.target.value)} 
-                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3" 
+                                                    placeholder='Any relevant medical notes'
+                                                    className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                                     rows={2}
                                                 ></textarea>
                                             </div>
@@ -385,7 +392,7 @@ const PackageBookingPage: React.FC = () => {
                                         {participants.length > 1 && (
                                             <button 
                                                 onClick={() => removeParticipant(p.id)} 
-                                                className="absolute top-4 right-4 text-red-500 hover:text-red-700"
+                                                className="absolute top-4 right-4 text-red-500 hover:text-red-700 dark:text-black dark:placeholder:text-black dark:border-black-600"
                                             >
                                                 <TrashIcon />
                                             </button>
@@ -408,7 +415,7 @@ const PackageBookingPage: React.FC = () => {
                                 <select 
                                     value={selectedScheduleId || ''} 
                                     onChange={e => setSelectedScheduleId(Number(e.target.value))} 
-                                    className="mt-1 block w-full md:w-1/2 rounded-md border-gray-300 shadow-sm p-3"
+                                    className="mt-1 block w-full md:w-1/2 rounded-md border-gray-300 shadow-sm p-3 dark:text-gray-900"
                                 >
                                     <option key="default" value="">-- Select an Available Schedule --</option>
                                     {schedules.map((schedule, index) => (
@@ -427,11 +434,11 @@ const PackageBookingPage: React.FC = () => {
                         <div className="bg-white rounded-lg shadow-xl p-6 sticky top-24">
                             <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4">Booking Summary</h3>
                             <div className="space-y-3 text-sm">
-                                <div className="flex justify-between">
+                                <div className="flex justify-between dark:text-gray-900">
                                     <span>Package:</span>
                                     <span className="font-semibold">{pkg?.name}</span>
                                 </div>
-                                <div className="flex justify-between">
+                                <div className="flex justify-between dark:text-gray-900">
                                     <span>Participants:</span>
                                     <span className="font-semibold">{participants.length}</span>
                                 </div>
@@ -448,7 +455,7 @@ const PackageBookingPage: React.FC = () => {
                                             placeholder="Coupon Code" 
                                             value={couponCode} 
                                             onChange={e => setCouponCode(e.target.value.toUpperCase())} 
-                                            className="w-full text-sm rounded-md border border-gray-300 shadow-sm p-2" 
+                                            className="w-full text-sm rounded-md border border-gray-300 shadow-sm p-2 dark:text-black dark:placeholder:text-black dark:border-black-600" 
                                         />
                                         <button 
                                             onClick={handleApplyCoupon} 

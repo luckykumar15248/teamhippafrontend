@@ -114,10 +114,10 @@ const AdminCalendarPage: React.FC = () => {
         }
         const headers = getAuthHeaders();
         if (!headers) return;
-
+        console.log("Rescheduling reason:-------------" + cancellationReason);
         try {
             await axios.post(`${apiUrl}/api/admin/schedule/bookings/${bookingToReschedule.bookingId}/reschedule`, 
-                { newDate }, 
+                { newDate, cancellationReason },
                 { headers }
             );
             toast.success("Booking has been rescheduled and users notified.");

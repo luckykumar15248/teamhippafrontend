@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Button } from "@/app/components/Button";
 import Input from "@/app/components/Input";
 import Image from "next/image";
-import { AppleIcon, GoogleIcon } from "@/app/components/Icons";
+//import { AppleIcon, GoogleIcon } from "@/app/components/Icons";
 import { AuthContext } from "@/app/context/AuthContext";
 
 // Define a type for the user data to be parsed from localStorage

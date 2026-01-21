@@ -19,7 +19,7 @@ interface UserProfile {
 
 const adminDashboardLinks = [
   {
-    href: "/",
+    href: "/admin/users",
     label: "User Management",
     description:
       "users, roles, user_admission_info, student_academic_records",
