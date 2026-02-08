@@ -1,4 +1,5 @@
 "use client";
+
 import { NAV_LINKS } from "@/untils/constant";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
@@ -31,74 +32,75 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-gray-100 dark:bg-gray-800 shadow-md dark:shadow-gray-900 sticky top-0 z-20 py-3 px-6 lg:px-16 transition-colors duration-300">
-      <div className="max-w-screen-2xl mx-auto">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-16">
+        <div className="flex items-center justify-between h-20">
+
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/">
-              <Image
-                src="/images/logo.png"
-                alt="TeamHippa-logo"
-                width={150}
-                height={50}
-                className="h-12 w-auto"
-              />
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/logo.png"
+              alt="TeamHippa-logo"
+              width={160}
+              height={48}
+              className="h-12 w-auto"
+              priority
+            />
+          </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex space-x-6 items-center">
+          <nav className="hidden xl:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-black dark:text-gray-100 hover:text-[#b0db72] dark:hover:text-[#9acd50] px-3 py-2 rounded-md text-base font-medium transition-colors duration-150"
+                className="text-gray-700 hover:text-[#7cb342] text-base font-medium transition-colors"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Auth Links / User Profile */}
-          <div className="hidden xl:flex items-center space-x-4">
+          {/* Right Actions */}
+          <div className="hidden xl:flex items-center gap-4">
             {isLoggedIn ? (
               <>
                 <Link
                   href={dashboardPath}
-                  className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] dark:bg-[#7cb342] dark:hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
+                  className="px-5 py-2 rounded-lg bg-[#7cb342] text-white text-sm font-medium hover:opacity-90 transition"
                 >
                   Dashboard
                 </Link>
+
                 <Button
                   onClick={logout}
-                  className="flex gap-2 !font-medium !px-4 !py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 transition-colors"
+                  className="!px-5 !py-2 !bg-[#f5f6f7] hover:!bg-gray-200 !text-gray-700 !font-medium !rounded-lg transition"
                 >
-                  <LogOutIcon className="text-gray-800 dark:text-gray-100" />
+                  <LogOutIcon className="text-gray-600" />
                   Logout
                 </Button>
               </>
             ) : (
               <Link
                 href="/login"
-                className="flex gap-2 items-center bg-[#b0db72] hover:bg-[#64a506] dark:bg-[#7cb342] dark:hover:bg-[#64a506] text-white px-4 py-2 rounded-md text-base font-medium shadow-sm transition-colors duration-150"
+                className="px-5 py-2 rounded-lg bg-[#7cb342] text-white text-sm font-medium hover:opacity-90 transition flex items-center gap-2"
               >
                 <UserIcon className="text-white" />
-                Login/Register
+                Login / Register
               </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="xl:hidden flex items-center">
+          {/* Mobile Menu */}
+          <div className="xl:hidden">
             <button onClick={toggleMobileMenu}>
-              <MenuIcon className="cursor-pointer min-h-6 min-w-6 text-black dark:text-gray-100" />
+              <MenuIcon className="w-7 h-7 text-gray-700" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Side-Bar */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <MobileMenu
           isMobileMenuOpen={isMobileMenuOpen}

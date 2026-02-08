@@ -29,6 +29,15 @@ const RegisterPage: React.FC = () => {
     event.preventDefault();
     setError(null);
 
+    const usPhoneRegex = /^(\+?1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/;
+
+     if (!usPhoneRegex.test(phoneNumber)) {
+      const msg = "Please enter a valid American phone number.";
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       toast.error("Passwords do not match.");
@@ -142,7 +151,7 @@ const RegisterPage: React.FC = () => {
               id="phoneNumber"
               name="phoneNumber"
               type="text"
-              autoComplete="phoneNumber"
+              autoComplete="tel"
               required
               placeholder="phoneNumber"
               value={phoneNumber}
