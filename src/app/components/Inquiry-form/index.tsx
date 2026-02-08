@@ -137,7 +137,9 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+  <form onSubmit={handleSubmit} className="space-y-8">
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Name */}
       <div>
         <Input
@@ -147,7 +149,7 @@ const ContactForm: React.FC = () => {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Your full name"
+          placeholder="Enter your full name"
           required
         />
       </div>
@@ -155,7 +157,7 @@ const ContactForm: React.FC = () => {
       {/* Email */}
       <div>
         <Input
-          label="Email *"
+          label="Email Address *"
           id="email"
           name="email"
           type="email"
@@ -165,134 +167,146 @@ const ContactForm: React.FC = () => {
           required
         />
       </div>
+    </div>
 
-      {/* Phone */}
+    {/* Phone */}
+    <div>
+      <Input
+        label="Phone Number *"
+        id="phone"
+        name="phone"
+        type="text"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        placeholder="+1 234 567 890"
+        required
+      />
+    </div>
+
+    {/* Sport & Course */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <Input
-          label="Phone Number"
-          id="phone"
-          name="phone"
-          type="text"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="+1 123-456-7890"
-        />
-      </div>
-
-      {/* Sport & Course */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold mb-1">Sport</label>
-          <select
-            value={selectedSport}
-            onChange={(e) => setSelectedSport(e.target.value)}
-            className="rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72] focus:z-10 sm:text-sm"
-          >
-            <option value="">Select a Sport</option>
-            {sports.map((sport) => (
-              <option key={sport.id} value={sport.id}>
-                {sport.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold mb-1">Course</label>
-          <select
-            value={selectedCourse}
-            onChange={(e) => setSelectedCourse(e.target.value)}
-            disabled={!selectedSport}
-            className="rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72] focus:z-10 sm:text-sm"
-          >
-            <option value="">Select a Course</option>
-            {filteredCourses.map((course) => (
-              <option key={course.id} value={course.id}>
-                {course.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Message */}
-      <div>
-        <Input
-          label="Message *"
-          id="message"
-          name="message"
-          type="textarea"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Write your message here..."
-          required
-        />
-      </div>
-
-      {/* Referral */}
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          How did you hear about us?
+        <label className="block text-sm font-medium text-gray-600 mb-2">
+          Select Sport
         </label>
         <select
-          value={referralSource}
-          onChange={(e) => setReferralSource(e.target.value)}
-          className="rounded relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#b0db72] focus:border-[#b0db72] focus:z-10 sm:text-sm"
+          value={selectedSport}
+          onChange={(e) => setSelectedSport(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b0db72] focus:border-[#b0db72] transition"
         >
-          <option value="">Select an option</option>
-          {referralOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          <option value="">Choose a sport</option>
+          {sports.map((sport) => (
+            <option key={sport.id} value={sport.id}>
+              {sport.name}
             </option>
           ))}
         </select>
       </div>
 
-      {referralSource === "Other" && (
-        <div>
-          <label className="block text-sm font-semibold mb-1">
-            Please specify
-          </label>
-          <input
-            type="text"
-            value={otherReferralSource}
-            onChange={(e) => setOtherReferralSource(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-      )}
-
-      {/* Submit */}
       <div>
-        <Button className="w-full" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit Inquiry"}
-        </Button>
+        <label className="block text-sm font-medium text-gray-600 mb-2">
+          Select Course
+        </label>
+        <select
+          value={selectedCourse}
+          onChange={(e) => setSelectedCourse(e.target.value)}
+          disabled={!selectedSport}
+          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b0db72] focus:border-[#b0db72] transition disabled:bg-gray-100"
+        >
+          <option value="">Choose a course</option>
+          {filteredCourses.map((course) => (
+            <option key={course.id} value={course.id}>
+              {course.name}
+            </option>
+          ))}
+        </select>
       </div>
+    </div>
 
+    {/* Message */}
+    <div>
+      <Input
+        label="Message *"
+        id="message"
+        name="message"
+        type="textarea"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Tell us about your goals, experience, or questions..."
+        required
+      />
+    </div>
+
+    {/* Referral */}
+    <div>
+      <label className="block text-sm font-medium text-gray-600 mb-2">
+        How did you hear about us?
+      </label>
+      <select
+        value={referralSource}
+        onChange={(e) => setReferralSource(e.target.value)}
+        className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b0db72] focus:border-[#b0db72] transition"
+      >
+        <option value="">Select an option</option>
+        {referralOptions.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    {referralSource === "Other" && (
       <div>
-        <p className="text-xs text-gray-500 text-center mt-4">
-          This site is protected by reCAPTCHA and the Google{" "}
-          <a
-            href="https://policies.google.com/privacy"
-            className="text-indigo-600 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Privacy Policy
-          </a>{" "}
-          and{" "}
-          <a
-            href="https://policies.google.com/terms"
-            className="text-indigo-600 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Terms of Service
-          </a>{" "}
-          apply.
-        </p>
+        <label className="block text-sm font-medium text-gray-600 mb-2">
+          Please specify
+        </label>
+        <input
+          type="text"
+          value={otherReferralSource}
+          onChange={(e) => setOtherReferralSource(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#b0db72] focus:border-[#b0db72] transition"
+        />
       </div>
-    </form>
+    )}
+
+    {/* Submit */}
+    <div className="pt-4">
+      <Button
+        className="w-full py-4 text-lg rounded-xl bg-[#b0db72] hover:bg-[#9acd50] transition"
+        type="submit"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Submitting..." : "Submit Inquiry"}
+      </Button>
+    </div>
+
+    {/* Footer Note */}
+    <p className="text-xs text-gray-500 text-center pt-4 leading-relaxed">
+      This site is protected by reCAPTCHA and the Google{" "}
+      <a
+        href="https://policies.google.com/privacy"
+        className="text-[#7aa63a] hover:underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Privacy Policy
+      </a>{" "}
+      and{" "}
+      <a
+        href="https://policies.google.com/terms"
+        className="text-[#7aa63a] hover:underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Terms of Service
+      </a>{" "}
+      apply.
+    </p>
+
+  </form>
+
+
   );
 };
 

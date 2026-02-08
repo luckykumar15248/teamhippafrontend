@@ -13,57 +13,73 @@ type FAQProps = {
 };
 
 export default function FAQ({ title, subtitle, data }: FAQProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggle = (index: number): void => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
- <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
-      <div className="mx-auto max-w-screen-2xl">
-              {title && (
-        <h2 className="text-4xl sm:text-5xl font-semibold text-left md:text-center text-black dark:text-white mb-8">         
-          Frequently Asked Questions
-        </h2>
-      )}
+    <section className="relative py-28 bg-white overflow-hidden">
+      
+      {/* Soft Background Shapes */}
+      <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-[#b0db72]/10 rounded-full blur-[80px]" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-gray-200/70 rounded-full blur-[90px]" />
 
-      <div className="flex flex-col sm:flex-row gap-6 w-full">
-        <div className="w-full sm:w-[40%]">
-          <h3 className="text-2xl text-left font-semibold text-black dark:text-white mb-1">
-            {title}
-          </h3>
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+
+        {/* Left Content */}
+        <div>
+          <span className="inline-block mb-5 px-5 py-2 text-sm font-medium rounded-full bg-[#b0db72]/15 text-[#5d8f32]">
+            Support Center
+          </span>
+
+          <h2 className="text-4xl md:text-4xl font-semibold leading-tight text-gray-900">
+            {title || "Frequently Asked Questions"}
+          </h2>
+
           {subtitle && (
-            <p className="text-lg text-left font-medium text-gray-700 dark:text-white">{subtitle}</p>
+            <p className="mt-6 text-lg text-gray-600 max-w-lg">
+              {subtitle}
+            </p>
           )}
-        </div>
 
-        <div className="w-full sm:w-[60%] mx-auto sm:px-4">
-          <div className="space-y-4">
-            {data.map((faq, index) => (
-              <div
-                key={index}
-                className="border border-gray-300 rounded-lg overflow-hidden"
-              >
-                <button
-                  onClick={() => toggle(index)}
-                  className="w-full text-left px-5 py-4 bg-[#b0db72] hover:bg-[#64a506] flex justify-between items-center"
-                >
-                  <span className="text-lg font-bold">{faq.question}</span>
-                  <span className="ml-2">
-                    {openIndex === index ? "-" : "+"}
-                  </span>
-                </button>
-                {openIndex === index && (
-                  <div className="px-5 py-4 text-lg text-gray-700 bg-white transition-all duration-300">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
-            ))}
+          <div className="mt-10 p-6 bg-[#f5f7fa] rounded-2xl border border-gray-200">
+            <p className="text-gray-600 leading-relaxed">
+              Still have questions? Our coaching and support team is always happy to guide you and help you select the perfect training program.
+            </p>
           </div>
         </div>
-      </div>
+
+        {/* Right FAQ Stack */}
+        <div className="relative space-y-6">
+          {data.map((faq, index) => (
+            <div
+              key={index}
+              className={`relative bg-white rounded-2xl border border-gray-200 transition-all duration-500 cursor-pointer
+                ${openIndex === index 
+                  ? "shadow-xl scale-[1.02] border-[#b0db72]" 
+                  : "shadow-md hover:shadow-lg"
+                }`}
+              onClick={() => setOpenIndex(openIndex === index ? null : index)}
+            >
+              <div className="px-7 py-6 flex items-center justify-between">
+                <h3 className="text-lg font-medium text-gray-900 pr-6">
+                  {faq.question}
+                </h3>
+
+                <div className={`w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center transition-all
+                  ${openIndex === index ? "bg-[#b0db72] border-[#b0db72] text-white rotate-45" : "text-gray-500"}`}>
+                  +
+                </div>
+              </div>
+
+              <div className={`overflow-hidden transition-all duration-500 ease-in-out
+                ${openIndex === index ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}>
+                <div className="px-7 pb-6 text-gray-600 leading-relaxed">
+                  {faq.answer}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );
