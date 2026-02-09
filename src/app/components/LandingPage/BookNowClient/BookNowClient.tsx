@@ -90,7 +90,7 @@ const DetailsModal: React.FC<DetailsModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
       <div
-        className={`bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col ${animationClasses}`}
+        className={`bg-white  rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col ${animationClasses}`}
       >
         <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-800 z-10">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{item.name}</h2>
@@ -188,7 +188,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300 dark:shadow-gray-900">
+    <section className="bg-white dark:bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 transition-transform duration-300 dark:shadow-gray-900 dark:hover:shadow-gray-700">
       <div className="relative group">
         <Swiper
           modules={[Pagination]}
@@ -211,20 +211,20 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </Swiper>
 
         {/* Slide count display */}
-        <span className="text-xs text-white mt-1 text-center bg-black/70 flex justify-center items-center w-fit rounded-full py-1 px-4 absolute right-6 bottom-6 z-10">
+        <span className="text-xs text-white mt-1 text-center  bg-black/70 flex justify-center items-center w-fit rounded-full py-1 px-4 absolute right-6 bottom-6 z-10">
           {activeIndex + 1} / {imageUrls.length > 0 ? imageUrls.length : 1}
         </span>
       </div>
 
       <div className="p-6 flex-grow flex flex-col">
-        <h3 className="text-xl font-semibold text-black dark:text-white line-clamp-1">
+        <h3 className="text-xl font-semibold text-black dark:text-gray-900 line-clamp-1">
           {course.name}
         </h3>
-        <p className="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300 font-normal line-clamp-2">
+        <p className="mt-2 text-base sm:text-lg text-gray-600 dark:text-black font-normal line-clamp-2">
           {course.shortDescription}
         </p>
-        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col gap-2">
-          <span className="text-lg font-bold text-black dark:text-white">
+        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-black flex flex-col gap-2">
+          <span className="text-lg font-bold text-black dark:text-gray-900">
             ${course.basePriceInfo || "Contact for Price"}
           </span>
           <div className="flex justify-between gap-2">
@@ -372,15 +372,15 @@ const BookNowClient: React.FC = () => {
         title="Find Your Passion"
         description="Explore our wide range of professional sports courses and packages designed for all skill levels."
       />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white dark:bg-gray-900">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white ">
         <div className="space-y-16">
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             <button
               onClick={() => setSelectedCategoryId(null)}
               className={`px-4 py-2 text-sm font-semibold !rounded-full shadow-sm transition-colors ${
                 !selectedCategoryId
-                  ? "bg-green-600 text-white dark:bg-green-700"
-                  : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                  ? "bg-green-600 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
               All Courses
@@ -391,8 +391,8 @@ const BookNowClient: React.FC = () => {
                 onClick={() => setSelectedCategoryId(cat.categoryId)}
                 className={`px-4 py-2 text-sm font-semibold !rounded-full shadow-sm transition-colors ${
                   selectedCategoryId === cat.categoryId
-                    ? "bg-green-600 text-white dark:bg-green-700"
-                    : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                    ? "bg-green-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-100 "
                 }`}
               >
                 {cat.categoryName}
@@ -402,7 +402,7 @@ const BookNowClient: React.FC = () => {
 
           {groupedCourses.map(([categoryName, { courses: courseList }]) => (
             <section key={categoryName}>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 {categoryName}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -420,11 +420,11 @@ const BookNowClient: React.FC = () => {
             </section>
           ))}
           {groupedCourses.length === 0 && !isLoading && (
-            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900">
-              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+            <div className="text-center py-16 bg-white rounded-lg shadow">
+              <h3 className="text-xl font-semibold text-gray-700">
                 No Courses Available
               </h3>
-              <p className="mt-2 text-gray-500 dark:text-gray-400">
+              <p className="mt-2 text-gray-500">
                 No courses were found for the selected category. Please try
                 another one or view all courses.
               </p>
