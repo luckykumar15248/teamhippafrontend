@@ -20,7 +20,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    /*  --background: #0a0a0a;*/
+    --background: #ffffff;
     --foreground: #ededed;
   }
 }
@@ -43,37 +44,42 @@ body {
   border-radius: 10px;
   width: 30px;
 }
-.custome-post h2{
-  font-size: 30px; 
-  font-weight: 700;     
-  color: #000;      
+
+.custome-post h2 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #000;
   margin-bottom: 12px;
 }
-.custome-post h3{
-  font-size: 30px; 
-  font-weight: 700;     
-  color: #000;      
+
+.custome-post h3 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #000;
   margin-bottom: 12px;
 }
 
 .custome-post p {
-  font-size: 18px;  
+  font-size: 18px;
   margin-bottom: 4px !important;
-  font-weight: 400;  
-  color: #4B5563; 
+  font-weight: 400;
+  color: #4B5563;
 }
+
 .custome-post ol li {
-  font-size: 18px;  
+  font-size: 18px;
   margin-bottom: 4px !important;
-  font-weight: 400;  
-  color: #4B5563; 
+  font-weight: 400;
+  color: #4B5563;
 }
+
 .custome-post ul li {
-  font-size: 18px;  
+  font-size: 18px;
   margin-bottom: 4px !important;
-  font-weight: 400;  
-  color: #4B5563; 
+  font-weight: 400;
+  color: #4B5563;
 }
+
 .dark-date-birth input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1) brightness(2) !important;
+  filter: invert(1) brightness(2) !important;
 }
