@@ -3,7 +3,7 @@ import TennisPageClient from "@/app/components/LandingPage/TennisPageClient.tsx/
 import Meta from "@/app/components/Meta";
 
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+//const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 interface Course {
   id: number;
