@@ -27,7 +27,7 @@ export default function FAQ({ title, subtitle, data }: FAQProps) {
         {/* Left Content */}
         <div>
           <span className="inline-block mb-5 px-5 py-2 text-sm font-medium rounded-full bg-[#b0db72]/15 text-[#5d8f32]">
-            Support Center
+            FAQs & Support
           </span>
 
           <h2 className="text-4xl md:text-4xl font-semibold leading-tight text-gray-900">

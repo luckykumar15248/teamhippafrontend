@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import TennisCourseCard from "@/app/components/TennisCourseCard";
 import FAQ from "@/app/components/FAQ";
-import { Waitlist } from "@/app/components/WaitList";
+//import { Waitlist } from "@/app/components/WaitList";
 import WaitlistForm from "@/app/components/WaitlistForm/WaitlistForm";
 import SportsHeroSection from "@/app/components/SportsHeroSection";
-import { PROGRAMS, ABOUT_FAQS } from "@/untils/constant";
+import { PROGRAMS } from "@/untils/constant";
 import { Button } from "@/app/components/Button";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
@@ -19,7 +19,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
-import ClassPoliciesAndRuleBook from "@/app/components/ClassPoliciesAndRuleBook";
+//import ClassPoliciesAndRuleBook from "@/app/components/ClassPoliciesAndRuleBook";
+import Link from "next/link";
+import Inquiry from "@/app/components/Inquiry-form";
+import { TENNIS_PAGE_FAQS } from "@/untils/constant";
 
 interface Course {
   id: number;
@@ -92,15 +95,15 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
   }, [tennisCourses, categories, mappings]);
 
   const handleTrialClick = () => {
-    router.push("/contact");
+    router.push("/book-now");
   };
 
   return (
     <>
       <SportsHeroSection
         bgImage="/images/tennis.png"
-        title="Tennis Academy"
-        description="Master the court with our world-class tennis programs, designed for all ages and skill levels, from beginner to high performance."
+        title="Tennis Academy & Coaching Programs - Gilbert & Phoenix | Team Hippa"
+        description=" Team Hippa is a leading tennis academy in Arizona offering elite tennis coaching, junior development programs, and adult tennis lessons. Whether you're a beginner or a competitive player, our expert coaches help you achieve peak performance."
       />
 
       <main>
@@ -108,12 +111,14 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
         {/* Your existing components and content with same styling */}
         {/* Add button handlers, toast, modal states here*/}
 
+       
+
 <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="space-y-16 max-w-screen-2xl mx-auto">
           {groupedCourses.length > 0 ? (
             groupedCourses.map(([categoryName, { courses: courseList }]) => (
               <div key={categoryName}>
-                <h2 className="text-3xl font-bold text-black mb-6">
+                <h2 className="text-4xl md:text-4xl font-extrabold text-gray-900 mb-6 text-center">
                   {categoryName}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -145,6 +150,7 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
           )}
         </div>
       </section>
+      
 
       {/* <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 text-center bg-[url('/images/wait-list.png')] bg-center bg-no-repeat bg-cover">
         <div className="max-w-screen-2xl mx-auto">
@@ -167,9 +173,14 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
 
       <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-white">
         <div className="max-w-screen-2xl mx-auto">
-          <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-4">
-            Our Programs
-          </h3>
+             <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-4xl font-extrabold text-gray-900 mb-6">
+               Tennis <span className="text-green-600"> Programs </span>for All Ages & Skill Levels
+              </h2>
+              <p className="text-lg md:text-xl text-gray-600">
+                From beginner tennis lessons to elite performance training, we offer comprehensive tennis coaching programs tailored for every athlete.
+              </p>
+            </div>
           <Swiper
             slidesPerView={1.2}
             spaceBetween={16}
@@ -212,6 +223,43 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
           </Swiper>
         </div>
       </section>
+
+       <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-gray-100 text-center">
+        <div className="max-w-screen-2xl mx-auto">
+          <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-4">
+            Flexible Training Schedules
+          </h3>
+          <p className="text-base sm:text-lg text-gray-600 font-normal mb-6">
+            Morning and evening batches available. Join at your convenience.
+          </p>
+          <div className="flex justify-center">
+            <Button
+              onClick={handleTrialClick}
+              className="text-white px-6 py-3 transition"
+            >
+              Book Now
+            </Button>
+          </div>
+        </div>
+      </section>
+
+       {/* Local SEO Section */}
+<section className="py-24 px-6 lg:px-16 bg-white">
+  <div className="max-w-6xl mx-auto text-center">
+
+    <h2 className="text-4xl md:text-4xl font-extrabold text-gray-900 mb-6 ">
+      Serving <span className="text-green-600">Tennis Players </span> Across Phoenix & Gilbert, Arizona
+    </h2>
+
+    <p className="text-lg text-gray-600 leading-relaxed max-w-4xl mx-auto">
+      Our tennis academy proudly serves families and athletes across
+      <strong> Gilbert, Chandler, Mesa, Tempe, Scottsdale, and Phoenix AZ.</strong>
+      If you are searching for <strong> tennis lessons near me</strong> or
+      <strong> tennis coaching in Phoenix AZ </strong>, Team Hippa is your trusted training destination.
+    </p>
+
+  </div>
+</section>
       
       {/* <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16">
         <div className="max-w-screen-2xl mx-auto">
@@ -249,44 +297,227 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
         </div>
       </section> */}
 
-      <section className="py-4 sm:py-8 md:py-12 px-6 lg:px-16 bg-white text-center">
-        <div className="max-w-screen-2xl mx-auto">
-          <h3 className="text-4xl sm:text-5xl font-semibold text-center text-black mb-4">
-            Flexible Training Schedules
-          </h3>
-          <p className="text-base sm:text-lg text-gray-600 font-normal mb-6">
-            Morning and evening batches available. Join at your convenience.
+     
+
+      <section className="py-24 px-6 lg:px-16 bg-gray-100">
+      <div className="max-w-7xl mx-auto">
+
+        {/* Heading */}
+        <div className="grid gap-8 md:grid-cols-12 md:items-end">
+          <h2 className="text-4xl md:text-4xl font-extrabold leading-tight text-gray-900 md:col-span-5">
+            Why Choose <span className="text-green-600">Team Hippa</span> Tennis Academy?{" "}
+            
+          </h2>
+
+          <p className="text-lg md:text-xl leading-relaxed text-gray-600 md:col-span-7">
+           Trusted by hundreds of families across Phoenix & Gilbert
           </p>
-          <div className="flex justify-center">
-            <Button
-              onClick={handleTrialClick}
-              className="text-white px-6 py-3 transition"
-            >
-              Book Now
-            </Button>
-          </div>
         </div>
-      </section>
-      <section className="bg-gray-50 text-center">
+
+        {/* Cards */}
+        <div className="mt-14 grid gap-6 md:grid-cols-2">
+
+          {/* Card */}
+          <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1">
+            <div className="flex items-start gap-4">
+              <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-green-50 text-green-600 text-lg font-bold">
+                ✓
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Elite Tennis Coaching
+                </h3>
+                <p className="mt-2 text-base leading-relaxed text-gray-600">
+                   Learn from certified coaches with international playing and coaching experience.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card */}
+          <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1">
+            <div className="flex items-start gap-4">
+              <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-green-50 text-green-600 text-lg font-bold">
+                ✓
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Junior & Adult Programs
+                </h3>
+                <p className="mt-2 text-base leading-relaxed text-gray-600">
+                   Structured <strong>junior tennis classes</strong> and advanced
+                  <strong> adult tennis training programs</strong> for every skill level.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card */}
+          <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1">
+            <div className="flex items-start gap-4">
+              <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-green-50 text-green-600 text-lg font-bold">
+                ✓
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Phoenix & Gilbert Locations
+                </h3>
+                <p className="mt-2 text-base leading-relaxed text-gray-600">
+                 Convenient training locations offering world-class tennis facilities.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card */}
+          <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1">
+            <div className="flex items-start gap-4">
+              <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-green-50 text-green-600 text-lg font-bold">
+                ✓
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Simple online booking
+                </h3>
+                <p className="mt-2 text-base leading-relaxed text-gray-600">
+                  Find a program, pick a time, and book in seconds from any device, with instant confirmations and reminders.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+      <section className="bg-gray-100 text-center">
         <FAQ
-          title="The fastest growing Tennis Academy"
-          subtitle="Feel free to ping us incase there is any doubts you have. Our team will love to help you out."
-          data={ABOUT_FAQS}
+          title="Frequently Asked Questions"
+          subtitle="Everything you need to know about our tennis coaching programs"
+           data={TENNIS_PAGE_FAQS}
         />
       </section>
-      <Waitlist
-        title="Interested in Joining?"
-        subtitle=" Our spots fill up fast. Join the waitlist to be notified of openings!"
-        onOpenWaitlist={() => setIsWaitlistOpen(true)}
-      />
+    
+      <section className="py-24 px-6 lg:px-16 bg-gradient-to-b from-white to-gray-100">
+  <div className="max-w-5xl mx-auto text-center">
 
-      <div>
-      {/* Other page content */}
+    {/* Heading */}
+    <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+      Tennis Academy Policies & Rule Book
+    </h2>
 
-      <ClassPoliciesAndRuleBook href="/images/Rule-book-Website-Updated.pdf">
-        Class policies / Rule Book
-      </ClassPoliciesAndRuleBook>
+    {/* SEO Content */}
+    <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto mb-6">
+      At <strong>Team Hippa Tennis Academy</strong>, we are committed to maintaining
+      a professional, safe, and high-performance training environment for all players.
+      Our official class policies outline attendance guidelines, cancellation terms,
+      code of conduct, and academy expectations for juniors and adults participating in
+      our <strong>tennis lessons in Gilbert and Phoenix, AZ</strong>.
+    </p>
+
+    <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto mb-10">
+      Whether you are enrolled in beginner tennis classes, competitive junior programs,
+      or advanced tennis coaching sessions, we encourage all families and athletes
+      to review our academy rules to ensure a smooth and positive training experience.
+    </p>
+
+    {/* CTA Button */}
+    <div className="mt-8">
+      <a
+        href="/images/Rule-book-Website-Updated.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center px-8 py-4 bg-green-600 hover:bg-green-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300"
+      >
+        View Class Policies & Rule Book (PDF)
+      </a>
     </div>
+
+    {/* Optional Trust Line */}
+    <p className="text-sm text-gray-500 mt-6">
+      Serving tennis players across Gilbert, Chandler, Mesa, Tempe, Scottsdale & Phoenix, Arizona.
+    </p>
+
+  </div>
+</section>
+
+
+    {/* Training Philosophy */}
+<section className="py-24 px-6 lg:px-16 bg-white">
+  <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-center">
+
+    <div>
+      <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+        Our Tennis Coaching Philosophy
+      </h2>
+
+      <p className="text-lg text-gray-600 leading-relaxed mb-5">
+        At Team Hippa, we believe world-class tennis training is built on
+        <strong> technique, discipline, mental strength, and long-term development.</strong>
+      </p>
+
+      <p className="text-lg text-gray-600 leading-relaxed mb-5">
+        Our tennis academy in Gilbert & Phoenix follows a structured coaching pathway,
+        designed to help players progress from beginner to advanced competitive levels.
+      </p>
+
+      <p className="text-lg text-gray-600 leading-relaxed">
+        Every athlete receives personalized coaching, match play training, physical
+        conditioning, and mental preparation — ensuring complete on-court and off-court growth.
+      </p>
+    </div>
+
+    <div className="relative rounded-3xl overflow-hidden shadow-xl">
+      <img
+        src="/images/tennis-training.jpg"
+        alt="Professional Tennis Coaching at Team Hippa"
+        className="w-full h-full object-cover"
+      />
+    </div>
+
+  </div>
+</section>
+
+
+
+        
+{/* Contact Us Section */}
+<section className="w-full py-20 px-6 lg:px-16 bg-[#f5f6f7]">
+  <div className="max-w-6xl mx-auto">
+
+    {/* Heading */}
+    <div className="text-center mb-14">
+      <p className="text-sm font-medium text-[#7cb342] uppercase tracking-wider mb-2">
+        Contact Us
+      </p>
+
+      <h2 className="text-4xl sm:text-4xl font-semibold text-gray-800 mb-4">
+        Let’s Start Your Training Journey
+      </h2>
+
+      <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        Have questions or need personalized guidance? Our team is here to help
+        you choose the perfect training program and get started confidently.
+      </p>
+
+      <p className="text-sm text-gray-500 mt-4">
+        Already a member?{" "}
+        <Link href="/login" className="text-[#7cb342] font-medium hover:underline">
+          Sign in
+        </Link>{" "}
+        for faster support.
+      </p>
+    </div>
+
+    {/* Form Card */}
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8 md:p-12 max-w-4xl mx-auto">
+      <Inquiry />
+    </div>
+
+  </div>
+</section>
+
+
      
       {/* --- The Modal --- */}
 
