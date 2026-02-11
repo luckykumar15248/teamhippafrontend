@@ -108,6 +108,26 @@ export const ABOUT_FAQS = [
   },
 ];
 
+export const TENNIS_PAGE_FAQS = [
+  {
+    question: "Do you offer tennis lessons for beginners?",
+    answer: "Yes, our tennis academy offers beginner-friendly programs for juniors and adults in Gilbert and Phoenix."
+  },
+  {
+    question: "Where is your tennis academy located?",
+    answer: "We operate professional tennis training centers in both Phoenix and Gilbert, Arizona."
+  },
+  {
+    question: "Do you provide adult tennis coaching?",
+    answer: "Yes, we offer adult tennis lessons ranging from beginner to competitive-level training."
+  },
+  {
+    question: "How can I book tennis classes?",
+    answer: "You can book directly online through our website or contact our team for class recommendations."
+  }
+];
+
+
 export const SERVICES = [
   "Junior Tennis Classes",
   "Adult Tennis Lessons",
@@ -270,12 +290,7 @@ export const PICKLEBALL_FAQS = [
 ];
 
 export const PROGRAMS = [
-  {
-    title: "Tennis Coach",
-    img: "/images/tennis-journey.jpeg",
-    description:
-      "Unlock your potential with expert guidance. Our professional trainers will refine your skills and elevate your game to new heights.",
-  },
+ 
   {
     title: "Junior Tennis Classes",
     img: "/images/junior.jpg",
