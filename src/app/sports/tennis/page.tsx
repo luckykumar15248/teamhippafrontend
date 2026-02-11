@@ -3,7 +3,7 @@ import TennisPageClient from "@/app/components/LandingPage/TennisPageClient.tsx/
 import Meta from "@/app/components/Meta";
 
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+//const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 interface Course {
   id: number;
@@ -31,11 +31,18 @@ interface CourseCategoryMapping {
 
 // Fetch tennis data as before
 async function fetchTennisData() {
+  /*
   const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
     fetch(`${apiUrl}/api/public_api/courses`, { cache: "no-store" }),
     fetch(`${apiUrl}/api/public/categories`, { cache: "no-store" }),
     fetch(`${apiUrl}/api/public/course-category-mappings`, { cache: "no-store" }),
+  ]);*/
+  const [coursesRes, categoriesRes, mappingsRes] = await Promise.all([
+    fetch(`https://teamhippa.com/api/public_api/courses`, { cache: "no-store" }),
+    fetch(`https://teamhippa.com/api/public/categories`, { cache: "no-store" }),
+    fetch(`https://teamhippa.com/api/public/course-category-mappings`, { cache: "no-store" }),
   ]);
+  
   const allFetchedCourses: Course[] = await coursesRes.json();
   const allFetchedCategories: Category[] = await categoriesRes.json();
   const allFetchedMappings: CourseCategoryMapping[] = await mappingsRes.json();
