@@ -248,7 +248,7 @@ export default function PackagesClient() {
                         </h2>
 
                         <p className="text-lg text-gray-600 mb-6">
-                            Whether you're a beginner learning the basics or a competitive player
+                            Whether you are a beginner learning the basics or a competitive player
                             chasing performance excellence, Team Hippa Tennis Academy provides
                             structured coaching programs that deliver measurable improvement.
                         </p>
