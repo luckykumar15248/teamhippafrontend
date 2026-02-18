@@ -63,6 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${siteUrl}/tennis-gilbert`, lastModified: new Date().toISOString() },
         { url: `${siteUrl}/sports/pickleball`, lastModified: new Date().toISOString() },
         { url: `${siteUrl}/sports/tennis`, lastModified: new Date().toISOString() },
+         { url: `${siteUrl}/packages`, lastModified: new Date().toISOString() },
         { url: `${siteUrl}/phoenix-junior-tennis`, lastModified: new Date().toISOString() },
         { url: `${siteUrl}/gilbert-adult-tennis-clinics`, lastModified: new Date().toISOString() },
         { url: `${siteUrl}/pickleball-gilbert`, lastModified: new Date().toISOString() },

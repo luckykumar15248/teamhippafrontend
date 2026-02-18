@@ -86,11 +86,11 @@ export default function HomePage() {
           onClick={handelJoinClicked}
           className="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-black font-bold rounded-xl shadow-xl hover:shadow-green-500/40 hover:scale-105 transition-all"
         >
-          Join Now
+          Contact Us
         </button>
 
         <a
-          href="/programs"
+          href="/book-now"
           className="text-white font-semibold underline underline-offset-4 hover:text-green-400 transition"
         >
           View Programs →
@@ -197,7 +197,7 @@ export default function HomePage() {
         data={ABOUT_FAQS}
       />
 
-      {/* Contact Us Section */}
+     
 {/* Contact Us Section */}
 <section className="w-full py-20 px-6 lg:px-16 bg-[#f5f6f7]">
   <div className="max-w-6xl mx-auto">

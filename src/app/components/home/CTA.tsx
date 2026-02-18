@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function CTA() {
   return (
 
@@ -30,12 +31,12 @@ export default function CTA() {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap justify-center gap-6">
-              <button
-
-                className="px-12 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold text-lg rounded-xl shadow-sm transition-all"
+              <Link
+                href="/book-now"
+                className="px-12 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold text-lg rounded-xl shadow-sm transition-all inline-block text-center"
               >
                 Join Now
-              </button>
+              </Link>
 
               <a
                 href="tel:+16023413361"
