@@ -10,7 +10,6 @@ import {
   TimeIcon,
   TrophyIcon,
 } from "@/app/components/Icons";
-import { url } from "inspector";
 
 
 export const NAV_LINKS = [

@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import {
-  FLEXIBLE_TRAINING,
-  PROGRAMS_MASTER,
-  PROGRAMS_TENNIES,
+  PROGRAMS_MASTER
 } from "@/untils/constant";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -19,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Button } from "../../Button";
 import CourseCard from "../../CourseCard/CourseCard";
-import { CalendarIcon, ClockIcon, icons, MapPinIcon, UsersIcon } from "lucide-react";
+import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from "lucide-react";
 
 // --- Types ---
 interface Course {
@@ -260,7 +258,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'programs' | 'locations' | 'WhyChooseUs')}
                 className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-all border-b-2 ${activeTab === tab.id
                   ? 'border-green-600 text-green-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -779,7 +777,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
            Contact Us to Get Free Guidence for Tennis Lessons Near You in Gilbert
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join 500+ local players at Gilbert's top-rated tennis academy.
+            Join 500+ local players at Gilbert top-rated tennis academy.
             Book your first lesson today!
           </p>
 
@@ -796,7 +794,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
           </div>
 
           <div className="flex items-center justify-center gap-8 mt-12 text-sm text-gray-400">
-            <span>✓ Gilbert's Top-Rated</span>
+            <span>✓ Gilbert Top-Rated</span>
             <span>✓ 4.9★ Google Reviews</span>
             <span>✓ 500+ Local Students</span>
           </div>
@@ -901,7 +899,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
                 <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2V8zm16 0c-3.3 0-6 2.7-6 6v10h10V14h-4c0-1.1.9-2 2-2V8z" />
               </svg>
               <p className="text-2xl font-medium leading-relaxed mb-6">
-                "European coaching isn't just about tennis—it's about developing character, discipline, and a love for the game that lasts a lifetime. We're not just building players; we're building people."
+                European coaching isnt just about tennis—its about developing character, discipline, and a love for the game that lasts a lifetime. We are not just building players; we are building people.
               </p>
               <div>
                 <div className="font-bold text-xl">Team Hippa</div>

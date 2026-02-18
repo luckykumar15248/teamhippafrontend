@@ -13,7 +13,6 @@ import React from "react";
 import axios from "axios";
 import TennisGilbertClient from '../components/LandingPage/TennisGilbertClient/TennisGilbertClient';
 import Script from 'next/script';
-import { Button } from '../components/Button';
 // --- Inline Type Definitions ---
 interface Course {
   id: number;
