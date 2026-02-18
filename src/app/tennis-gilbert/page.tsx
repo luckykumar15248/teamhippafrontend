@@ -13,6 +13,7 @@ import React from "react";
 import axios from "axios";
 import TennisGilbertClient from '../components/LandingPage/TennisGilbertClient/TennisGilbertClient';
 import Script from 'next/script';
+import { Button } from '../components/Button';
 // --- Inline Type Definitions ---
 interface Course {
   id: number;
@@ -281,6 +282,8 @@ async function TennisGilbertPage() {
         subtitle="Find answers to common questions about our tennis programs, coaching methods, and training facilities in Gilbert, Arizona."
         data={GILBERT_FAQS}
       />
+
+       
     </>
   );
 }

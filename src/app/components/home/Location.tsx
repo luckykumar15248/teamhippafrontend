@@ -67,7 +67,7 @@ export default function Location() {
                   </button>
 
                   <a
-                    href="/programs"
+                    href="/tennis-phoenix"
                     className="h-10 rounded-full border border-gray-300 px-5 text-base font-semibold text-gray-800 hover:bg-gray-100 transition"
                   >
                     See programs
@@ -130,7 +130,7 @@ export default function Location() {
                   </button>
 
                   <a
-                    href="/programs"
+                    href="/tennis-gilbert"
                     className="h-10 rounded-full border border-gray-300 px-5 text-base font-semibold text-gray-800 hover:bg-gray-100 transition"
                   >
                     See programs

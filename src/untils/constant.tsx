@@ -10,6 +10,7 @@ import {
   TimeIcon,
   TrophyIcon,
 } from "@/app/components/Icons";
+import { url } from "inspector";
 
 
 export const NAV_LINKS = [
@@ -18,8 +19,8 @@ export const NAV_LINKS = [
   //{ href: "/sports/pickleball", label: "Pickleball" },
   { href: "/packages", label: "Packages" },
   { href: "/gallery", label: "Gallery" },
-   { href: "/blog", label: "Blog" },
-   { href: "/tournaments", label: "Tournaments" },
+  { href: "/blog", label: "Blog" },
+  { href: "/tournaments", label: "Tournaments" },
   { href: "/about-us", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ];
@@ -44,20 +45,20 @@ export const SOCIAL_LINKS = [
 ];
 
 export const SLIDES_IMG = [
-  
+
   {
     image: "/images/tennis-winter-camp.jpg",
     heading: "UPCOMING Winter Tennis Camp 2025",
     subtext: "Find the best Winter Tennis Camp 2025 in the USA 2025.",
     buttonText: "View Details",
-    url : "https://teamhippa.com/winter-camp",
+    url: "https://teamhippa.com/winter-camp",
   },
   {
     image: "/images/junior-summer.jpeg",
     heading: "UPCOMING Youth Summer Tennis Camp 2026",
     subtext: "Find the best summer camps in the USA 2026.",
     buttonText: "View Details",
-    url : "https://teamhippa.com/summer-camp",
+    url: "https://teamhippa.com/summer-camp",
   },
   {
     image: "/images/pickleball.png",
@@ -69,7 +70,7 @@ export const SLIDES_IMG = [
   {
     image: "/images/junior-tennis.png",
     heading: "Master junior tennis: expert lessons & training",
-    subtext:  "Help your child master their game with expert junior tennis lessons and training designed for all skill levels.",
+    subtext: "Help your child master their game with expert junior tennis lessons and training designed for all skill levels.",
     buttonText: "Book Now",
   },
   {
@@ -126,6 +127,60 @@ export const TENNIS_PAGE_FAQS = [
     answer: "You can book directly online through our website or contact our team for class recommendations."
   }
 ];
+
+export const PACKAGE_PAGE_FAQS = [
+  {
+    question: "What tennis training packages do you offer?",
+    answer:
+      "We offer flexible tennis training packages for kids, juniors, adults, and competitive players, including group classes, private coaching, and high-performance programs."
+  },
+  {
+    question: "Can I customize my tennis training package?",
+    answer:
+      "Yes, we offer fully customizable tennis packages that allow you to select training days, session frequency, coaching type, and skill level to fit your schedule and goals."
+  },
+  {
+    question: "Do you offer monthly and long-term tennis packages?",
+    answer:
+      "Yes, we provide monthly, quarterly, and long-term tennis coaching packages designed for continuous player development and performance improvement."
+  },
+  {
+    question: "Are there packages available for beginners?",
+    answer:
+      "Yes, we offer beginner-friendly tennis training packages focused on building fundamentals, confidence, footwork, and basic match play skills."
+  },
+  {
+    question: "Do you provide family or sibling discount packages?",
+    answer:
+      "Yes, we offer special discounted tennis packages for families, siblings, and multiple enrollments. Please contact our team for personalized pricing options."
+  },
+  {
+    question: "What is included in a tennis training package?",
+    answer:
+      "Our tennis packages typically include structured coaching sessions, fitness training, match play practice, performance assessments, and personalized progress tracking."
+  },
+  {
+    question: "Can I upgrade or change my tennis package later?",
+    answer:
+      "Yes, you can easily upgrade, downgrade, or modify your tennis training package based on your progress, availability, and training needs."
+  },
+  {
+    question: "Are private coaching sessions included in packages?",
+    answer:
+      "Private coaching sessions can be included as part of a customized package or added separately to accelerate skill development and performance results."
+  },
+  {
+    question: "Do your packages include tournament preparation?",
+    answer:
+      "Yes, our advanced and performance packages include tournament training, match strategy planning, mental conditioning, and competitive match simulations."
+  },
+  {
+    question: "How can I purchase or enroll in a tennis package?",
+    answer:
+      "You can easily enroll in any tennis training package directly through our website or contact our team for personalized package recommendations."
+  }
+];
+
 
 
 export const SERVICES = [
@@ -258,7 +313,7 @@ export const ARIZONA_TENNIS_ACADEMY = [
     answer:
       "Yes, all of our coaches are specialists in guiding players through every stage of their development. Whether you're fine-tuning your technique or advancing your tactical play, our certified coaches apply proven European coaching methods—right here in Gilbert.",
   }
-  
+
 ];
 
 export const PICKLEBALL_FAQS = [
@@ -290,7 +345,7 @@ export const PICKLEBALL_FAQS = [
 ];
 
 export const PROGRAMS = [
- 
+
   {
     title: "Junior Tennis Classes",
     img: "/images/junior.jpg",
@@ -417,30 +472,35 @@ export const PROGRAMS_MASTER = [
     img: "/images/tennis-journey.jpeg",
     description:
       "Unlock your potential with expert guidance. Our professional trainers will refine your skills and elevate your game to new heights.",
+    slug: "/book-now"
   },
   {
     title: "Junior Tennis Classes",
     img: "/images/junior.jpg",
     description:
       "						Stay active and improve your game! Tailored lessons help you master techniques, build confidence, and enjoy every moment on the court.",
+    slug: "/book-now"
   },
   {
     title: "Adult Tennis Lessons",
     img: "/images/adult.jpg",
     description:
       "						Stay active and improve your game! Tailored lessons help you master techniques, build confidence, and enjoy every moment on the court.",
+    slug: "/book-now"
   },
   {
     title: "High-Performance Coaching",
     img: "/images/high-performance.jpg",
     description:
       "Push your limits with advanced drills and strategies. Designed for competitive players who are serious about taking their game further.",
+    slug: "/book-now"
   },
   {
     title: "Private Instruction",
     img: "/images/instruction.jpg",
     description:
       "Achieve your goals faster with personalized coaching. One-on-one sessions ensure focused training tailored to your unique strengths and needs.",
+    slug: "/private-tennis-coaching-in-phoenix-and-gilbert"
   },
 ];
 
@@ -469,6 +529,8 @@ export const PHOENIX_FAQS = [
 ];
 
 export const GILBERT_FAQS = [
+
+
   {
     question: "Where can I find tennis lessons in Gilbert, Arizona?",
     answer:
@@ -515,19 +577,19 @@ export const WINTER_CAMP_FAQS = [
   },
   {
     question: "What is included in the camp fee?",
-    answer:   "The fee covers tennis training, fitness training, lunch and access to the Rec center.",
+    answer: "The fee covers tennis training, fitness training, lunch and access to the Rec center.",
   },
   {
     question: "How do I register for the camp?",
-    answer:    "You can register directly on our website by clicking the 'Register Now' button or by contacting our academy via phone/email.",
+    answer: "You can register directly on our website by clicking the 'Register Now' button or by contacting our academy via phone/email.",
   },
   {
- question: "Is a daily drop-in possible?",
- answer: "Yes. For daily drop-ins, please contact us directly to sign up for your requested dates.",
+    question: "Is a daily drop-in possible?",
+    answer: "Yes. For daily drop-ins, please contact us directly to sign up for your requested dates.",
   },
   {
- question: "Will there be transportation?",
- answer: "Transportation will be offered for a surcharge for select locations in Phoenix and Scottsdale. To book transportation, please select it during the checkout process.",
+    question: "Will there be transportation?",
+    answer: "Transportation will be offered for a surcharge for select locations in Phoenix and Scottsdale. To book transportation, please select it during the checkout process.",
   },
 ];
 

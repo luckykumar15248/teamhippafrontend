@@ -42,8 +42,8 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate, darkMode = f
             className={`rounded-xl shadow-lg overflow-hidden flex flex-col group transform hover:-translate-y-1 
                 transition-all duration-300 cursor-pointer border hover:shadow-xl ${
                 isDark 
-                    ? 'bg-[#b0db72]/10 border-[#b0db72]/20 hover:border-[#b0db72]/40' 
-                    : 'bg-[#b0db72]/5 border-[#b0db72]/10 hover:border-[#b0db72]/30'
+                    ? 'bg-white border-[#b0db72]/40 hover:border-[#b0db72]/40' 
+                    : 'bg-white border-[#b0db72]/40 hover:border-[#b0db72]/30'
             }`}
             onClick={handleCardClick}
             role="button"
@@ -71,28 +71,28 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate, darkMode = f
                         : 'from-black/60 via-transparent to-transparent'
                 } opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
                 
-                {/* Price Badge */}
+                {/* Price Badge 
                 <div className={`absolute top-3 right-3 px-3 py-1 rounded-full shadow-lg ${
                     isDark 
                         ? 'bg-[#b0db72] text-gray-900' 
                         : 'bg-[#b0db72] text-gray-900'
                 } font-semibold text-sm backdrop-blur-sm border border-white/20`}>
                     ${pkg.price.toFixed(2)}
-                </div>
+                </div>*/}
             </div>
             
             {/* Content Container */}
             <div className="p-5 flex-grow flex flex-col">
                 {/* Title */}
                 <h3 className={`text-xl font-bold line-clamp-1 ${
-                    isDark ? 'text-white' : 'text-gray-900'
+                    isDark ? 'text-gray-900' : 'text-gray-900'
                 }`}>
                     {pkg.name}
                 </h3>
                 
                 {/* Description */}
                 <p className={`mt-3 text-base font-normal line-clamp-2 flex-grow ${
-                    isDark ? 'text-gray-300' : 'text-gray-600'
+                    isDark ? 'text-gray-900' : 'text-gray-900'
                 }`}>
                     {pkg.shortDescription}
                 </p>
@@ -104,7 +104,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg, onNavigate, darkMode = f
                     {/* Price Display */}
                     <div className="flex justify-between items-center">
                         <span className={`text-sm ${
-                            isDark ? 'text-gray-400' : 'text-gray-600'
+                            isDark ? 'text-gray-900' : 'text-gray-900'
                         }`}>
                             Starting from
                         </span>
