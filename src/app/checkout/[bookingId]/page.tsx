@@ -47,18 +47,18 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
   // Check dark mode
   useEffect(() => {
     const checkDarkMode = () => {
-      const isDark = 
-        window.matchMedia('(prefers-color-scheme: dark)').matches ||
-        document.documentElement.classList.contains('dark');
+      const isDark =
+        window.matchMedia('()').matches ||
+        document.documentElement.classList.contains('');
       setIsDarkMode(isDark);
     };
 
     checkDarkMode();
-    
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const mediaQuery = window.matchMedia('()');
     const handleChange = () => checkDarkMode();
     mediaQuery.addEventListener('change', handleChange);
-    
+
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
@@ -87,11 +87,11 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
 
     const query = new URLSearchParams(window.location.search);
     const paymentIntentClientSecret = query.get('payment_intent_client_secret');
-    
+
     if (paymentIntentClientSecret) {
       const checkPaymentStatus = async () => {
         const { paymentIntent } = await stripe.retrievePaymentIntent(paymentIntentClientSecret);
-        
+
         if (window.history.replaceState) {
           const newUrl = window.location.pathname + window.location.search
             .replace(/payment_intent_client_secret=[^&]*&?/, '')
@@ -133,7 +133,7 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-   
+
     if (name.startsWith('address.')) {
       const field = name.split('.')[1] as keyof BillingAddress;
       setBillingDetails(prev => ({
@@ -153,13 +153,13 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
 
   const handleBillingInfoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!billingDetails.name || !billingDetails.email || !billingDetails.address.line1 ||
-        !billingDetails.address.city || !billingDetails.address.postal_code) {
+      !billingDetails.address.city || !billingDetails.address.postal_code) {
       toast.error("Please fill in all required fields");
       return;
     }
-    
+
     setStep(2);
   };
 
@@ -201,13 +201,13 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
 
       if (error) {
         let errorMessage = error.message || "Payment failed";
-       
+
         if (error.code === 'card_declined') {
           errorMessage = "Card declined. Please try another payment method.";
         } else if (error.code === 'incorrect_zip') {
           errorMessage = "Incorrect ZIP code. Please check your billing address.";
         }
-       
+
         setMessage(errorMessage);
         setMessageType('error');
       } else if (paymentIntent) {
@@ -262,31 +262,28 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
   };
 
   return (
-    <div className={`rounded-xl shadow-lg p-6 border ${
-      isDarkMode 
-        ? 'bg-gray-800 border-gray-700 shadow-gray-900/50' 
+    <div className={`rounded-xl shadow-lg p-6 border ${isDarkMode
+        ? 'bg-gray-800 border-gray-700 shadow-gray-900/50'
         : 'bg-white border-gray-200'
-    }`}>
+      }`}>
       {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex justify-between items-center">
           <div className={`flex items-center ${step >= 1 ? (isDarkMode ? 'text-green-400' : 'text-green-600') : (isDarkMode ? 'text-gray-500' : 'text-gray-400')}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step >= 1 
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1
                 ? (isDarkMode ? 'bg-green-900 text-green-400' : 'bg-green-100 text-green-600')
                 : (isDarkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-400')
-            }`}>
+              }`}>
               1
             </div>
             <span className="ml-2 font-medium">Billing Info</span>
           </div>
           <div className={`flex-1 h-0.5 mx-4 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
           <div className={`flex items-center ${step >= 2 ? (isDarkMode ? 'text-green-400' : 'text-green-600') : (isDarkMode ? 'text-gray-500' : 'text-gray-400')}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step >= 2 
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2
                 ? (isDarkMode ? 'bg-green-900 text-green-400' : 'bg-green-100 text-green-600')
                 : (isDarkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-400')
-            }`}>
+              }`}>
               2
             </div>
             <span className="ml-2 font-medium">Payment</span>
@@ -296,11 +293,10 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
 
       {/* PAYMENT REQUIRED ALERT */}
       {showPaymentRequiredAlert && (
-        <div className={`mb-6 p-4 rounded-lg border ${
-          isDarkMode 
-            ? 'bg-yellow-900/20 border-yellow-700/50' 
+        <div className={`mb-6 p-4 rounded-lg border ${isDarkMode
+            ? 'bg-yellow-900/20 border-yellow-700/50'
             : 'bg-yellow-50 border-yellow-200'
-        }`}>
+          }`}>
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
@@ -321,9 +317,8 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
               </div>
               <button
                 onClick={() => setShowPaymentRequiredAlert(false)}
-                className={`mt-3 font-medium text-sm ${
-                  isDarkMode ? 'text-yellow-400 hover:text-yellow-300' : 'text-yellow-700 hover:text-yellow-800'
-                }`}
+                className={`mt-3 font-medium text-sm ${isDarkMode ? 'text-yellow-400 hover:text-yellow-300' : 'text-yellow-700 hover:text-yellow-800'
+                  }`}
               >
                 I understand, proceed to payment →
               </button>
@@ -341,7 +336,7 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
             <p className={`mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Please provide your details to proceed with payment
             </p>
-            
+
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -353,16 +348,15 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                     type="text"
                     value={billingDetails.name}
                     onChange={handleInputChange}
-                    className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      isDarkMode 
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                        : 'border border-gray-300'
-                    }`}
+                    className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                        : 'border border-gray-300 text-gray-900'
+                      }`}
                     required
                     autoComplete="name"
                   />
                 </div>
-                
+
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     Email *
@@ -372,11 +366,10 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                     type="email"
                     value={billingDetails.email}
                     onChange={handleInputChange}
-                    className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      isDarkMode 
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                        : 'border border-gray-300'
-                    }`}
+                    className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                        : 'border border-gray-300 text-gray-900'
+                      }`}
                     required
                     autoComplete="email"
                   />
@@ -392,11 +385,10 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                   type="tel"
                   value={billingDetails.phone}
                   onChange={handleInputChange}
-                  className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    isDarkMode 
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                      : 'border border-gray-300'
-                  }`}
+                  className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode
+                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                      : 'border border-gray-300 text-gray-900'
+                    }`}
                   autoComplete="tel"
                 />
               </div>
@@ -405,7 +397,7 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                 <h3 className={`text-sm font-medium mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                   Billing Address
                 </h3>
-                
+
                 <div className="space-y-3">
                   <div>
                     <label className={`block text-xs mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -415,16 +407,15 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                       name="address.line1"
                       value={billingDetails.address.line1}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        isDarkMode 
-                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                          : 'border border-gray-300'
-                      }`}
+                      className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                          : 'border border-gray-300 text-gray-900'
+                        }`}
                       required
                       autoComplete="address-line1"
                     />
                   </div>
-                  
+
                   <div>
                     <label className={`block text-xs mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                       Apt, suite, etc.
@@ -433,15 +424,14 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                       name="address.line2"
                       value={billingDetails.address.line2}
                       onChange={handleInputChange}
-                      className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        isDarkMode 
-                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                          : 'border border-gray-300'
-                      }`}
+                      className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                          : 'border border-gray-300 text-gray-900'
+                        }`}
                       autoComplete="address-line2"
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className={`block text-xs mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -451,16 +441,15 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                         name="address.city"
                         value={billingDetails.address.city}
                         onChange={handleInputChange}
-                        className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                            : 'border border-gray-300'
-                        }`}
+                        className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode
+                            ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                            : 'border border-gray-300 text-gray-900'
+                          }`}
                         required
                         autoComplete="address-level2"
                       />
                     </div>
-                    
+
                     <div>
                       <label className={`block text-xs mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         ZIP code *
@@ -469,17 +458,16 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                         name="address.postal_code"
                         value={billingDetails.address.postal_code}
                         onChange={handleInputChange}
-                        className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                            : 'border border-gray-300'
-                        }`}
+                        className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isDarkMode
+                            ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                            : 'border border-gray-300 text-gray-900'
+                          }`}
                         required
                         autoComplete="postal-code"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className={`block text-xs mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -489,16 +477,15 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                         name="address.state"
                         value={billingDetails.address.state}
                         onChange={handleInputChange}
-                        className={`w-full p-3 rounded-lg ${
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-gray-400' 
-                            : 'border border-gray-300 bg-gray-100'
-                        }`}
+                        className={`w-full p-3 rounded-lg ${isDarkMode
+                            ? 'bg-gray-700 border-gray-600 text-gray-400'
+                            : 'border border-gray-300 bg-gray-100 text-gray-900'
+                          }`}
                         readOnly
                         autoComplete="address-level1"
                       />
                     </div>
-                    
+
                     <div>
                       <label className={`block text-xs mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         Country *
@@ -507,11 +494,10 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                         name="address.country"
                         value={billingDetails.address.country}
                         onChange={handleInputChange}
-                        className={`w-full p-3 rounded-lg ${
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-gray-400' 
-                            : 'border border-gray-300 bg-gray-100'
-                        }`}
+                        className={`w-full p-3 rounded-lg ${isDarkMode
+                            ? 'bg-gray-700 border-gray-600 text-gray-900'
+                            : 'border border-gray-300 bg-gray-100 text-gray-900'
+                          }`}
                         readOnly
                         autoComplete="country"
                       />
@@ -534,7 +520,7 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                className="flex items-center text-blue-600 hover:text-blue-800   "
               >
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -552,13 +538,12 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
 
             <div className="space-y-4">
               {/* Payment Notice */}
-              <div className={`p-4 rounded-lg border ${
-                isDarkMode 
-                  ? 'bg-blue-900/20 border-blue-700/50' 
+              <div className={`p-4 rounded-lg border ${isDarkMode
+                  ? 'bg-blue-900/20 border-blue-700/50'
                   : 'bg-blue-50 border-blue-200'
-              }`}>
+                }`}>
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-blue-600  mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                   <div>
@@ -576,12 +561,11 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                 <h3 className={`text-lg font-medium mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                   Payment Method
                 </h3>
-                <div className={`p-4 rounded-lg border ${
-                  isDarkMode 
-                    ? 'bg-gray-700/50 border-gray-600' 
+                <div className={`p-4 rounded-lg border ${isDarkMode
+                    ? 'bg-gray-700/50 border-gray-600'
                     : 'bg-gray-50 border-gray-200'
-                }`}>
-                  <PaymentElement 
+                  }`}>
+                  <PaymentElement
                     options={{
                       layout: "tabs",
                       fields: {
@@ -625,7 +609,7 @@ const CheckoutForm: React.FC<{ bookingDetails: BookingDetails; clientSecret: str
                   </>
                 )}
               </button>
-              
+
               <div className={`text-center text-sm mt-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 <p>🔒 Secure payment powered by Stripe</p>
                 <p>Your payment information is encrypted and protected</p>
@@ -651,18 +635,18 @@ const CheckoutPage: React.FC = () => {
   // Check dark mode
   useEffect(() => {
     const checkDarkMode = () => {
-      const isDark = 
-        window.matchMedia('(prefers-color-scheme: dark)').matches ||
-        document.documentElement.classList.contains('dark');
+      const isDark =
+        window.matchMedia('()').matches ||
+        document.documentElement.classList.contains('');
       setIsDarkMode(isDark);
     };
 
     checkDarkMode();
-    
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const mediaQuery = window.matchMedia('()');
     const handleChange = () => checkDarkMode();
     mediaQuery.addEventListener('change', handleChange);
-    
+
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
@@ -674,20 +658,20 @@ const CheckoutPage: React.FC = () => {
       try {
         setLoading(true);
         paymentIntentCreated.current = true;
-       
+
         const bookingResponse = await axios.get(`${apiUrl}/api/public/booking-data/details/${bookingId}`);
         const details = bookingResponse.data;
-       
+
         if (!details || !details.finalAmount) {
           throw new Error("Invalid booking details");
         }
 
         details.currency = 'usd';
-       
+
         setBookingDetails(details);
-       
+
         const idempotencyKey = `booking-${details.bookingId}-${Date.now()}`;
-        
+
         const paymentIntentResponse = await axios.post(`${apiUrl}/api/public/payments/create-payment-intent`, {
           amount: Math.round(details.finalAmount * 100),
           bookingId: details.bookingId,
@@ -789,9 +773,8 @@ const CheckoutPage: React.FC = () => {
     return (
       <div className={`min-h-screen flex items-center justify-center ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="text-center">
-          <div className={`w-16 h-16 border-4 rounded-full animate-spin mx-auto ${
-            isDarkMode ? 'border-blue-400 border-t-transparent' : 'border-blue-500 border-t-transparent'
-          }`}></div>
+          <div className={`w-16 h-16 border-4 rounded-full animate-spin mx-auto ${isDarkMode ? 'border-blue-400 border-t-transparent' : 'border-blue-500 border-t-transparent'
+            }`}></div>
           <p className={`mt-4 text-lg font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
             Setting up your secure checkout...
           </p>
@@ -803,14 +786,12 @@ const CheckoutPage: React.FC = () => {
   if (error) {
     return (
       <div className={`min-h-screen flex items-center justify-center p-4 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-        <div className={`max-w-md w-full p-8 rounded-xl shadow-lg text-center border ${
-          isDarkMode 
-            ? 'bg-gray-800 border-gray-700 shadow-gray-900/50' 
+        <div className={`max-w-md w-full p-8 rounded-xl shadow-lg text-center border ${isDarkMode
+            ? 'bg-gray-800 border-gray-700 shadow-gray-900/50'
             : 'bg-white border-gray-200'
-        }`}>
-          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${
-            isDarkMode ? 'bg-red-900/30' : 'bg-red-100'
           }`}>
+          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${isDarkMode ? 'bg-red-900/30' : 'bg-red-100'
+            }`}>
             <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -833,14 +814,12 @@ const CheckoutPage: React.FC = () => {
   if (!clientSecret || !bookingDetails) {
     return (
       <div className={`min-h-screen flex items-center justify-center p-4 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-        <div className={`max-w-md w-full p-8 rounded-xl shadow-lg text-center border ${
-          isDarkMode 
-            ? 'bg-gray-800 border-gray-700 shadow-gray-900/50' 
+        <div className={`max-w-md w-full p-8 rounded-xl shadow-lg text-center border ${isDarkMode
+            ? 'bg-gray-800 border-gray-700 shadow-gray-900/50'
             : 'bg-white border-gray-200'
-        }`}>
-          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${
-            isDarkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'
           }`}>
+          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${isDarkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'
+            }`}>
             <svg className="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
@@ -863,22 +842,19 @@ const CheckoutPage: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900 to-gray-800' 
+    <div className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 ${isDarkMode
+        ? 'bg-gradient-to-br from-gray-900 to-gray-800'
         : 'bg-gradient-to-br from-blue-50 to-gray-50'
-    }`}>
+      }`}>
       <div className="max-w-6xl mx-auto">
         {/* Header with clear messaging */}
         <div className="text-center mb-10">
-          <h1 className={`text-4xl font-extrabold sm:text-5xl mb-4 ${
-            isDarkMode ? 'text-white' : 'text-gray-900'
-          }`}>
+          <h1 className={`text-4xl font-extrabold sm:text-5xl mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}>
             Complete Payment to Confirm Your Booking
           </h1>
-          <p className={`text-xl max-w-3xl mx-auto ${
-            isDarkMode ? 'text-gray-300' : 'text-gray-600'
-          }`}>
+          <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}>
             Your booking is <span className={`font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>PENDING</span> until payment is completed
           </p>
         </div>
@@ -890,26 +866,23 @@ const CheckoutPage: React.FC = () => {
             </Elements>
           </div>
 
-          <div className={`rounded-xl shadow-lg p-6 border h-fit ${
-            isDarkMode 
-              ? 'bg-gray-800 border-gray-700 shadow-gray-900/50' 
+          <div className={`rounded-xl shadow-lg p-6 border h-fit ${isDarkMode
+              ? 'bg-gray-800 border-gray-700 shadow-gray-900/50'
               : 'bg-white border-gray-200'
-          }`}>
+            }`}>
             <div className="sticky top-6">
-              <h2 className={`text-2xl font-bold pb-3 border-b ${
-                isDarkMode ? 'text-white border-gray-700' : 'text-gray-800 border-gray-200'
-              }`}>
+              <h2 className={`text-2xl font-bold pb-3 border-b ${isDarkMode ? 'text-white border-gray-700' : 'text-gray-800 border-gray-200'
+                }`}>
                 Booking Summary
               </h2>
-              
+
               {/* Status Alert */}
-              <div className={`mb-6 p-4 rounded-lg border ${
-                isDarkMode 
-                  ? 'bg-red-900/20 border-red-700/50' 
+              <div className={`mb-6 p-4 rounded-lg border ${isDarkMode
+                  ? 'bg-red-900/20 border-red-700/50'
                   : 'bg-red-50 border-red-200'
-              }`}>
+                }`}>
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
                   <span className={`font-bold ${isDarkMode ? 'text-red-300' : 'text-red-700'}`}>
@@ -951,20 +924,18 @@ const CheckoutPage: React.FC = () => {
 
                 <div className={`border-t my-4 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}></div>
 
-                <div className={`flex justify-between items-center text-2xl font-bold pt-2 ${
-                  isDarkMode ? 'text-white' : 'text-gray-900'
-                }`}>
+                <div className={`flex justify-between items-center text-2xl font-bold pt-2 ${isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
                   <span>Total Amount:</span>
                   <span className={isDarkMode ? 'text-blue-400' : 'text-blue-600'}>
                     ${bookingDetails.finalAmount.toFixed(2)} USD
                   </span>
                 </div>
 
-                <div className={`mt-6 p-4 rounded-lg border ${
-                  isDarkMode 
-                    ? 'bg-green-900/20 border-green-700/50' 
+                <div className={`mt-6 p-4 rounded-lg border ${isDarkMode
+                    ? 'bg-green-900/20 border-green-700/50'
                     : 'bg-green-50 border-green-200'
-                }`}>
+                  }`}>
                   <h3 className={`font-bold mb-2 ${isDarkMode ? 'text-green-300' : 'text-green-800'}`}>
                     What happens next?
                   </h3>

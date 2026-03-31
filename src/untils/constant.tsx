@@ -7,6 +7,7 @@ import {
   InstaIcon,
   LocationIcon,
   LunchIcon,
+  RunIcon,
   TimeIcon,
   TrophyIcon,
 } from "@/app/components/Icons";
@@ -635,36 +636,30 @@ export const SUMMER_CAMP_FAQS = [
 
 export const SCHEDULE = [
   {
-    time: "9:00 AM",
-    title: "Warm Up and Tennis Training",
+    time: "8:00 AM to 10:30 AM",
+    title: "Tennis Training with a mix of Drills, Live Ball, and Point Play",
     desc: "Focus on Drills, Technique, and Strategy",
-    icon: "🏃",
+    icon: <RunIcon className="w-5 h-5" />
   },
   {
-    time: "10:30 AM",
-    title: "Fitness",
+    time: "10:30 AM to 11:30 AM",
+    title: "Indoor Fitness, featuring a full-scale fitness center and indoor gymnasium",
     desc: "We utilize an indoor gym and provide a tailored Fitness program for each player",
     icon: "🎾",
   },
   {
-    time: "11:30 AM",
+    time: "11:30 AM to 12:30 PM",
     title: "Lunch Break",
     desc: "Included in Camp Fee",
-    icon: "🏆",
+     icon: <LunchIcon className="w-5 h-5" />
   },
   {
-    time: "12:30 PM",
-    title: "Match play and Competition",
-    desc: "Players will compete against each other, with a tournament at the end of the week with prizes.",
-    icon: "🌅",
+    time: "12:30 PM to 2:00 PM",
+    title: "Indoor Activities, such as Table Tennis competition, Rock climbing, Tennis Quiz",
+    desc: "Fun activities to build camaraderie and keep the energy high",
+    icon: <TrophyIcon className="w-5 h-5" />
   },
-  {
-    time: "2:00 PM",
-    title: "Cooldown and Pick-Up",
-    desc: "Transportation Available both ways from Scottsdale, Phoenix and PV (Surcharge)",
-    icon: "🌅",
-  },
-];
+  ];
 export const CAMP_FEATURES = [
   {
     icon: <ExpertIcon />,

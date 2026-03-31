@@ -75,7 +75,7 @@ export default function FAQ({ title, subtitle, data }: FAQProps) {
 
       {/* Email Button – Primary */}
       <a
-        href="mailto:info@teamhippa.com"
+        href="https://teamhippa.com/contact"
         className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl
                    bg-green-600 text-white font-semibold
                    hover:bg-green-700

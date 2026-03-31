@@ -469,7 +469,7 @@ export default function TennisPageClient({ tennisCourses, categories, mappings}:
 
     <div className="relative rounded-3xl overflow-hidden shadow-xl">
       <img
-        src="/images/tennis-training.jpg"
+        src="/uploads/Team _Hippa_Method.png"
         alt="Professional Tennis Coaching at Team Hippa"
         className="w-full h-full object-cover"
       />
