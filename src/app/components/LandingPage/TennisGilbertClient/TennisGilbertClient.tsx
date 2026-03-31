@@ -122,8 +122,8 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
     router.push("/book-now");
   };
 
-    const handelContactUsClicked = () => {
-    router.push("/contact-us");
+  const handelContactUsClicked = () => {
+    router.push("/contact");
   };
   const handelBookPackageClicked = () => {
     router.push("/packages");
@@ -154,7 +154,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
               </h2>
               <p className="text-xl text-gray-600 mb-8 max-w-xl">
                 Looking for <strong>tennis lessons near me in Gilbert</strong>? Join Team Hippa at
-                Gilbert Regional Park & Freestone Recreation Center. Professional coaching for
+                Gilbert Regional Park. Professional coaching for
                 <strong> kids, adults, and seniors</strong>.
               </p>
 
@@ -183,7 +183,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
               {/* Stats */}
               <div className="flex items-center gap-8 mt-12 pt-8 border-t border-gray-100">
                 <div>
-                  <div className="text-3xl font-bold text-gray-900">500+</div>
+                  <div className="text-3xl font-bold text-gray-900">80+</div>
                   <div className="text-sm text-gray-500">Local Players</div>
                 </div>
                 <div>
@@ -220,7 +220,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
                     Outdoor courts
                   </span>
                   <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-600">
-                    Free parking
+                    Parking
                   </span>
                 </div>
 
@@ -377,10 +377,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
                         Gilbert
                       </span>
                       <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-600">
-                        8 lighted courts
-                      </span>
-                      <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-600">
-                        Free parking
+                        Regional park
                       </span>
                     </div>
 
@@ -417,59 +414,68 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
                 {/* Phoenix Location Card */}
                 <div className="overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-sm transition-all hover:-translate-y-1">
                   <div className="p-7">
+
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="text-lg font-semibold text-gray-900">
-                          Freestone Recreation Center
+                          Rose Mofford Sports Complex
                         </div>
+
                         <div className="mt-2 text-base leading-relaxed text-gray-600">
-                          <div>150 S Freestone</div>
-                          <div>Gilbert, AZ 85296</div>
-                          <div>Open 6AM-9PM Daily</div>
+                          <div>9833 N 25th Ave</div>
+                          <div>Phoenix, AZ 85021</div>
+                          <div>United States</div>
                         </div>
                       </div>
+
                       <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-green-50 text-green-600">
-                        <MapPinIcon className="h-4 w-4" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          className="h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
                       </div>
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-600">
-                        Gilbert
+                        Phoenix
                       </span>
                       <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-600">
-                        6 courts
-                      </span>
-                      <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-600">
-                        Training wall
+                        Outdoor courts
                       </span>
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-3">
+                      <button className="h-10 rounded-full bg-green-600 px-5 text-base font-semibold text-white shadow-sm hover:bg-green-700 transition">
+                        View
+                      </button>
+
                       <a
-                        href="https://maps.google.com/?q=Freestone+Recreation+Center+Gilbert"
-                        target="_blank"
-                        className="h-10 rounded-full bg-green-600 px-5 text-base font-semibold text-white shadow-sm hover:bg-green-700 transition inline-flex items-center"
+                        href="/tennis-phoenix"
+                        className="h-10 rounded-full border border-gray-300 px-5 text-base font-semibold text-gray-800 hover:bg-gray-100 transition"
                       >
-                        Get Directions
+                        See programs
                       </a>
-                      <Link
-                        href="/tennis-gilbert"
-                        className="h-10 rounded-full border border-gray-300 px-5 text-base font-semibold text-gray-800 hover:bg-gray-100 transition inline-flex items-center"
-                      >
-                        View Schedule
-                      </Link>
                     </div>
                   </div>
 
                   <div className="border-t border-gray-200 bg-white p-3">
                     <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
                       <iframe
-                        title="Freestone Recreation Center Tennis Courts Map"
+                        title="Rose Mofford Sports Complex Map"
                         className="h-full w-full"
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
-                        src="https://www.google.com/maps?q=Freestone%20Recreation%20Center%2C%20150%20S%20Freestone%2C%20Gilbert%2C%20AZ%2085296&output=embed"
+                        src="https://www.google.com/maps?q=Rose%20Mofford%20Sports%20Complex%2C%209833%20N%2025th%20Ave%2C%20Phoenix%2C%20AZ%2085021%2C%20United%20States&output=embed"
                       ></iframe>
                     </div>
                   </div>
@@ -501,7 +507,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
                   <br />
                   <p>
 
-                    Team Hippa is a high-level tennis academy based in Phoenix, Arizona, built by a team of certified, internationally experienced coaches. Known for our modern training methods and strong European coaching philosophy, we’ve helped players of all ages grow their game through a balanced focus on technique, fitness, and mental strength.  We offer the best tennis lessons for kids, adults, and seniors near you. After success in the Phoenix area, we’re excited to expand into Gilbert, bringing our proven programs to Gilbert Regional Park. Whether you’re just starting out or competing at a high level, our mission is to provide the structure, flexibility, and support needed to help every player reach their full potential. Looking for tennis lessons in Gilbert, Arizona?. Our academy offers tennis training for all ages and levels — including new tennis programs at Gilbert Regional Park and Freestone Recreation Center.
+                    Team Hippa is a high-level tennis academy based in Phoenix, Arizona, built by a team of certified, internationally experienced coaches. Known for our modern training methods and strong European coaching philosophy, we’ve helped players of all ages grow their game through a balanced focus on technique, fitness, and mental strength.  We offer the best tennis lessons for kids, adults, and seniors near you. After success in the Phoenix area, we’re excited to expand into Gilbert, bringing our proven programs to Gilbert Regional Park. Whether you’re just starting out or competing at a high level, our mission is to provide the structure, flexibility, and support needed to help every player reach their full potential. Looking for tennis lessons in Gilbert, Arizona?. Our academy offers tennis training for all ages and levels — including new tennis programs at Gilbert Regional Park.
                   </p>
                   <br />
                   <p>
@@ -612,7 +618,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
                       href={`${program.slug}`}
                       className="text-green-600 font-semibold text-sm hover:text-green-700 inline-flex items-center gap-1"
                     >
-                      Book Tennis Lesson →
+                      Book Tennis Classes →
                     </Link>
                   </div>
                 </div>
@@ -665,7 +671,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
               </ul>
 
               <Link
-                href="/camps/tennis-gilbert"
+                href="/camps"
                 className="inline-block w-full bg-white text-green-600 py-4 rounded-xl font-semibold text-center hover:bg-green-50 transition"
               >
                 Explore All Tennis Camps →
@@ -698,7 +704,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
               </ul>
 
               <Link
-                href="/tournaments/gilbert"
+                href="/tournaments"
                 className="inline-block w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-center hover:bg-green-700 transition"
               >
                 View Tournament Schedule →
@@ -774,10 +780,10 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
 
         <div className="relative max-w-4xl mx-auto text-center px-4">
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-           Contact Us to Get Free Guidence for Tennis Lessons Near You in Gilbert
+            Contact Us to Get Free Guidence for Tennis Lessons Near You in Gilbert
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join 500+ local players at Gilbert top-rated tennis academy.
+            Join 80+ local players at Gilbert top-rated tennis academy.
             Book your first lesson today!
           </p>
 
@@ -796,7 +802,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
           <div className="flex items-center justify-center gap-8 mt-12 text-sm text-gray-400">
             <span>✓ Gilbert Top-Rated</span>
             <span>✓ 4.9★ Google Reviews</span>
-            <span>✓ 500+ Local Students</span>
+            <span>✓ 80+ Local Students</span>
           </div>
         </div>
       </section>
@@ -818,7 +824,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
             <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-xl">
               <Image
-                src="/images/coaching-philosophy.jpg"
+                src="/uploads/Team _Hippa_Method.png"
                 alt="European tennis coaching philosophy in Gilbert"
                 fill
                 className="object-cover"
@@ -826,7 +832,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-8 left-8 text-white">
                 <div className="text-2xl font-bold mb-2">Team Hippa Method</div>
-                <div className="text-white/80">10+ years of proven results</div>
+                <div className="text-white/80">A long-standing track record of proven results</div>
               </div>
             </div>
 
@@ -842,13 +848,12 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-green-50 p-6 rounded-2xl">
-                  <div className="text-3xl font-bold text-green-600 mb-2">10+</div>
-                  <div className="text-gray-700 font-medium">Years Experience</div>
+                  <div className="text-3xl font-bold text-green-600 mb-2"> Proven Track Record</div>
+                  <div className="text-gray-700 font-medium">A long-standing track record of proven results</div>
                   <div className="text-sm text-gray-500">in Arizona</div>
                 </div>
                 <div className="bg-green-50 p-6 rounded-2xl">
-                  <div className="text-3xl font-bold text-green-600 mb-2">1:4</div>
-                  <div className="text-gray-700 font-medium">Coach Ratio</div>
+                  <div className="text-3xl font-bold text-green-600 mb-2">Coach Ratio</div>
                   <div className="text-sm text-gray-500">Personal attention</div>
                 </div>
               </div>
@@ -955,7 +960,7 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
             </div>
           </div>
 
-          {/* Certifications */}
+          {/* Certifications 
           <div className="mt-16 pt-16 border-t border-gray-200">
             <h3 className="text-xl font-bold text-gray-900 text-center mb-8">Our Coaches Are Certified By</h3>
             <div className="flex flex-wrap justify-center gap-8">
@@ -966,136 +971,138 @@ const TennisGilbertClient: React.FC<TennisGilbertClientProps> = ({
               ))}
             </div>
           </div>
+          */}
         </div>
+        
       </section>
 
       <section className="bg-gray-50 py-12 sm:py-16 md:py-20 px-6 lg:px-16">
-  <div className="max-w-screen-2xl mx-auto text-center">
-    <h2 className="text-4xl sm:text-5xl font-bold text-green-800 leading-snug">
-      Why the{" "}
-      <span className="text-green-600">
-        European Coaching Philosophy
-      </span>{" "}
-      Builds Champions
-    </h2>
-    <p className="mt-4 text-lg text-gray-600 font-semibold max-w-3xl mx-auto">
-      Europe has produced some of the best tennis players on the planet.
-      But what differs European tennis from American?
-    </p>
-  </div>
+        <div className="max-w-screen-2xl mx-auto text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold text-green-800 leading-snug">
+            Why the{" "}
+            <span className="text-green-600">
+              European Coaching Philosophy
+            </span>{" "}
+            Builds Champions
+          </h2>
+          <p className="mt-4 text-lg text-gray-600 font-semibold max-w-3xl mx-auto">
+            Europe has produced some of the best tennis players on the planet.
+            But what differs European tennis from American?
+          </p>
+        </div>
 
-  {/* Redesigned Content Cards */}
-  <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        {/* Redesigned Content Cards */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
 
-    {/* Card 1 */}
-    <div className="relative bg-white border border-green-100 rounded-3xl p-8 shadow-sm hover:shadow-md transition">
-      <span className="absolute -top-6 left-6 text-7xl text-green-200 font-serif">
-        “
-      </span>
-      <p className="text-gray-700 leading-relaxed mt-6">
-        Regarding producing world-class tennis players, Europe has
-        consistently led the way. From Rafael Nadal to Novak Djokovic, the
-        continent has developed elite athletes known for their technical
-        precision, mental toughness, and strategic play. But what exactly
-        makes the{" "}
-        <span className="font-semibold text-green-700">
-          European tennis coaching philosophy
-        </span>
-        so effective — and why are we bringing it to our new{" "}
-        <span className="font-semibold text-green-700">
-          tennis academy in Gilbert, Arizona?
-        </span>
-      </p>
-    </div>
+          {/* Card 1 */}
+          <div className="relative bg-white border border-green-100 rounded-3xl p-8 shadow-sm hover:shadow-md transition">
+            <span className="absolute -top-6 left-6 text-7xl text-green-200 font-serif">
+              “
+            </span>
+            <p className="text-gray-700 leading-relaxed mt-6">
+              Regarding producing world-class tennis players, Europe has
+              consistently led the way. From Rafael Nadal to Novak Djokovic, the
+              continent has developed elite athletes known for their technical
+              precision, mental toughness, and strategic play. But what exactly
+              makes the{" "}
+              <span className="font-semibold text-green-700">
+                European tennis coaching philosophy
+              </span>
+              so effective — and why are we bringing it to our new{" "}
+              <span className="font-semibold text-green-700">
+                tennis academy in Gilbert, Arizona?
+              </span>
+            </p>
+          </div>
 
-    {/* Card 2 */}
-    <div className="relative bg-white border border-gray-200 rounded-3xl p-8 shadow-sm hover:shadow-md transition">
-      <span className="absolute -top-6 left-6 text-7xl text-green-200 font-serif">
-        “
-      </span>
-      <p className="text-gray-700 leading-relaxed mt-6">
-        At its core, European coaching emphasizes{" "}
-        <span className="font-semibold text-green-700">
-          long-term player development over short-term results
-        </span>
-        . Instead of pushing players into early competition, coaches focus
-        on foundational skills — footwork, consistency, shot selection —
-        and gradually build from there. One of the defining
-        characteristics of this approach is the{" "}
-        <span className="font-semibold text-green-700">
-          strong coach-player relationship
-        </span>
-        , often formed by working with{" "}
-        <span className="font-semibold text-green-700">
-          one dedicated coach
-        </span>
-        over multiple years.
-      </p>
-    </div>
+          {/* Card 2 */}
+          <div className="relative bg-white border border-gray-200 rounded-3xl p-8 shadow-sm hover:shadow-md transition">
+            <span className="absolute -top-6 left-6 text-7xl text-green-200 font-serif">
+              “
+            </span>
+            <p className="text-gray-700 leading-relaxed mt-6">
+              At its core, European coaching emphasizes{" "}
+              <span className="font-semibold text-green-700">
+                long-term player development over short-term results
+              </span>
+              . Instead of pushing players into early competition, coaches focus
+              on foundational skills — footwork, consistency, shot selection —
+              and gradually build from there. One of the defining
+              characteristics of this approach is the{" "}
+              <span className="font-semibold text-green-700">
+                strong coach-player relationship
+              </span>
+              , often formed by working with{" "}
+              <span className="font-semibold text-green-700">
+                one dedicated coach
+              </span>
+              over multiple years.
+            </p>
+          </div>
 
-    {/* Card 3 */}
-    <div className="relative bg-green-600 rounded-3xl p-8 text-white shadow-sm hover:shadow-md transition">
-      <span className="absolute -top-6 left-6 text-7xl text-white/40 font-serif">
-        “
-      </span>
-      <p className="leading-relaxed mt-6">
-        Another hallmark of{" "}
-        <span className="font-semibold">
-          European-style junior tennis training
-        </span>
-        is a structured but flexible training model. Group sizes tend to
-        be smaller, allowing for individualized attention, and coaches act
-        as long-term mentors, not just instructors. At our{" "}
-        <span className="font-semibold">
-          tennis academy in Gilbert
-        </span>,
-        we embrace this mindset by designing sessions based on a player’s
-        age, experience, and goals. Rather than rigid schedules, we offer
-        flexible training packages so athletes — and parents — can choose
-        when and how often to train. This freedom supports consistency and
-        avoids burnout, especially for busy families.
-      </p>
-    </div>
+          {/* Card 3 */}
+          <div className="relative bg-green-600 rounded-3xl p-8 text-white shadow-sm hover:shadow-md transition">
+            <span className="absolute -top-6 left-6 text-7xl text-white/40 font-serif">
+              “
+            </span>
+            <p className="leading-relaxed mt-6">
+              Another hallmark of{" "}
+              <span className="font-semibold">
+                European-style junior tennis training
+              </span>
+              is a structured but flexible training model. Group sizes tend to
+              be smaller, allowing for individualized attention, and coaches act
+              as long-term mentors, not just instructors. At our{" "}
+              <span className="font-semibold">
+                tennis academy in Gilbert
+              </span>,
+              we embrace this mindset by designing sessions based on a player’s
+              age, experience, and goals. Rather than rigid schedules, we offer
+              flexible training packages so athletes — and parents — can choose
+              when and how often to train. This freedom supports consistency and
+              avoids burnout, especially for busy families.
+            </p>
+          </div>
 
-    {/* Card 4 */}
-    <div className="relative bg-white border border-green-100 rounded-3xl p-8 shadow-sm hover:shadow-md transition">
-      <span className="absolute -top-6 left-6 text-7xl text-green-200 font-serif">
-        “
-      </span>
-      <p className="text-gray-700 leading-relaxed mt-6">
-        Mental development is equally important. The{" "}
-        <span className="font-semibold text-green-700">
-          European coaching model
-        </span>{" "}
-        emphasizes emotional maturity, focus, and internal motivation.
-        Through match-style drills, guided pressure situations, and
-        strategic game play, players build the skills needed to compete
-        confidently and independently. It’s an approach that develops not
-        only great players, but strong individuals.
-      </p>
-    </div>
+          {/* Card 4 */}
+          <div className="relative bg-white border border-green-100 rounded-3xl p-8 shadow-sm hover:shadow-md transition">
+            <span className="absolute -top-6 left-6 text-7xl text-green-200 font-serif">
+              “
+            </span>
+            <p className="text-gray-700 leading-relaxed mt-6">
+              Mental development is equally important. The{" "}
+              <span className="font-semibold text-green-700">
+                European coaching model
+              </span>{" "}
+              emphasizes emotional maturity, focus, and internal motivation.
+              Through match-style drills, guided pressure situations, and
+              strategic game play, players build the skills needed to compete
+              confidently and independently. It’s an approach that develops not
+              only great players, but strong individuals.
+            </p>
+          </div>
 
-    {/* Final Full Width Card */}
-    <div className="relative bg-white border-2 border-green-200 rounded-3xl p-10 shadow-md md:col-span-2">
-      <span className="absolute -top-6 left-8 text-7xl text-green-300 font-serif">
-        “
-      </span>
-      <p className="text-gray-700 leading-relaxed mt-6 text-lg">
-        At <span className="font-semibold text-green-700">Team Hippa</span>, we bring
-        this proven system to our high-performance tennis programs in
-        Arizona. With deep roots in European methodology and years of
-        experience in junior tennis development, our mission is to offer
-        players the tools, environment, and coaching they need to reach
-        their full potential. Just as importantly, we’re creating a
-        family-oriented, competitive atmosphere where both players and
-        parents feel they’re part of something meaningful. That’s why we
-        chose the name Team Hippa — because growth happens best when it’s
-        shared.
-      </p>
-    </div>
+          {/* Final Full Width Card */}
+          <div className="relative bg-white border-2 border-green-200 rounded-3xl p-10 shadow-md md:col-span-2">
+            <span className="absolute -top-6 left-8 text-7xl text-green-300 font-serif">
+              “
+            </span>
+            <p className="text-gray-700 leading-relaxed mt-6 text-lg">
+              At <span className="font-semibold text-green-700">Team Hippa</span>, we bring
+              this proven system to our high-performance tennis programs in
+              Arizona. With deep roots in European methodology and years of
+              experience in junior tennis development, our mission is to offer
+              players the tools, environment, and coaching they need to reach
+              their full potential. Just as importantly, we’re creating a
+              family-oriented, competitive atmosphere where both players and
+              parents feel they’re part of something meaningful. That’s why we
+              chose the name Team Hippa — because growth happens best when it’s
+              shared.
+            </p>
+          </div>
 
-  </div>
-</section>
+        </div>
+      </section>
 
     </>
   );

@@ -288,11 +288,11 @@ const PackageBookingPage: React.FC = () => {
     };
     
     return (
-        <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
+        <div className="bg-gray-100 dark:bg-gray-100 min-h-screen">
             <div className="max-w-6xl mx-auto py-12 px-4">
                 <div className="text-center mb-10">
-                    <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">Book Your Package</h1>
-                    <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">for {pkg?.name || 'our amazing package'}</p>
+                    <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-900">Book Your Package</h1>
+                    <p className="mt-2 text-lg text-gray-600 dark:text-gray-600">for {pkg?.name || 'our amazing package'}</p>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">

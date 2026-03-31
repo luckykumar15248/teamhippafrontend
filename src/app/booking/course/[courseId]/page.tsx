@@ -463,37 +463,37 @@ const BookingPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div className="bg-gray-100 dark:bg-white min-h-screen">
       <div className="max-w-6xl mx-auto py-12 px-4">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-900">
             Book Your Spot
           </h1>
-          <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
+          <p className="mt-2 text-lg text-gray-600 dark:text-gray-900">
             for {course?.name || 'our amazing course'}
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 space-y-10">
+          <div className="lg:col-span-2 bg-white rounded-lg shadow-xl p-8 space-y-10">
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-900 mb-4">
                 1. Your Contact Information
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 dark:text-white">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 dark:text-gray-900">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-900">
                     Full Name
                   </label>
                   <input
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
                     placeholder="Full Name"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-900">
                     Email Address
                   </label>
                   <input
@@ -501,11 +501,11 @@ const BookingPage: React.FC = () => {
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     placeholder="Email Address"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-900">
                     Phone Number
                   </label>
                   <input
@@ -513,28 +513,28 @@ const BookingPage: React.FC = () => {
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
                     placeholder="Phone Number"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                   />
                 </div>
               </div>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-900 mb-4">
                 2. Participant(s) Information
               </h2>
               <div className="space-y-6">
                 {participants.map((p, index) => (
                   <div
                     key={p.id}
-                    className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 relative"
+                    className="p-4 border rounded-lg bg-gray-50 dark:bg-white dark:border-gray-700 relative"
                   >
-                    <h3 className="font-semibold text-lg mb-4 text-gray-800 dark:text-white">
+                    <h3 className="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-900">
                       Participant #{index + 1}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-900 dark:text-gray-200">
+                        <label className="text-sm font-medium text-gray-900 dark:text-gray-900">
                           First Name
                         </label>
                         <input
@@ -547,11 +547,11 @@ const BookingPage: React.FC = () => {
                             )
                           }
                           placeholder="First Name"
-                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-900">
                           Last Name
                         </label>
                         <input
@@ -564,11 +564,11 @@ const BookingPage: React.FC = () => {
                             )
                           }
                           placeholder="Last Name"
-                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                         />
                       </div>
-                      <div className="dark-date-birth">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-900">
                           Date of Birth
                         </label>
                         <input
@@ -582,11 +582,11 @@ const BookingPage: React.FC = () => {
                             )
                           }
                           placeholder="Date of Birth"
-                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                         />
                       </div>
                       <div>
-                        <label className="text-sm block font-medium text-gray-700 dark:text-gray-200">
+                        <label className="text-sm block font-medium text-gray-700 dark:text-gray-900">
                           Skill Level
                         </label>
                         <select
@@ -599,7 +599,7 @@ const BookingPage: React.FC = () => {
                             )
                           }
                            
-                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                         >
                           <option>Beginner</option>
                           <option>Intermediate</option>
@@ -607,7 +607,7 @@ const BookingPage: React.FC = () => {
                         </select>
                       </div>
                       <div className="hidden">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-900">
                           Hours Required per Day
                         </label>
                         <select
@@ -619,7 +619,7 @@ const BookingPage: React.FC = () => {
                               Number(e.target.value)
                             )
                           }
-                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          className="mt-1 block w-full rounded-md border border-gray-300 p-3 dark:bg-white dark:border-gray-900 dark:text-gray-900"
                         >
                           <option value="">Select hours</option>
                           {[...Array(12)].map((_, i) => (
@@ -630,7 +630,7 @@ const BookingPage: React.FC = () => {
                         </select>
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-900">
                           Medical Notes
                         </label>
                         <textarea
@@ -643,7 +643,7 @@ const BookingPage: React.FC = () => {
                             )
                           }
                           placeholder="Notes"
-                          className="mt-1 p-3 block w-full rounded-md border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                          className="mt-1 p-3 block w-full rounded-md border border-gray-300 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                         ></textarea>
                       </div>
                     </div>
@@ -667,11 +667,11 @@ const BookingPage: React.FC = () => {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-900 mb-4">
                 3. Select Booking Dates
               </h2>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-900">
                   Available Schedules
                 </label>
                 <select
@@ -679,7 +679,7 @@ const BookingPage: React.FC = () => {
                   onChange={(e) =>
                     setSelectedScheduleId(Number(e.target.value))
                   }
-                  className="mt-1 block w-full md:w-1/2 rounded-md border-gray-300 shadow-sm p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="mt-1 block w-full md:w-1/2 rounded-md border-gray-300 shadow-sm p-3 dark:bg-white dark:border-gray-900 dark:text-gray-900"
                 >
                   <option value="">-- Select a Schedule --</option>
                   {schedules.map((s) => (
@@ -689,15 +689,15 @@ const BookingPage: React.FC = () => {
                   ))}
                 </select>
               </div>
-              <div className="bg-white dark:bg-gray-800 p-4 rounded-md border dark:border-gray-700">
+              <div className="bg-white dark:bg-white p-4 rounded-md border dark:border-gray-900">
                 <div className="flex items-center justify-between mb-4">
                   <button
                     onClick={handlePrevMonth}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-900"
                   >
                     <ChevronLeftIcon />
                   </button>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-900">
                     {currentMonth.toLocaleString('default', {
                       month: 'long',
                       year: 'numeric',
@@ -705,12 +705,12 @@ const BookingPage: React.FC = () => {
                   </h3>
                   <button
                     onClick={handleNextMonth}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-900"
                   >
                     <ChevronRightIcon />
                   </button>
                 </div>
-                <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500 dark:text-gray-400">
+                <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500 dark:text-gray-500">
                   <div>Sun</div>
                   <div>Mon</div>
                   <div>Tue</div>
@@ -725,7 +725,7 @@ const BookingPage: React.FC = () => {
                       return (
                         <div
                           key={`empty-${index}`}
-                          className="border rounded-md h-16 dark:border-gray-700"
+                          className="border rounded-md h-16 dark:border-gray-900"
                         ></div>
                       );
 
@@ -737,14 +737,14 @@ const BookingPage: React.FC = () => {
                     const isFutureOrToday = day >= today;
 
                     let dayClass =
-                      'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500';
+                      'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-text-gray-900 dark:text-gray-900';
                     if (isAvailable && isFutureOrToday) {
                       dayClass = isSelected
-                        ? 'bg-indigo-600 text-white font-bold dark:bg-indigo-500'
-                        : 'bg-green-100 hover:bg-green-200 cursor-pointer dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50';
+                        ? 'bg-indigo-600 text-white font-bold  cursor-pointer'
+                        : 'bg-green-600 hover:bg-green-200 cursor-pointer dark:bg-green-600 dark:text-gray-900 dark:hover:bg-green-900/50';
                     } else if (slot) {
                       dayClass =
-                        'bg-red-100 text-red-400 line-through cursor-not-allowed dark:bg-red-900/20 dark:text-red-400';
+                        'bg-red-200 text-red-400 line-through cursor-not-allowed dark:bg-red-200 dark:text-red-400';
                     }
 
                     return (
@@ -772,25 +772,25 @@ const BookingPage: React.FC = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 sticky top-24 border dark:border-gray-700">
-              <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4 dark:text-white dark:border-gray-700">
+            <div className="bg-white dark:bg-white rounded-lg shadow-xl p-6 sticky top-24 border dark:border-gray-700">
+              <h3 className="text-xl font-bold text-gray-800 border-b pb-4 mb-4 dark:text-gray-900 dark:border-gray-700">
                 Booking Summary
               </h3>
               <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-gray-700 dark:text-gray-300">
+                <div className="flex justify-between text-gray-700 dark:text-gray-900">
                   <span>Course:</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">{course?.name}</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-900">{course?.name}</span>
                 </div>
-                <div className="flex justify-between text-gray-700 dark:text-gray-300">
+                <div className="flex justify-between text-gray-700 dark:text-gray-900">
                   <span>Participants:</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">{participants.length}</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-900">{participants.length}</span>
                 </div>
-                <div className="flex justify-between text-gray-700 dark:text-gray-300">
+                <div className="flex justify-between text-gray-700 dark:text-gray-900">
                   <span>Dates Selected:</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">{selectedDates.size}</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-900">{selectedDates.size}</span>
                 </div>
                 <div className="border-t my-2 dark:border-gray-700"></div>
-                <div className="flex justify-between font-semibold text-gray-700 dark:text-gray-300">
+                <div className="flex justify-between font-semibold text-gray-700 dark:text-gray-900">
                   <span>Subtotal:</span>
                   <span>${priceDetails.subtotal.toFixed(2)}</span>
                 </div>
@@ -804,12 +804,12 @@ const BookingPage: React.FC = () => {
                       onChange={(e) =>
                         setCouponCode(e.target.value.toUpperCase())
                       }
-                      className="w-full text-sm rounded-md border border-gray-300 shadow-sm p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
+                      className="w-full text-sm rounded-md border border-gray-300 shadow-sm p-2 dark:bg-white dark:border-gray-900 dark:text-gray-900 dark:placeholder:text-gray-900"
                     />
                     <button
                       onClick={handleApplyCoupon}
                       disabled={couponLoading}
-                      className="bg-gray-200 text-gray-700 px-3 py-1 text-sm font-semibold rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                      className="bg-gray-200 text-gray-700 px-3 py-1 text-sm font-semibold rounded-md hover:bg-gray-300 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-600"
                     >
                       {couponLoading ? '...' : 'Apply'}
                     </button>
@@ -823,7 +823,7 @@ const BookingPage: React.FC = () => {
                 </div>
 
                 <div className="border-t my-2 dark:border-gray-700"></div>
-                <div className="flex justify-between text-xl font-bold text-gray-900 dark:text-white">
+                <div className="flex justify-between text-xl font-bold text-gray-900 dark:text-gray-900">
                   <span>Total:</span>
                   <span>${priceDetails.finalPrice.toFixed(2)}</span>
                 </div>
@@ -831,7 +831,7 @@ const BookingPage: React.FC = () => {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || selectedDates.size === 0}
-                className="w-full mt-6 bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-gray-700 dark:disabled:text-gray-500"
+                className="w-full mt-6 bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-gray-400 dark:disabled:text-gray-500"
               >
                 {isSubmitting ? 'Processing...' : 'Continue to Payment'}
               </button>
